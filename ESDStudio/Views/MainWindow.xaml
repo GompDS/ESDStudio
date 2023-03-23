@@ -1,89 +1,68 @@
-﻿<Window x:Class="ESDStudio.MainWindow"
+﻿<Window x:Class="ESDStudio.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESDStudio"
+        xmlns:vm="clr-namespace:ESDStudio.ViewModels"
+        xmlns:views="clr-namespace:ESDStudio.Views"
         mc:Ignorable="d"
-        Title="ESD Studio" Height="450" Width="800">
-    <Window.CommandBindings>
-        <CommandBinding Command="Save" Executed="CommandBinding_Save_OnExecuted"/>
-        <CommandBinding Command="local:CustomCommands.SaveAll" Executed="CommandBinding_SaveAll_OnExecuted"/>
-        <CommandBinding Command="local:CustomCommands.CloseTab" Executed="CommandBinding_CloseTab_OnExecuted"/>
-    </Window.CommandBindings>
+        Title="ESD Studio" Width="1366" Height="768">
     <Window.InputBindings>
-        <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
+        <KeyBinding Key="O" Modifiers="Control"
+                    Command="{Binding OpenProjectCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control"
+                    Command="{Binding CreateProjectCommand}"/>
     </Window.InputBindings>
-    
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         
-        <Grid Grid.Row="1">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="5"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="5"/>
             </Grid.RowDefinitions>
         
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
-        
-            <Menu Grid.Row="1" Grid.Column="1">
+            
+            <Menu>
                 <MenuItem Header="File">
-                    <MenuItem Header="Open Project" Name="MenuItem_OpenProject" Click="MenuItem_OpenProject_OnClick"/>
-                    <MenuItem Header="Create New Project" x:Name="project_create" Click="Project_create_OnClick"/>
-                    <MenuItem Header="Save" Command="Save" InputGestureText="Ctrl+S"/>
-                    <MenuItem Header="Save All" Command="local:CustomCommands.SaveAll" InputGestureText="Ctrl+Shift+S"/>
-                    <MenuItem Header="Close Tab" Command="local:CustomCommands.CloseTab" InputGestureText="Ctrl+W"/>
-                </MenuItem>
-                <MenuItem Header="Edit">
-                    <MenuItem Header="Cut" Command="Cut" InputGestureText="Ctrl+X"/>
-                    <MenuItem Header="Copy" Command="Copy" InputGestureText="Ctrl+C"/>
-                    <MenuItem Header="Paste" Command="Paste" InputGestureText="Ctrl+Z"/>
-                    <MenuItem Header="Select All" Command="SelectAll" InputGestureText="Ctrl+A"/>
+                    <MenuItem Header="_Open Project..." InputGestureText="Ctrl+O"
+                              Command="{Binding OpenProjectCommand}"/>
+                    <MenuItem Header="_New Project" InputGestureText="Ctrl+N"
+                              Command="{Binding NewProjectCommand}"/>
                 </MenuItem>
             </Menu>
-            <Label Grid.Row="1" Grid.Column="2">Current Project: </Label>
-            <Label Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Name="Label_ProjectName">
-                N/A
-            </Label>
+            <Label Grid.Column="1">_Current Project:</Label>
+            <Label Grid.Column="2" Content="{Binding ProjectName, Mode=OneWay}"/>
         </Grid>
-        <Grid Name="BodyGrid" Grid.Row="2">
+        
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
             
-            <Grid Grid.Column="1">
-                <TreeView Name="TreeView_ESDTree" Visibility="Hidden"
-                          SelectedItemChanged="TreeView_ESDTree_OnSelectedItemChanged">
-                </TreeView>
-            </Grid>
+            <views:BNDView
+                Visibility="{Binding Visibility}"
+                DataContext="{Binding BNDControl}"/>
             
-            <Grid Name="EditorGrid" Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                
-                <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
-                    <StackPanel Name="StackPanel_EditorTabs" Orientation="Horizontal" FlowDirection="LeftToRight" VerticalAlignment="Bottom"/>
-                </ScrollViewer>
-                
-                <!--<TextBox Name="TextBox_TextEditor" Grid.Row="1" Width="Auto" Visibility="Hidden" IsEnabled="False" FontFamily="Courier New" IsUndoEnabled="False" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" TextChanged="TextBox_TextEditor_OnTextChanged"/>-->
-            </Grid>
+            <GridSplitter 
+                Visibility="{Binding Visibility}"
+                DataContext="{Binding BNDControl}"
+                Grid.Column="0" 
+                Grid.RowSpan="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Background="Black"
+                ShowsPreview="True"
+                Width="2"/>
         </Grid>
     </Grid>
 </Window>

@@ -7,4 +7,49 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SoulsFormats\SoulsFormats\SoulsFormats.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="esdtool\SoulsIds\**" />
+      <Compile Remove="esdtool\**" />
+      <Compile Remove="Views\CreateNewESDView.xaml.cs" />
+      <Compile Remove="Views\CreateNewProjectView.xaml.cs" />
+      <Compile Remove="CodeEditorTab.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="esdtool\SoulsIds\**" />
+      <EmbeddedResource Remove="esdtool\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="esdtool\SoulsIds\**" />
+      <None Remove="esdtool\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Remove="esdtool\SoulsIds\**" />
+      <Page Remove="esdtool\**" />
+      <Page Remove="Views\CreateNewESDView.xaml" />
+      <Page Remove="Views\CreateNewProjectView.xaml" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <CopyESDTool Include="esdtool/**/**/*" />
+        <CopyDefaultDescriptions Include="DefaultDescriptions/*" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0-preview1" />
+      <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+      <PackageReference Include="Tomlyn" Version="0.16.2" />
+    </ItemGroup>
+    
+    <Target Name="CopyFiles" AfterTargets="AfterBuild">
+        <Copy SourceFiles="@(CopyESDTool)" DestinationFolder="bin\Debug\net6.0-windows\esdtool\%(RecursiveDir)" />
+        <Copy SourceFiles="@(CopyDefaultDescriptions)" DestinationFolder="bin\Debug\net6.0-windows\DefaultDescriptions\%(RecursiveDir)" />
+    </Target>
+
 </Project>
