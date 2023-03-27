@@ -15,19 +15,22 @@ public class GameInfo
         DarkSoulsIII
     }
 
-    public Game Name;
+    public Game Type;
+    public string Name = "Unknown";
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
 
     public GameInfo(string text)
     {
         if (text.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
-            text.Equals("DS3", StringComparison.OrdinalIgnoreCase))
+            text.Equals("ds3", StringComparison.OrdinalIgnoreCase))
         {
-            Name = Game.DarkSoulsIII;
-            ReadDefaultMapDescriptions("DS3");
-            ReadDefaultESDDescriptions("DS3");
+            Type = Game.DarkSoulsIII;
+            Name = "ds3";
+
         }
+        ReadDefaultMapDescriptions(Name);
+        ReadDefaultESDDescriptions(Name);
     }
 
     private void ReadDefaultMapDescriptions(string gameId)
@@ -60,11 +63,6 @@ public class GameInfo
 
     public override string ToString()
     {
-        if (Name == Game.DarkSoulsIII)
-        {
-            return "DS3";
-        }
-
-        return "Unknown";
+        return Name;
     }
 }

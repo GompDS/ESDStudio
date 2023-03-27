@@ -22,5 +22,11 @@ namespace ESDStudio.Views
         {
             InitializeComponent();
         }
+
+        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            TreeView tree = (TreeView)sender;
+            ((MainWindowViewModel)DataContext).SelectedTreeItem = tree.SelectedItem;
+        }
     }
 }

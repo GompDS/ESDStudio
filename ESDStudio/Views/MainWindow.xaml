@@ -6,13 +6,83 @@
         xmlns:local="clr-namespace:ESDStudio"
         xmlns:vm="clr-namespace:ESDStudio.ViewModels"
         xmlns:views="clr-namespace:ESDStudio.Views"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="ESD Studio" Width="1366" Height="768">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <Style x:Key="MenuStyle" TargetType="MenuItem">
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style x:Key="BNDNameTextBlock" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsBNDEdited}" Value="True">
+                    <Setter Property="Foreground" Value="Green"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ESDNameTextBlock" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsESDEdited}" Value="True">
+                    <Setter Property="Foreground" Value="Green"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="BNDDescriptionTextBlock" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDescriptionEdited}" Value="False">
+                    <Setter Property="Foreground" Value="Purple"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDescriptionEdited}" Value="True">
+                    <Setter Property="Foreground" Value="MediumPurple"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ESDDescriptionTextBlock" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDescriptionEdited}" Value="False">
+                    <Setter Property="Foreground" Value="Blue"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDescriptionEdited}" Value="True">
+                    <Setter Property="Foreground" Value="DodgerBlue"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <ContextMenu x:Key="BNDContextMenu">
+            <MenuItem Header="Edit Description" 
+                      Command="{Binding EditDescriptionCommand}"/>
+            <MenuItem Header="New ESD" InputGestureText="Ctrl+Shift+N"
+                      Command="{Binding NewESDCommand}"/>
+            <MenuItem Header="Paste ESD" InputGestureText="Ctrl+V"
+                      Command="{Binding PasteESDCommand}"/>
+        </ContextMenu>
+        <ContextMenu x:Key="ESDContextMenu">
+            <MenuItem Header="Edit ID" 
+                      Command="{Binding EditIdCommand}"/>
+            <MenuItem Header="Edit Description"
+                      Command="{Binding EditDescriptionCommand}"/>
+            <MenuItem Header="Copy" InputGestureText="Ctrl+C"
+                      Command="{Binding CopyCommand}"/>
+            <MenuItem Header="Delete" InputGestureText="Delete"
+                      Command="{Binding DeleteCommand}"/>
+        </ContextMenu>
+    </Window.Resources>
     <Window.InputBindings>
+        <KeyBinding Key="N" Modifiers="Control"
+                    Command="{Binding NewProjectCommand}"/>
         <KeyBinding Key="O" Modifiers="Control"
                     Command="{Binding OpenProjectCommand}"/>
-        <KeyBinding Key="N" Modifiers="Control"
-                    Command="{Binding CreateProjectCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control+Shift"
+                    Command="{Binding SelectedTreeItem.NewESDCommand}"/>
+        <KeyBinding Key="Delete" 
+                    Command="{Binding SelectedTreeItem.DeleteCommand}"/>
+        <KeyBinding Key="C" Modifiers="Control" 
+                    Command="{Binding SelectedTreeItem.CopyCommand}"/>
+        <KeyBinding Key="V" Modifiers="Control" 
+                    Command="{Binding SelectedTreeItem.PasteESDCommand}"/>
+        <KeyBinding Key="V" Modifiers="Control" 
+                    Command="{Binding SelectedTreeItem.PasteCommand}"/>
     </Window.InputBindings>
     <Grid Margin="5">
         <Grid.RowDefinitions>
@@ -33,10 +103,19 @@
             
             <Menu>
                 <MenuItem Header="File">
-                    <MenuItem Header="_Open Project..." InputGestureText="Ctrl+O"
-                              Command="{Binding OpenProjectCommand}"/>
                     <MenuItem Header="_New Project" InputGestureText="Ctrl+N"
                               Command="{Binding NewProjectCommand}"/>
+                    <MenuItem Header="_Open Project" InputGestureText="Ctrl+O"
+                              Command="{Binding OpenProjectCommand}"/>
+                    <MenuItem Header="_Recent Projects" ItemsSource="{Binding RecentProjects}">
+                        <MenuItem.ItemTemplate>
+                            <DataTemplate DataType="{x:Type system:Tuple}">
+                                <TextBlock Text="{Binding Item1}"/>
+                            </DataTemplate>
+                        </MenuItem.ItemTemplate>
+                    </MenuItem>
+                    <MenuItem Header="_New BND"
+                              Command="{Binding NewBNDCommand}"/>
                 </MenuItem>
             </Menu>
             <Label Grid.Column="1">_Current Project:</Label>
@@ -49,9 +128,38 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
-            <views:BNDView
-                Visibility="{Binding Visibility}"
-                DataContext="{Binding BNDControl}"/>
+            <TreeView ItemsSource="{Binding BNDViewModels}" MinWidth="120" SelectedItemChanged="TreeView_OnSelectedItemChanged">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:BNDViewModel}" ItemsSource="{Binding ESDViewModels}">
+                        <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource BNDContextMenu}" AllowDrop="True">
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource BNDNameTextBlock}"/>
+                            <TextBlock Text="*" Style="{StaticResource BNDNameTextBlock}" 
+                                       Visibility="{Binding IsBNDEdited, Converter={StaticResource BoolToVis}}"/>
+                            <TextBlock Text="{Binding Description}" Style="{StaticResource BNDDescriptionTextBlock}" 
+                                       Margin="10, 0, 0, 0"/>
+                            <TextBlock Text="*" Style="{StaticResource BNDDescriptionTextBlock}" 
+                                       Visibility="{Binding IsDescriptionEdited, Converter={StaticResource BoolToVis}}"
+                                       Margin="0, 0, 10, 0"/>
+                        </StackPanel>
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:ESDViewModel}">
+                                <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource ESDContextMenu}">
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource ESDNameTextBlock}" />
+                                    <TextBlock Text="*" 
+                                               Style="{StaticResource ESDNameTextBlock}" 
+                                               Visibility="{Binding IsESDEdited, 
+                                           Converter={StaticResource BoolToVis}}"/>
+                                    <TextBlock Text="{Binding Description}" Style="{StaticResource ESDDescriptionTextBlock}"
+                                               Margin="10, 0, 0, 0"/>
+                                    <TextBlock Text="*" Style="{StaticResource ESDDescriptionTextBlock}" 
+                                               Visibility="{Binding IsDescriptionEdited, Converter={StaticResource BoolToVis}}"
+                                               Margin="0, 0, 10, 0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
             
             <GridSplitter 
                 Visibility="{Binding Visibility}"

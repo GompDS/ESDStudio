@@ -22,4 +22,14 @@ public class ViewModelBase : INotifyPropertyChanged
             MessageBoxImage.Error,
             MessageBoxResult.OK);
     }
+    
+    protected MessageBoxResult ShowConfirmationMessageBox(string confirmDescription)
+    {
+        return MessageBox.Show(
+            confirmDescription, 
+            "Confirmation",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.OK);
+    }
 }
