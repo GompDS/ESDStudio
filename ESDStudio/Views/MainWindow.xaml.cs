@@ -28,5 +28,18 @@ namespace ESDStudio.Views
             TreeView tree = (TreeView)sender;
             ((MainWindowViewModel)DataContext).SelectedTreeItem = tree.SelectedItem;
         }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ((MainWindowViewModel)DataContext).SelectedRecentProject = item.Header;
+        }
+
+        private void Click_RecentProject(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ((MainWindowViewModel)DataContext).SelectedRecentProject = item.Header;
+            ((MainWindowViewModel)DataContext).OpenRecentProjectCommand.Execute(null);
+        }
     }
 }

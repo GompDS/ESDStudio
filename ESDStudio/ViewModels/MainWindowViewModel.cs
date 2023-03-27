@@ -30,6 +30,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenProjectCommand = new RelayCommand(OpenProject);
         NewProjectCommand = new RelayCommand(NewProject);
         NewBNDCommand = new RelayCommand(NewBND, CanSaveBND);
+        OpenRecentProjectCommand = new RelayCommand(OpenRecentProject);
         RecentProjects = GetRecentProjects();
         if (RecentProjects.Count > 0)
         {
@@ -161,7 +162,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         for (int i = 5; i <= RecentProjects.Count;)
         {
-            RecentProjects.Remove(RecentProjects[i]);
+            RecentProjects.Remove(RecentProjects[i-1]);
         }
 
         if (RecentProjects.Any(x => x.Item1.Equals(ProjectName)))
@@ -225,6 +226,7 @@ public class MainWindowViewModel : ViewModelBase
         };
         newProjectView.ShowDialog();
         if (newProjectView.DialogResult != true) return;
+        BNDViewModels.Clear();
         ProjectName = newProjectViewModel.ProjectNameEntry;
         ProjectBaseDirectory = newProjectViewModel.ProjectBaseDirectoryEntry + $"\\{ProjectName}";
         Directory.CreateDirectory(ProjectBaseDirectory);
@@ -251,7 +253,8 @@ public class MainWindowViewModel : ViewModelBase
 
     private void OpenRecentProject()
     {
-        
+        if (SelectedRecentProject == null) return;
+        LoadProjectFromToml(((Tuple<string, string>)SelectedRecentProject).Item2);
     }
     
     private void PopulateBNDViewModels(string modDirectory, string gameDirectory, GameInfo gameInfo)
