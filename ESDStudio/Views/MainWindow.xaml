@@ -7,14 +7,13 @@
         xmlns:vm="clr-namespace:ESDStudio.ViewModels"
         xmlns:views="clr-namespace:ESDStudio.Views"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:userControls="clr-namespace:ESDStudio.UserControls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="ESD Studio" Width="1366" Height="768">
+        Title="ESD Studio" Width="1366" Height="768" IsTabStop="False"> 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <Style x:Key="MenuStyle" TargetType="MenuItem">
-            <Setter Property="Padding" Value="0"/>
-        </Style>
         <Style x:Key="BNDNameTextBlock" TargetType="TextBlock">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsBNDEdited}" Value="True">
@@ -83,14 +82,16 @@
                     Command="{Binding SelectedTreeItem.PasteESDCommand}"/>
         <KeyBinding Key="V" Modifiers="Control" 
                     Command="{Binding SelectedTreeItem.PasteCommand}"/>
+        <KeyBinding Key="W" Modifiers="Control"
+                    Command="{Binding CloseTabCommand}"/>
     </Window.InputBindings>
-    <Grid Margin="5">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <Grid>
+        <Grid >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -101,10 +102,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
-            <Menu>
-                <MenuItem Header="File">
+            <Menu VerticalAlignment="Center">
+                <MenuItem Header="File" IsTabStop="False">
                     <MenuItem Header="_New Project" InputGestureText="Ctrl+N"
-                              Command="{Binding NewProjectCommand}"/>
+                          Command="{Binding NewProjectCommand}"/>
                     <MenuItem Header="_Open Project" InputGestureText="Ctrl+O"
                               Command="{Binding OpenProjectCommand}"/>
                     <MenuItem Header="_Recent Projects" ItemsSource="{Binding RecentProjects}">
@@ -119,13 +120,19 @@
                             </DataTemplate>
                         </MenuItem.ItemTemplate>
                     </MenuItem>
+                    <Separator/>
                     <MenuItem Header="_New BND"
                               Command="{Binding NewBNDCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="_Close Tab" InputGestureText="Ctrl+W"
+                              Command="{Binding CloseTabCommand}"/>
                 </MenuItem>
             </Menu>
-            <Label Grid.Column="1">_Current Project:</Label>
-            <Label Grid.Column="2" Content="{Binding ProjectName, Mode=OneWay}"/>
+            <Separator VerticalAlignment="Bottom"/>
+            <Label Grid.Column="1" IsTabStop="False">_Current Project:</Label>
+            <Label Grid.Column="2" IsTabStop="False" Content="{Binding ProjectName, Mode=OneWay}"/>
         </Grid>
+        <Separator VerticalAlignment="Bottom"/>
         
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -133,38 +140,66 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
-            <TreeView ItemsSource="{Binding BNDViewModels}" MinWidth="120" SelectedItemChanged="TreeView_OnSelectedItemChanged">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type vm:BNDViewModel}" ItemsSource="{Binding ESDViewModels}">
-                        <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource BNDContextMenu}" AllowDrop="True">
-                            <TextBlock Text="{Binding Name}" Style="{StaticResource BNDNameTextBlock}"/>
-                            <TextBlock Text="*" Style="{StaticResource BNDNameTextBlock}" 
-                                       Visibility="{Binding IsBNDEdited, Converter={StaticResource BoolToVis}}"/>
-                            <TextBlock Text="{Binding Description}" Style="{StaticResource BNDDescriptionTextBlock}" 
-                                       Margin="10, 0, 0, 0"/>
-                            <TextBlock Text="*" Style="{StaticResource BNDDescriptionTextBlock}" 
-                                       Visibility="{Binding IsDescriptionEdited, Converter={StaticResource BoolToVis}}"
-                                       Margin="0, 0, 10, 0"/>
-                        </StackPanel>
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <DataTemplate DataType="{x:Type vm:ESDViewModel}">
-                                <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource ESDContextMenu}">
-                                    <TextBlock Text="{Binding Name}" Style="{StaticResource ESDNameTextBlock}" />
-                                    <TextBlock Text="*" 
-                                               Style="{StaticResource ESDNameTextBlock}" 
-                                               Visibility="{Binding IsESDEdited, 
-                                           Converter={StaticResource BoolToVis}}"/>
-                                    <TextBlock Text="{Binding Description}" Style="{StaticResource ESDDescriptionTextBlock}"
-                                               Margin="10, 0, 0, 0"/>
-                                    <TextBlock Text="*" Style="{StaticResource ESDDescriptionTextBlock}" 
-                                               Visibility="{Binding IsDescriptionEdited, Converter={StaticResource BoolToVis}}"
-                                               Margin="0, 0, 10, 0"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <userControls:DetailPanel x:Name="DetailPanel"/>
+ 
+                <TreeView ItemsSource="{Binding BNDViewModels}" MinWidth="120" SelectedItemChanged="TreeView_OnSelectedItemChanged"
+                          IsTabStop="False" Grid.Row="1">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type vm:BNDViewModel}" ItemsSource="{Binding ESDViewModels}">
+                            <HierarchicalDataTemplate.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <EventSetter Event="MouseDoubleClick" Handler="DoubleClick_ESDTreeItem"/>
+                                </Style>
+                            </HierarchicalDataTemplate.ItemContainerStyle>
+                            <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource BNDContextMenu}" AllowDrop="True">
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource BNDNameTextBlock}"/>
+                                <TextBlock Text="*" Style="{StaticResource BNDNameTextBlock}" 
+                                           Visibility="{Binding IsBNDEdited, Converter={StaticResource BoolToVis}}"/>
+                                <TextBlock Text="{Binding Description}" Style="{StaticResource BNDDescriptionTextBlock}" 
+                                           Margin="10, 0, 0, 0"/>
+                                <TextBlock Text="*" Style="{StaticResource BNDDescriptionTextBlock}" 
+                                           Visibility="{Binding IsDescriptionEdited, Converter={StaticResource BoolToVis}}"
+                                           Margin="0, 0, 10, 0"/>
+                            </StackPanel>
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <DataTemplate DataType="{x:Type vm:ESDViewModel}">
+                                    <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource ESDContextMenu}">
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource ESDNameTextBlock}" />
+                                        <TextBlock Text="*" 
+                                                   Style="{StaticResource ESDNameTextBlock}" 
+                                                   Visibility="{Binding IsESDEdited, 
+                                               Converter={StaticResource BoolToVis}}"/>
+                                        <TextBlock Text="{Binding Description}" Style="{StaticResource ESDDescriptionTextBlock}"
+                                                   Margin="10, 0, 0, 0"/>
+                                        <TextBlock Text="*" Style="{StaticResource ESDDescriptionTextBlock}" 
+                                                   Visibility="{Binding IsDescriptionEdited, Converter={StaticResource BoolToVis}}"
+                                                   Margin="0, 0, 10, 0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+                
+                <GridSplitter
+                    Visibility="{Binding Visibility}"
+                    DataContext="{Binding BNDControl}"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    ResizeDirection="Rows"
+                    Margin="0,0,0,0"
+                    Background="Black"
+                    ShowsPreview="True"
+                    Height="2"/>
+            </Grid>
             
             <GridSplitter 
                 Visibility="{Binding Visibility}"
@@ -173,9 +208,32 @@
                 Grid.RowSpan="1"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Stretch"
+                Margin="0,-2,0,0"
                 Background="Black"
                 ShowsPreview="True"
                 Width="2"/>
+            
+            <TabControl Grid.Column="1" ItemsSource="{Binding OpenTabs}" UseLayoutRounding="False" 
+                        SelectedItem="{Binding CurrentTab, Mode=TwoWay}"
+                        Margin="0, -4.5, 0, 0"
+                        SelectionChanged="CurrentTabChanged">
+                <TabControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:ESDViewModel}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource ESDNameTextBlock}" />
+                            <TextBlock Text="*" 
+                                       Style="{StaticResource ESDNameTextBlock}" 
+                                       Visibility="{Binding IsESDEdited, 
+                                           Converter={StaticResource BoolToVis}}"/>
+                            <TextBlock Text="{Binding Description}" Style="{StaticResource ESDDescriptionTextBlock}"
+                                       Margin="10, 0, 0, 0"/>
+                            <TextBlock Text="*" Style="{StaticResource ESDDescriptionTextBlock}" 
+                                       Visibility="{Binding IsDescriptionEdited, Converter={StaticResource BoolToVis}}"
+                                       Margin="0, 0, 10, 0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
         </Grid>
     </Grid>
 </Window>

@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="ESDStudio.UserControls.CodeTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ESDStudio.UserControls"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <avalonedit:TextEditor
+            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+            Name="textEditor"
+            SyntaxHighlighting="ESDLang"
+            FontFamily="Consolas"
+            FontSize="10pt"
+            ShowLineNumbers="True"
+            PreviewMouseWheel="TextEditor_OnPreviewMouseWheel"
+            MouseHover="TextEditor_OnMouseHover"
+            MouseMove="TextEditor_OnMouseMove"
+            PreviewMouseLeftButtonDown="TextEditor_OnPreviewMouseLeftButtonDown"/>
+    </Grid>
+</UserControl>

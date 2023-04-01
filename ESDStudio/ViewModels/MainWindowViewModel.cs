@@ -8,11 +8,14 @@ using System.Linq;
 using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Xml;
 using CommunityToolkit.Mvvm.Input;
 using ESDStudio.Models;
 using ESDStudio.Views;
+using ICSharpCode.AvalonEdit.Highlighting;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
 using Tomlyn;
@@ -27,20 +30,24 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         BNDViewModels = new ObservableCollection<BNDViewModel>();
+        OpenTabs = new ObservableCollection<ESDViewModel>();
         OpenProjectCommand = new RelayCommand(OpenProject);
         NewProjectCommand = new RelayCommand(NewProject);
         NewBNDCommand = new RelayCommand(NewBND, CanSaveBND);
+        CloseTabCommand = new RelayCommand(CloseTab, CanCloseTab);
         OpenRecentProjectCommand = new RelayCommand(OpenRecentProject);
         RecentProjects = GetRecentProjects();
         if (RecentProjects.Count > 0)
         {
             LoadProjectFromToml(RecentProjects[0].Item2);
         }
+        XmlData.ReadFunctionDefXml();
     }
     public ICommand OpenProjectCommand { get; }
     public ICommand NewProjectCommand { get; }
     public ICommand OpenRecentProjectCommand { get; }
     public ICommand NewBNDCommand { get; }
+    public ICommand CloseTabCommand { get; }
 
     private ObservableCollection<Tuple<string, string>> _recentProjects;
     public ObservableCollection<Tuple<string, string>> RecentProjects
@@ -71,6 +78,7 @@ public class MainWindowViewModel : ViewModelBase
             }
         }
     }
+    
     private string _projectBaseDirectory = "";
     public string ProjectBaseDirectory
     {
@@ -136,6 +144,20 @@ public class MainWindowViewModel : ViewModelBase
     }
     public ESDViewModel? CopiedESDViewModel { get; set; }
     public object? SelectedRecentProject { get; set; }
+    public ObservableCollection<ESDViewModel> OpenTabs { get; }
+    private ESDViewModel? _currentTab;
+    public ESDViewModel? CurrentTab
+    {
+        get
+        {
+            return _currentTab;
+        }
+        set
+        {
+            _currentTab = value;
+            OnPropertyChanged();
+        }
+    }
 
     private ObservableCollection<Tuple<string, string>> GetRecentProjects()
     {
@@ -198,6 +220,7 @@ public class MainWindowViewModel : ViewModelBase
     private void LoadProjectFromToml(string tomlPath)
     {
         BNDViewModels.Clear();
+        OpenTabs.Clear();
         TomlTable model = Toml.ToModel(File.ReadAllText(tomlPath), tomlPath);
         model.TryGetValue("project_info", out object obj);
         TomlTable projectInfo = (TomlTable)obj;
@@ -316,5 +339,39 @@ public class MainWindowViewModel : ViewModelBase
     private bool CanSaveBND()
     {
         return BNDViewModels.Count > 0;
+    }
+
+    public void OpenNewTab(ESDViewModel ESDToOpen)
+    {
+        if (ESDToOpen.IsDecompiled == false)
+        {
+            ESDToOpen.DecompileESD(ProjectModDirectory, ProjectGameDirectory);
+        }
+        OpenTabs.Add(ESDToOpen);
+        CurrentTab = ESDToOpen;
+    }
+
+    private void CloseTab()
+    {
+        if (CurrentTab == null) return;
+        int tabIndex = OpenTabs.IndexOf(CurrentTab);
+        OpenTabs.Remove(CurrentTab);
+        if (OpenTabs.Count > tabIndex)
+        {
+            CurrentTab = OpenTabs[tabIndex];
+        }
+        else if (OpenTabs.Count > 0)
+        {
+            CurrentTab = OpenTabs[tabIndex - 1];
+        }
+        else
+        {
+            CurrentTab = null;
+        }
+    }
+
+    private bool CanCloseTab()
+    {
+        return CurrentTab != null;
     }
 }

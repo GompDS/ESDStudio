@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using SoulsFormats;
 
 namespace ESDStudio.Models;
@@ -82,7 +83,7 @@ public class ESDModel
     
     public bool IsDescriptionEdited { get; set; }
     public bool IsESDEdited { get; set; }
-    public bool IsDecompiled { get; }
+    public bool IsDecompiled { get; set; }
 
     public ESDModel(BinderFile BNDFile, BNDModel parent)
     {

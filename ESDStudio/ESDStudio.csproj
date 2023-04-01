@@ -14,14 +14,12 @@
     <ItemGroup>
       <Compile Remove="esdtool\SoulsIds\**" />
       <Compile Remove="esdtool\**" />
-      <Compile Remove="Views\CreateNewESDView.xaml.cs" />
-      <Compile Remove="Views\CreateNewProjectView.xaml.cs" />
-      <Compile Remove="CodeEditorTab.cs" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="esdtool\SoulsIds\**" />
       <EmbeddedResource Remove="esdtool\**" />
+      <EmbeddedResource Include="ESDLang.xshd" />
     </ItemGroup>
 
     <ItemGroup>
@@ -32,16 +30,16 @@
     <ItemGroup>
       <Page Remove="esdtool\SoulsIds\**" />
       <Page Remove="esdtool\**" />
-      <Page Remove="Views\CreateNewESDView.xaml" />
-      <Page Remove="Views\CreateNewProjectView.xaml" />
     </ItemGroup>
     
     <ItemGroup>
         <CopyESDTool Include="esdtool/**/**/*" />
         <CopyDefaultDescriptions Include="DefaultDescriptions/*" />
+        <CopyResources Include="Resources/*" />
     </ItemGroup>
     
     <ItemGroup>
+      <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0-preview1" />
       <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
       <PackageReference Include="Tomlyn" Version="0.16.2" />
@@ -50,6 +48,7 @@
     <Target Name="CopyFiles" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(CopyESDTool)" DestinationFolder="bin\Debug\net6.0-windows\esdtool\%(RecursiveDir)" />
         <Copy SourceFiles="@(CopyDefaultDescriptions)" DestinationFolder="bin\Debug\net6.0-windows\DefaultDescriptions\%(RecursiveDir)" />
+        <Copy SourceFiles="@(CopyResources)" DestinationFolder="bin\Debug\net6.0-windows\Resources\%(RecursiveDir)" />
     </Target>
 
 </Project>
