@@ -42,6 +42,7 @@
       <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0-preview1" />
       <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+      <PackageReference Include="PresentationFramework.Aero2" Version="1.0.1" />
       <PackageReference Include="Tomlyn" Version="0.16.2" />
     </ItemGroup>
     

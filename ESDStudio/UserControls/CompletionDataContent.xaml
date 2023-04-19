@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="ESDStudio.UserControls.CompletionDataContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ESDStudio.UserControls"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             mc:Ignorable="d"
+             d:DesignHeight="Auto" d:DesignWidth="Auto">
+    <Grid HorizontalAlignment="Right" MinWidth="400">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <avalonedit:TextEditor 
+            Name="CompletionName"
+            Style="{StaticResource ReadOnlyEditor}"/>
+        <avalonedit:TextEditor 
+            Grid.Column="1"
+            Name="CompletionDataType"
+            Style="{StaticResource ReadOnlyEditor}"
+            HorizontalAlignment="Right"/>
+    </Grid>
+</UserControl>

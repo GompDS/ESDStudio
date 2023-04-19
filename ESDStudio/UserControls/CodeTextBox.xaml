@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ESDStudio.UserControls"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:codeCompletion="clr-namespace:ICSharpCode.AvalonEdit.CodeCompletion;assembly=ICSharpCode.AvalonEdit"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -15,9 +16,9 @@
             FontFamily="Consolas"
             FontSize="10pt"
             ShowLineNumbers="True"
+            
             PreviewMouseWheel="TextEditor_OnPreviewMouseWheel"
             MouseHover="TextEditor_OnMouseHover"
-            MouseMove="TextEditor_OnMouseMove"
-            PreviewMouseLeftButtonDown="TextEditor_OnPreviewMouseLeftButtonDown"/>
+            MouseMove="TextEditor_OnMouseMove"/>
     </Grid>
 </UserControl>

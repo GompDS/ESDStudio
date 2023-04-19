@@ -10,13 +10,15 @@ public class FunctionParameter
     public bool IsEnum;
     public string EnumType;
     public string Comment;
+    public bool IsOptional;
 
-    public FunctionParameter(string type, string name, string enumType, string comment)
+    public FunctionParameter(string type, string name, string enumType, string comment, bool optional)
     {
         Type = type;
         Name = name;
         EnumType = enumType;
         if (EnumType.Length > 0) IsEnum = true;
         Comment = comment;
+        IsOptional = optional;
     }
 }

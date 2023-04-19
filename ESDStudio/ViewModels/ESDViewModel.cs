@@ -223,56 +223,10 @@ public class ESDViewModel : ViewModelBase
         string tempPyFile = cwd + $"esdtool\\{Name}.py";
         Code = File.ReadAllText(tempPyFile);
         foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions.
-                     Where(x => x.Parameters.Any(y => y.IsEnum)))
+                     Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
+                                x.ReturnValue is { Type: "enum" or "bool" }))
         {
-            int nextFuncIndex = Code.IndexOf(funcDef.Name + "(", StringComparison.Ordinal);
-            while (nextFuncIndex > -1)
-            {
-                int startIndex = nextFuncIndex + funcDef.Name.Length + 1;
-                int endIndex = Code.IndexOf(')', startIndex);
-                string funcArgumentRange = Code.Substring(startIndex, endIndex - startIndex);
-                for (int i = 0; i < funcDef.Parameters.Count; i++)
-                {
-                    int nextCommaIndex = funcArgumentRange.IndexOf(',');
-                    if (nextCommaIndex == -1)
-                    {
-                        nextCommaIndex = endIndex - startIndex;
-                    }
-
-                    if (funcDef.Parameters[i].IsEnum)
-                    {
-                        string stringValue = funcArgumentRange.Substring(0, nextCommaIndex);
-                        if (int.TryParse(stringValue, out int intValue))
-                        {
-                            XmlData.EnumTemplates.TryGetValue(funcDef.Parameters[i].EnumType,
-                                out List<Tuple<int, string>>? enumValues);
-                            if (enumValues != null)
-                            {
-                                string valueName = enumValues.FirstOrDefault(x => x.Item1 == intValue).Item2;
-                                Code = Code.Remove(startIndex, nextCommaIndex);
-                                endIndex -= nextCommaIndex;
-                                string valueToInsert = $"{funcDef.Parameters[i].EnumType}.{valueName}";
-                                if (i > 0)
-                                {
-                                    valueToInsert = valueToInsert.Insert(0, " ");
-                                }
-
-                                Code = Code.Insert(startIndex, valueToInsert);
-                                endIndex += valueToInsert.Length;
-                                funcArgumentRange = Code.Substring(startIndex, endIndex - startIndex);
-                                nextCommaIndex = funcArgumentRange.IndexOf(',');
-                            }
-                        }
-                    }
-
-                    startIndex += nextCommaIndex + 1;
-                    if (startIndex <= endIndex)
-                    {
-                        funcArgumentRange = Code.Substring(startIndex, endIndex - startIndex);
-                    }
-                }
-                nextFuncIndex = Code.IndexOf(funcDef.Name + "(", nextFuncIndex + funcDef.Name.Length,  StringComparison.Ordinal);
-            }
+            Code = funcDef.MakeNumberValuesDescriptive(Code);
         }
         File.Delete(tempESDFile);
         File.Delete(tempPyFile);

@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Xml;
 using CommunityToolkit.Mvvm.Input;
 using ESDStudio.Models;
+using ESDStudio.UserControls;
 using ESDStudio.Views;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Microsoft.Win32;
@@ -35,6 +36,8 @@ public class MainWindowViewModel : ViewModelBase
         NewProjectCommand = new RelayCommand(NewProject);
         NewBNDCommand = new RelayCommand(NewBND, CanSaveBND);
         CloseTabCommand = new RelayCommand(CloseTab, CanCloseTab);
+        FindCommand = new RelayCommand(Find, CanCloseTab);
+        ReplaceCommand = new RelayCommand(Replace, CanCloseTab);
         OpenRecentProjectCommand = new RelayCommand(OpenRecentProject);
         RecentProjects = GetRecentProjects();
         if (RecentProjects.Count > 0)
@@ -48,8 +51,10 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand OpenRecentProjectCommand { get; }
     public ICommand NewBNDCommand { get; }
     public ICommand CloseTabCommand { get; }
+    public ICommand FindCommand { get; }
+    public ICommand ReplaceCommand { get; }
 
-    private ObservableCollection<Tuple<string, string>> _recentProjects;
+    private ObservableCollection<Tuple<string, string>> _recentProjects = new();
     public ObservableCollection<Tuple<string, string>> RecentProjects
     {
         get
@@ -154,6 +159,8 @@ public class MainWindowViewModel : ViewModelBase
         }
         set
         {
+            ((RelayCommand)CloseTabCommand).NotifyCanExecuteChanged();
+            ((RelayCommand)FindCommand).NotifyCanExecuteChanged();
             _currentTab = value;
             OnPropertyChanged();
         }
@@ -373,5 +380,27 @@ public class MainWindowViewModel : ViewModelBase
     private bool CanCloseTab()
     {
         return CurrentTab != null;
+    }
+
+    private void Find()
+    {
+        MainWindowFindViewModel findViewModel = new();
+        MainWindowFindView findView = new()
+        {
+            Owner = Application.Current.MainWindow,
+            DataContext = findViewModel
+        };
+        findView.Show();
+    }
+    
+    private void Replace()
+    {
+        MainWindowReplaceViewModel replaceViewModel = new();
+        MainWindowReplaceView replaceView = new()
+        {
+            Owner = Application.Current.MainWindow,
+            DataContext = replaceViewModel
+        };
+        replaceView.Show();
     }
 }

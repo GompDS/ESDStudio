@@ -24,19 +24,50 @@ public partial class DetailPanel : UserControl
         InitializeComponent();
     }
 
-    public void SetFunctionToDisplay(FunctionDefinition funcDef)
+    public void SetFunctionToDisplay(FunctionDefinition funcDef, int parameterIndex)
     {
         textEditor.Text = $"{funcDef.Name}()\n";
         foreach (FunctionParameter parameter in funcDef.Parameters)
         {
-            textEditor.Text += $"  {parameter.Type} {parameter.Name}\n";
+            if (funcDef.Parameters.Count > parameterIndex && parameterIndex > -1)
+            {
+                if (funcDef.Parameters[parameterIndex] == parameter)
+                {
+                    textEditor.Text += "\u2B9A";
+                }
+                else
+                {
+                    textEditor.Text += " ";
+                }
+            }
+            else
+            {
+                textEditor.Text += " ";
+            }
+
+            if (parameter.IsOptional)
+            {
+                textEditor.Text += "*";
+            }
+            else
+            {
+                textEditor.Text += " ";
+            }
+            textEditor.Text += $"{parameter.Type} {parameter.Name}";
             if (parameter.IsEnum)
             {
                 foreach (Tuple<int, string> enumValue in XmlData.EnumTemplates[parameter.EnumType])
                 {
-                    textEditor.Text += $"      {enumValue.Item1}: {parameter.EnumType}.{enumValue.Item2}\n";
+                    textEditor.Text += $"\n      {enumValue.Item1}: {parameter.EnumType}.{enumValue.Item2}";
                 }
             }
+
+            if (parameter.Comment.Length > 0)
+            {
+                textEditor.Text += $" # {parameter.Comment}";
+            }
+
+            textEditor.Text += "\n";
         }
         
         if (funcDef.ReturnValue != null)

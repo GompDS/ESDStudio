@@ -10,32 +10,36 @@ namespace ESDStudio.UserControls;
 
 public partial class FunctionToolTip : UserControl
 {
-    public FunctionToolTip(FunctionDefinition funcDef)
+    public FunctionToolTip(FunctionDefinition funcDef, int parameterIndex = -1)
     {
         InitializeComponent();
 
-        if (funcDef.ReturnValue != null)
+        if (parameterIndex == -1)
         {
-            textEditor.Text = $"{funcDef.ReturnValue.Type}";
-            if (funcDef.ReturnValue.IsEnum)
+            if (funcDef.ReturnValue != null)
             {
-                textEditor.Text += $"<{funcDef.ReturnValue.EnumType}>";
+                textEditor.Text = $"{funcDef.ReturnValue.Type}";
+                if (funcDef.ReturnValue.IsEnum)
+                {
+                    textEditor.Text += $"<{funcDef.ReturnValue.EnumType}>";
+                }
             }
+            else
+            {
+                textEditor.Text = "void";
+            }
+            textEditor.Text += " ";
+            textEditor.Text += $"{funcDef.Name}";
+            textEditor.Text += "(";
         }
-        else
-        {
-            textEditor.Text = "void";
-        }
-        textEditor.Text += " ";
-        textEditor.Text += $"{funcDef.Name}";
         int parameterCount = 0;
-        textEditor.Text += "(";
         int indent = textEditor.Text.Length;
         int maxLineLength = 100;
         int currentLineLength = indent;
         int textLengthBeforeAdditions = textEditor.Text.Length;
         foreach (FunctionParameter parameter in funcDef.Parameters)
         {
+            
             if (currentLineLength > maxLineLength)
             {
                 textEditor.Text += "\n";
@@ -47,6 +51,16 @@ public partial class FunctionToolTip : UserControl
                 currentLineLength = indent;
             }
 
+            if (parameterIndex == parameterCount)
+            {
+                textEditor.Text += "\u2B9A";
+            }
+
+            if (parameter.IsOptional)
+            {
+                textEditor.Text += "*";
+            }
+
             if (parameter.IsEnum)
             {
                 textEditor.Text += $"{parameter.Type}<{parameter.EnumType}> {parameter.Name}";
@@ -55,7 +69,7 @@ public partial class FunctionToolTip : UserControl
             {
                 textEditor.Text += $"{parameter.Type} {parameter.Name}";
             }
-            
+
             if (parameterCount < funcDef.Parameters.Count - 1)
             {
                 textEditor.Text += ", ";
@@ -65,7 +79,11 @@ public partial class FunctionToolTip : UserControl
             textLengthBeforeAdditions = textEditor.Text.Length;
             parameterCount++;
         }
-        textEditor.Text += ")";
+
+        if (parameterIndex == -1)
+        {
+            textEditor.Text += ")";
+        }
         /*if (funcDef.ReturnValue != null)
         {
             textEditor.Text += "\nreturns ";

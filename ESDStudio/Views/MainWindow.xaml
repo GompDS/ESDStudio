@@ -84,6 +84,10 @@
                     Command="{Binding SelectedTreeItem.PasteCommand}"/>
         <KeyBinding Key="W" Modifiers="Control"
                     Command="{Binding CloseTabCommand}"/>
+        <KeyBinding Key="F" Modifiers="Control"
+                    Command="{Binding FindCommand}"/>
+        <KeyBinding Key="H" Modifiers="Control"
+                    Command="{Binding ReplaceCommand}"/>
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -126,6 +130,12 @@
                     <Separator/>
                     <MenuItem Header="_Close Tab" InputGestureText="Ctrl+W"
                               Command="{Binding CloseTabCommand}"/>
+                </MenuItem>
+                <MenuItem Header="Edit" IsTabStop="False">
+                    <MenuItem Header="_Find" InputGestureText="Ctrl+F"
+                              Command="{Binding FindCommand}"/>
+                    <MenuItem Header="_Replace" InputGestureText="Ctrl+H"
+                              Command="{Binding ReplaceCommand}"/>
                 </MenuItem>
             </Menu>
             <Separator VerticalAlignment="Bottom"/>
@@ -216,7 +226,8 @@
             <TabControl Grid.Column="1" ItemsSource="{Binding OpenTabs}" UseLayoutRounding="False" 
                         SelectedItem="{Binding CurrentTab, Mode=TwoWay}"
                         Margin="0, -4.5, 0, 0"
-                        SelectionChanged="CurrentTabChanged">
+                        SelectionChanged="CurrentTabChanged"
+                        Name="Tabs">
                 <TabControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:ESDViewModel}">
                         <StackPanel Orientation="Horizontal">

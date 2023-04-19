@@ -27,10 +27,14 @@ namespace ESDStudio.Views
         {
             // Load our custom highlighting definition
             IHighlightingDefinition customHighlighting; 
-            using (Stream s = typeof(MainWindow).Assembly.GetManifestResourceStream("ESDStudio.ESDLang.xshd")) { 
-                if (s == null) 
+            using (Stream? s = typeof(MainWindow).Assembly.GetManifestResourceStream("ESDStudio.ESDLang.xshd")) 
+            {
+                if (s == null)
+                {
                     throw new InvalidOperationException("Could not find embedded resource"); 
-                using (XmlReader reader = new XmlTextReader(s)) { 
+                }
+                using (XmlReader reader = new XmlTextReader(s)) 
+                { 
                     customHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd. 
                         HighlightingLoader.Load(reader, HighlightingManager.Instance); 
                 } 

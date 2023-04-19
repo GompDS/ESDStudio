@@ -15,6 +15,16 @@
             <Parameter type="int" name="unk"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="AcquireGesture">
+        <Parameters>
+            <Parameter type="uint" name="gestureId"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="BonfireActivation">
+        <Parameters>
+            <Parameter type="uint" name="newBonfireLevelTotal"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="ChangePlayerStats">
         <Parameters>
             <Parameter type="enum" name="stat" enum="PlayerStat"/>
@@ -39,7 +49,7 @@
     </FunctionDef>
     <FunctionDef name="CheckSpecificPersonMenuIsOpen">
         <Parameters>
-            <Parameter type="int" name="unk" comment="usually -1"/>
+            <Parameter type="int" name="unk" comment="-1 means any menu is open?"/>
             <Parameter type="uint" name="unk" comment="usually 0"/>
         </Parameters>
         <ReturnValue type="bool" name="menuIsOpen"/>
@@ -50,8 +60,33 @@
         </Parameters>
         <ReturnValue type="bool" name="conversationHasEnded"/>
     </FunctionDef>
+    <FunctionDef name="ClearPlayerDamageInfo"/>
+    <FunctionDef name="ClearQuantityValueOfChooseQuantityDialog"/>
+    <FunctionDef name="ClearTalkActionState"/>
+    <FunctionDef name="ClearTalkDisabledState"/>
     <FunctionDef name="ClearTalkListData"/>
     <FunctionDef name="ClearTalkProgressData"/>
+    <FunctionDef name="CloseMenu"/>
+    <FunctionDef name="CloseShopMessage"/>
+    <FunctionDef name="CombineMenuFlagAndEventFlag">
+        <Parameters>
+            <Parameter type="uint" name="eventFlagId"/>
+            <Parameter type="uint" name="eventFlagId"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="CompareBonfireLevel">
+        <Parameters>
+            <Parameter type="uint" name="unk"/>
+            <Parameter type="int" name="unk" comment="use 0"/>
+        </Parameters>
+        <ReturnValue type="bool" name="comparisonResult"/>
+    </FunctionDef>
+    <FunctionDef name="CompareBonfireState">
+        <Parameters>
+            <Parameter type="uint" name="unk"/>
+        </Parameters>
+        <ReturnValue type="bool" name="comparisonResult"/>
+    </FunctionDef>
     <FunctionDef name="ComparePlayerInventoryNumber">
         <Parameters>
             <Parameter type="enum" name="itemCategory" enum="ItemType"/>
@@ -77,6 +112,30 @@
         </Parameters>
         <ReturnValue type="bool" name="comparisonResult"/>
     </FunctionDef>
+    <FunctionDef name="ComparePlayerAcquittalPrice">
+        <Parameters>
+            <Parameter type="uint" name="baseAcquittalCost"/>
+            <Parameter type="int" name="unk" comment="use 1"/>
+            <Parameter type="int" name="unk" comment="use 2"/>
+        </Parameters>
+        <ReturnValue type="bool" name="comparisonResult"/>
+    </FunctionDef>
+    <FunctionDef name="DebugEvent">
+        <Parameters>
+            <Parameter type="string" name="unk"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="DidYouDoSomethingInTheMenu">
+        <Parameters>
+            <Parameter type="enum" name="menu" enum="MenuType"/>
+        </Parameters>
+        <ReturnValue type="bool" name="didSomething"/>
+    </FunctionDef>
+    <FunctionDef name="DisplayOneLineHelp">
+        <Parameters>
+            <Parameter type="uint" name="actionTextId"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="DoesSelfHaveSpEffect">
         <Parameters>
             <Parameter type="uint" name="SpEffectParamRow"/>
@@ -89,57 +148,59 @@
         </Parameters>
         <ReturnValue type="bool" name="playerHasSpEffect"/>
     </FunctionDef>
-    <FunctionDef name="IsCharacterDisabled">
-        <ReturnValue type="bool" name="selfIsHidden"/>
-    </FunctionDef>
-    <FunctionDef name="IsClientPlayer">
-        <ReturnValue type="bool" name="playerIsNotInOwnWorld"/>
-    </FunctionDef>
-    <FunctionDef name="IsEquipmentIDEquipped">
+    <FunctionDef name="EndBonfireKindleAnimLoop"/>
+    <FunctionDef name="EstusAllocationUpdate">
         <Parameters>
-            <Parameter type="enum" name="itemCategory" enum="ItemType"/>
-            <Parameter type="uint" name="itemId"/>
+            <Parameter type="uint" name="newFlaskCount"/>
+            <Parameter type="int" name="unk"/>
         </Parameters>
-        <ReturnValue type="bool" name="isEquipped"/>
-    </FunctionDef>
-    <FunctionDef name="IsEquipmentIDObtained">
-        <Parameters>
-            <Parameter type="enum" name="itemCategory" enum="ItemType"/>
-            <Parameter type="uint" name="itemId"/>
-        </Parameters>
-        <ReturnValue type="bool" name="isObtained"/>
-    </FunctionDef>
-    <FunctionDef name="IsMenuOpen">
-        <Parameters>
-            <Parameter type="enum" name="menu" enum="MenuType"/>
-        </Parameters>
-        <ReturnValue type="bool" name="menuIsOpen"/>
-    </FunctionDef>
-    <FunctionDef name="IsPlayerDead">
-        <ReturnValue type="bool" name="playerIsDead"/>
-    </FunctionDef>
-    <FunctionDef name="IsTalkingToSomeoneElse">
-        <ReturnValue type="bool" name="playerIsTalkingToSomeoneElse"/>
     </FunctionDef>
     <FunctionDef name="ForceCloseGenericDialog"/>
     <FunctionDef name="ForceCloseMenu"/>
+    <FunctionDef name="ForceEndTalk">
+        <Parameters>
+            <Parameter type="int" name="unk"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="GetCurrentStateElapsedFrames">
         <ReturnValue type="uint" name="elapsedFrames"/>
     </FunctionDef>
     <FunctionDef name="GetCurrentStateElapsedTime">
         <ReturnValue type="float" name="elapsedTime"/>
     </FunctionDef>
+    <FunctionDef name="GetDistanceFromEnemy">
+        <ReturnValue type="float" name="horizontalDistance"/>
+    </FunctionDef>
     <FunctionDef name="GetDistanceToPlayer">
-        <ReturnValue type="float" name="HorizontalDistance"/>
+        <ReturnValue type="float" name="horizontalDistance"/>
+    </FunctionDef>
+    <FunctionDef name="GetEstusAllocation">
+        <Parameters>
+            <Parameter type="enum" name="flaskToCheck" enum="EstusType"/>
+        </Parameters>
+        <ReturnValue type="uint" name="numberAllocated"/>
+    </FunctionDef>
+    <FunctionDef name="GetEventFlagValue">
+        <Parameters>
+            <Parameter type="uint" name="baseEventFlagId"/>
+            <Parameter type="int" name="value"/>
+        </Parameters>
+        <ReturnValue type="uint" name="eventValue"/>
     </FunctionDef>
     <FunctionDef name="GetEventStatus">
         <Parameters>
             <Parameter type="uint" name="eventFlagId"/>
         </Parameters>
-        <ReturnValue type="bool" name="flagIsOn"/>
+        <ReturnValue type="enum" name="flagStatus" enum="FlagState"/>
     </FunctionDef>
     <FunctionDef name="GetGenericDialogButtonResult">
         <ReturnValue type="enum" name="dialogResult" enum="DialogResult"/>
+    </FunctionDef>
+    <FunctionDef name="GetIsOnline">
+        <ReturnValue type="bool" name="online"/>
+    </FunctionDef>
+    <FunctionDef name="GetIsNetPenalizedForArena">
+        <ReturnValue type="bool" name="netIsPenalized"/>
     </FunctionDef>
     <FunctionDef name="GetItemHeldNumLimit">
         <Parameters>
@@ -175,8 +236,17 @@
     <FunctionDef name="GetPlayerYDistance">
         <ReturnValue type="float" name="verticalDistance"/>
     </FunctionDef>
+    <FunctionDef name="GetRelativeAngleBetweenPlayerAndSelf">
+        <ReturnValue type="float" name="angleInDegrees"/>
+    </FunctionDef>
+    <FunctionDef name="GetRelativeAngleBetweenSelfAndPlayer">
+        <ReturnValue type="float" name="angleInDegrees"/>
+    </FunctionDef>
     <FunctionDef name="GetSelfHP">
         <ReturnValue type="uint" name="selfHPValue"/>
+    </FunctionDef>
+    <FunctionDef name="GetShopCondition">
+        <ReturnValue type="int" name="unk"/>
     </FunctionDef>
     <FunctionDef name="GetStatus">
         <Parameters>
@@ -187,11 +257,20 @@
     <FunctionDef name="GetTalkListEntryResult">
         <ReturnValue type="uint" name="chosenTalkListSlot"/>
     </FunctionDef>
+    <FunctionDef name="GetTotalBonfireLevel">
+        <ReturnValue type="uint" name="totalBonfireLevel"/>
+    </FunctionDef>
+    <FunctionDef name="GetValueFromNumberSelectDialog">
+        <ReturnValue type="uint" name="quantityChosen"/>
+    </FunctionDef>
     <FunctionDef name="GetWhetherChrEventAnimHasEnded">
         <Parameters>
             <Parameter type="uint" name="CharacterEntityId"/>
         </Parameters>
         <ReturnValue type="bool" name="faceEntityAnimationHasEnded"/>
+    </FunctionDef>
+    <FunctionDef name="GetWhetherEnemiesAreNearby">
+        <ReturnValue type="bool" name="enemiesAreNearby"/>
     </FunctionDef>
     <FunctionDef name="GetWorkValue">
         <Parameters>
@@ -204,17 +283,90 @@
             <Parameter type="uint" name="SpEffectParamRow"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="Goto">
+        <Parameters>
+            <Parameter type="string" name="labelName"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="HasDisableTalkPeriodElapsed">
+        <ReturnValue type="bool" name="periodHasElapsed"/>
+    </FunctionDef>
+    <FunctionDef name="HasPlayerBeenAttacked">
+        <ReturnValue type="bool" name="playerAttacked"/>
+    </FunctionDef>
     <FunctionDef name="IsAttackedBySomeone">
         <ReturnValue type="bool" name="attacked"/>
     </FunctionDef>
+    <FunctionDef name="IsCharacterDisabled">
+        <ReturnValue type="bool" name="selfIsHidden"/>
+    </FunctionDef>
+    <FunctionDef name="IsClientPlayer">
+        <ReturnValue type="bool" name="playerIsNotInOwnWorld"/>
+    </FunctionDef>
+    <FunctionDef name="IsEquipmentIDEquipped">
+        <Parameters>
+            <Parameter type="enum" name="itemCategory" enum="ItemType"/>
+            <Parameter type="uint" name="itemId"/>
+        </Parameters>
+        <ReturnValue type="bool" name="isEquipped"/>
+    </FunctionDef>
+    <FunctionDef name="IsEquipmentIDObtained">
+        <Parameters>
+            <Parameter type="enum" name="itemCategory" enum="ItemType"/>
+            <Parameter type="uint" name="itemId"/>
+        </Parameters>
+        <ReturnValue type="bool" name="isObtained"/>
+    </FunctionDef>
+    <FunctionDef name="IsGenericDialogOpen">
+        <ReturnValue type="bool" name="genericDialogIsOpen"/>
+    </FunctionDef>
+    <FunctionDef name="IsMenuOpen">
+        <Parameters>
+            <Parameter type="enum" name="menu" enum="MenuType"/>
+        </Parameters>
+        <ReturnValue type="bool" name="menuIsOpen"/>
+    </FunctionDef>
+    <FunctionDef name="IsPlayerAttacking">
+        <Parameters>
+            <Parameter type="bool" name="playerIsAttacking"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="IsPlayerDead">
+        <ReturnValue type="bool" name="playerIsDead"/>
+    </FunctionDef>
+    <FunctionDef name="IsTalkingToSomeoneElse">
+        <ReturnValue type="bool" name="playerIsTalkingToSomeoneElse"/>
+    </FunctionDef>
     <FunctionDef name="IsMultiplayerInProgress">
         <ReturnValue type="bool" name="multiplayerIsInProgress"/>
+    </FunctionDef>
+    <FunctionDef name="IsTalkInProgress">
+        <ReturnValue type="bool" name="talkIsInProgress"/>
+    </FunctionDef>
+    <FunctionDef name="Label">
+        <Parameters>
+            <Parameter type="string" name="labelName"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OfferHumanity"/>
+    <FunctionDef name="OpenChooseQuantityDialog">
+        <Parameters>
+            <Parameter type="uint" name="goodsId"/>
+            <Parameter type="uint" name="textId"/>
+        </Parameters>
     </FunctionDef>
     <FunctionDef name="OpenConversationChoicesMenu">
         <Parameters>
             <Parameter type="uint" name="unk" comment="usually 0"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="OpenEnhanceShop">
+        <Parameters>
+            <Parameter type="enum" name="type" enum="EnhanceType"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenEquipmentChangeOfPurposeShop"/>
+    <FunctionDef name="OpenEstusAllotMenu"/>
     <FunctionDef name="OpenGenericDialog">
         <Parameters>
             <Parameter type="enum" name="boxType" enum="DialogBoxType"/>
@@ -224,7 +376,41 @@
             <Parameter type="uint" name="unk" comment="(usually 2)"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="OpenHumanityMenu"/>
+    <FunctionDef name="OpenItemAcquisitionMenu">
+        <Parameters>
+            <Parameter type="enum" name="itemCategory" enum="ItemType"/>
+            <Parameter type="uint" name="itemId"/>
+            <Parameter type="uint" name="numberAcquired"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenMagicEquip">
+        <Parameters>
+            <Parameter type="uint" name="startId" comment="use 1000"/>
+            <Parameter type="uint" name="endId" comment="use 1000"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenMiracleEquip">
+        <Parameters>
+            <Parameter type="uint" name="startId" comment="use 1000"/>
+            <Parameter type="uint" name="endId" comment="use 1000"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenRegularShop">
+        <Parameters>
+            <Parameter type="uint" name="MinShopLineupParamRow"/>
+            <Parameter type="uint" name="MaxShopLineupParamRow"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenRepairShop"/>
+    <FunctionDef name="OpenRepository"/>
     <FunctionDef name="OpenSoul"/>
+    <FunctionDef name="OpenTranspositionShop">
+        <Parameters>
+            <Parameter type="uint" name="MinShopLineupParamRow"/>
+            <Parameter type="uint" name="MaxShopLineupParamRow"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="MainBonfireMenuFlag"/>
     <FunctionDef name="PlayerEquipmentQuantityChange">
         <Parameters>
@@ -234,8 +420,31 @@
         </Parameters>
     </FunctionDef>
     <FunctionDef name="Quit"/>
-    <FunctionDef name="ReportConversationEndToHavokBehavior"/>
     <FunctionDef name="RemoveMyAggro"/>
+    <FunctionDef name="ReplaceTool">
+        <Parameters>
+            <Parameter type="uint" name="itemIdToReplace"/>
+            <Parameter type="uint" name="newItemId"/>
+            <Parameter type="uint" name="newItemQuantity"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="ReportConversationEndToHavokBehavior"/>
+    <FunctionDef name="RequestSave">
+        <Parameters>
+            <Parameter type="int" name="unk" comment="use 0"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="RequestUnlockTrophy">
+        <Parameters>
+            <Parameter type="enum" name="achievement" enum="Trophy"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="SetAquittalCostMessageTag">
+        <Parameters>
+            <Parameter type="uint" name="baseAcquittalCost"/>
+            <Parameter type="int" name="unk" comment="use 1"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="SetEventState">
         <Parameters>
             <Parameter type="uint" name="eventFlagId"/>
@@ -248,7 +457,17 @@
             <Parameter type="uint" name="cost"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="SetTalkTime">
+        <Parameters>
+            <Parameter type="float" name="time"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="SetRNGSeed"/>
+    <FunctionDef name="SetUpdateDistance">
+        <Parameters>
+            <Parameter type="float" name="distance"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="SetWorkValue">
         <Parameters>
             <Parameter type="uint" name="unk" comment="usually 0"/>
@@ -258,6 +477,8 @@
     <FunctionDef name="ShowShopMessage">
         <Parameters>
             <Parameter type="enum" name="optionsType" enum="TalkOptionsType"/>
+            <Parameter type="int" name="unk" optional="true"/>
+            <Parameter type="int" name="unk" optional="true"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="ShuffleRNGSeed">
@@ -268,6 +489,18 @@
     <FunctionDef name="StopEventAnimWithoutForcingConversationEnd">
         <Parameters>
             <Parameter type="uint" name="unk" comment="use 0"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="StartBonfireAnimLoop"/>
+    <FunctionDef name="StartWarpMenuInit">
+        <Parameters>
+            <Parameter type="int" name="unk" comment="use -1" optional="true"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="SubtractAcquittalCostFromPlayerSouls">
+        <Parameters>
+            <Parameter type="uint" name="baseAcquittalCost"/>
+            <Parameter type="int" name="unk" comment="use 1"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="TalkToPlayer">
@@ -284,5 +517,9 @@
             <Parameter type="uint" name="CharacterEntityId"/>
             <Parameter type="int" name="unk" comment="usually -1"/>
         </Parameters>
+    </FunctionDef>
+    <FunctionDef name="UpdatePlayerRespawnPoint"/>
+    <FunctionDef name="WasWarpMenuDestinationSelected">
+        <ReturnValue type="bool" name="warpDestinationSelected"/>
     </FunctionDef>
 </FunctionDefinitions>

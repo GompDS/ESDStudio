@@ -58,7 +58,10 @@ public static class XmlData
                     string comment = "";
                     XAttribute? commentAttribute = parameter.Attribute("comment");
                     if (commentAttribute != null) comment = commentAttribute.Value;
-                    funcDef.AddParameter(type, name, enumType, comment);
+                    bool optional = false;
+                    XAttribute? optionalAttribute = parameter.Attribute("optional");
+                    if (optionalAttribute != null) optional = bool.Parse(optionalAttribute.Value);
+                    funcDef.AddParameter(type, name, enumType, comment, optional);
                 }
             }
 

@@ -97,7 +97,14 @@
             <Word>bool</Word>
             <Word>void</Word>
             <Word>float</Word>
+            <Word>string</Word>
+            <Word>true</Word>
+            <Word>false</Word>
         </Keywords>
+        
+        <Rule foreground="MediumBlue">
+            &#x2B9A;
+        </Rule>
 
         <Rule color="MethodCall">
             \b
@@ -118,7 +125,7 @@
         </Rule>
         
         <Rule color="MethodParameter">
-            [A-z]+[0-9]+
+            [a-z]+[0-9]+
         </Rule>
     </RuleSet>
 </SyntaxDefinition>

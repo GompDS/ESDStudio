@@ -9,8 +9,8 @@
         <Value index="5" name="LessOrEqual"/>
     </Enum>
     <Enum key="ChangeType">
-        <Value index="0" name="Addition"/>
-        <Value index="1" name="Subtraction"/>
+        <Value index="0" name="Add"/>
+        <Value index="1" name="Subtract"/>
         <Value index="5" name="Set"/>
     </Enum>
     <Enum key="ChrType">
@@ -35,6 +35,14 @@
         <Value index="3" name="OrnateYesOption"/>
         <Value index="4" name="Unk"/>
     </Enum>
+    <Enum key="EnhanceType">
+        <Value index="0" name="Normal"/>
+        <Value index="10" name="Unk"/>
+    </Enum>
+    <Enum key="EstusType">
+        <Value index="0" name="HP"/>
+        <Value index="1" name="FP"/>
+    </Enum>
     <Enum key="FlagState">
         <Value index="0" name="Off"/>
         <Value index="1" name="On"/>
@@ -55,10 +63,11 @@
         <Value index="30" name="CharacterEdit"/>
         <Value index="31" name="CovenantOffering"/>
         <Value index="36" name="Warp"/>
+        <Value index="53" name="Unk"/>
         <Value index="63" name="Bonfire"/>
     </Enum>
     <Enum key="PlayerStat">
-        <Value index="0" name="Vitality"/>
+        <Value index="0" name="Vigor"/>
         <Value index="1" name="Attunement"/>
         <Value index="2" name="Endurance"/>
         <Value index="3" name="Strength"/>
@@ -99,5 +108,50 @@
     <Enum key="TalkOptionsType">
         <Value index="0" name="Old"/>
         <Value index="1" name="Regular"/>
+    </Enum>
+    <Enum key="Trophy">
+        <Value index="0" name="AllAchievements"/>
+        <Value index="1" name="LinkTheFirstFlame"/>
+        <Value index="2" name="EndOfFire"/>
+        <Value index="3" name="UsurpationOfFire"/>
+        <Value index="4" name="AbyssWatchers"/>
+        <Value index="5" name="YhormTheGiant"/>
+        <Value index="6" name="Aldrich"/>
+        <Value index="7" name="PrinceLothric"/>
+        <Value index="8" name="SupremeWeapon"/>
+        <Value index="9" name="AllInfusions"/>
+        <Value index="10" name="AllSorceries"/>
+        <Value index="11" name="AllPyromancies"/>
+        <Value index="12" name="AllMiracles"/>
+        <Value index="13" name="AllRings"/>
+        <Value index="14" name="AllGestures"/>
+        <Value index="15" name="UltimateBonfire"/>
+        <Value index="16" name="UltimateEstus"/>
+        <Value index="17" name="WarriorOfSunlight"/>
+        <Value index="18" name="WayOfBlue"/>
+        <Value index="19" name="BlueSentinels"/>
+        <Value index="20" name="BladeOfTheDarkmoon"/>
+        <Value index="21" name="RosariasFingers"/>
+        <Value index="22" name="MoundMakers"/>
+        <Value index="23" name="WatchdogsOfFarron"/>
+        <Value index="24" name="AldrichFaithful"/>
+        <Value index="25" name="UntendedGraves"/>
+        <Value index="26" name="ArchdragonPeak"/>
+        <Value index="27" name="IudexGundyr"/>
+        <Value index="28" name="BorealValleyVordt"/>
+        <Value index="29" name="RottedGreatwood"/>
+        <Value index="30" name="CrystalSage"/>
+        <Value index="31" name="DeepDeacons"/>
+        <Value index="32" name="HighLordWolnir"/>
+        <Value index="33" name="PontiffSulyvahn"/>
+        <Value index="34" name="BorealDancer"/>
+        <Value index="35" name="DragonslayerArmour"/>
+        <Value index="36" name="OldDemonKing"/>
+        <Value index="37" name="ConsumedOceiros"/>
+        <Value index="38" name="ChampionGundyr"/>
+        <Value index="39" name="AncientWyvern"/>
+        <Value index="40" name="NamelessKing"/>
+        <Value index="41" name="Enkindle"/>
+        <Value index="42" name="EmbraceTheFlame"/>
     </Enum>
 </EnumTemplates>

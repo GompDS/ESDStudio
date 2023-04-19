@@ -60,7 +60,7 @@ public class BNDViewModel : ViewModelBase
         }
     }
 
-    private ObservableCollection<ESDViewModel> _esdViewModels;
+    private ObservableCollection<ESDViewModel> _esdViewModels = new();
     public ObservableCollection<ESDViewModel> ESDViewModels
     {
         get
@@ -177,8 +177,8 @@ public class BNDViewModel : ViewModelBase
         object? mainWindow = Application.Current.MainWindow;
         if (mainWindow == null) return;
         MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
-        ESDViewModel copiedESD = mainViewModel.CopiedESDViewModel;
-        if (mainViewModel.ProjectGame == null) return;
+        ESDViewModel? copiedESD = mainViewModel?.CopiedESDViewModel;
+        if (mainViewModel?.ProjectGame == null || copiedESD == null) return;
         ESDModel newESD = new ESDModel(copiedESD.Id, copiedESD.Description, BND);
         ESDViewModel newESDViewModel = new ESDViewModel(newESD, this);
         if (ESDViewModels.Any(x => x.Id == copiedESD.Id))
