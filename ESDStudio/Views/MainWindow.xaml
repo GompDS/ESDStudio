@@ -128,6 +128,8 @@
                     <MenuItem Header="_New BND"
                               Command="{Binding NewBNDCommand}"/>
                     <Separator/>
+                    <MenuItem Header="_Save" InputGestureText="Ctrl+S"/>
+                    <Separator/>
                     <MenuItem Header="_Close Tab" InputGestureText="Ctrl+W"
                               Command="{Binding CloseTabCommand}"/>
                 </MenuItem>

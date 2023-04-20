@@ -71,15 +71,15 @@ namespace ESDStudio.Views
             TabControl tabControl = (TabControl)sender;
             TabItem tabItem = (TabItem)tabControl.ItemContainerGenerator.ContainerFromItem(tabControl.SelectedItem);
             if (tabItem == null) return;
-            CodeTextBox codeTextBox;
+            ESDView esdView;
             if (tabItem.Content == viewModel.CurrentTab)
             {
-                codeTextBox = new CodeTextBox(viewModel.CurrentTab.Code, DetailPanel);
-                tabItem.Content = codeTextBox;
+                esdView = new ESDView(viewModel.CurrentTab, DetailPanel);
+                tabItem.Content = esdView;
             }
             else
             {
-                codeTextBox = (CodeTextBox)tabItem.Content;
+                esdView = (ESDView)tabItem.Content;
             }
         }
     }

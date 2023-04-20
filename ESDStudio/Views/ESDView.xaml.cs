@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -10,33 +7,37 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using ESDStudio.UserControls;
+using ESDStudio.ViewModels;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.AvalonEdit.Rendering;
-using Size = System.Windows.Size;
 
-namespace ESDStudio.UserControls;
+namespace ESDStudio.Views;
 
-public partial class CodeTextBox : UserControl
+public partial class ESDView : UserControl
 {
-    public CodeTextBox(string code, DetailPanel detailPanel)
+    public ESDView(ESDViewModel dataContext, DetailPanel detailPanel)
     {
         InitializeComponent();
-        textEditor.Text = code;
-        ToolTip editorToolTip = new ToolTip();
-        editorToolTip.IsOpen = false;
-        ToolTipService.SetPlacementTarget(editorToolTip, textEditor);
+        DataContext = dataContext;
+        CodeEditor.Text = dataContext.Code;
+        CodeEditor.IsEnabled = true;
+        ToolTip editorToolTip = new ToolTip
+        {
+            IsOpen = false
+        };
+        ToolTipService.SetPlacementTarget(editorToolTip, CodeEditor);
         ToolTipService.SetPlacement(editorToolTip, PlacementMode.Top);
         //ToolTipService.SetVerticalOffset(editorToolTip, -5.0);
-        textEditor.ToolTip = editorToolTip;
+        CodeEditor.ToolTip = editorToolTip;
         _detailedFunctionView = detailPanel;
-        textEditor.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-        textEditor.TextArea.TextEntered += textEditor_TextArea_TextEntered;
-        textEditor.TextArea.Caret.PositionChanged += TextEditor_OnCaretPositionChanged;
+        CodeEditor.TextArea.TextEntering += textEditor_TextArea_TextEntering;
+        CodeEditor.TextArea.TextEntered += textEditor_TextArea_TextEntered;
+        CodeEditor.TextArea.Caret.PositionChanged += TextEditor_OnCaretPositionChanged;
     }
-
+    
     private DetailPanel _detailedFunctionView;
     private CompletionWindow? _completionWindow;
 
@@ -51,17 +52,17 @@ public partial class CodeTextBox : UserControl
 
     private void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
     {
-        DocumentLine line = textEditor.Document.GetLineByNumber(textEditor.TextArea.Caret.Line);
-        string enteredText = textEditor.Text.Substring(line.Offset, textEditor.TextArea.Caret.Column - 1);
+        DocumentLine line = CodeEditor.Document.GetLineByNumber(CodeEditor.TextArea.Caret.Line);
+        string enteredText = CodeEditor.Text.Substring(line.Offset, CodeEditor.TextArea.Caret.Column - 1);
         int insertionOffset = line.Offset;
-        _completionWindow = new CompletionWindow(textEditor.TextArea)
+        _completionWindow = new CompletionWindow(CodeEditor.TextArea)
         {
             Style = Application.Current.FindResource("CodeCompletionWindow") as Style,
             SizeToContent = SizeToContent.WidthAndHeight
         };
         IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
         int searchStartIndex = line.Offset + enteredText.Length - 1;
-        string searchRange = textEditor.Text.Substring(0, searchStartIndex + 1);
+        string searchRange = CodeEditor.Text.Substring(0, searchStartIndex + 1);
         CodeEditorUtils.GetParentFunctionInfo(searchStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
         
         int delimIndex = -1;
@@ -165,19 +166,19 @@ public partial class CodeTextBox : UserControl
 
     private void TextEditor_OnMouseHover(object sender, MouseEventArgs e)
     {
-        TextViewPosition? position = textEditor.GetPositionFromPoint(Mouse.GetPosition(textEditor));
+        TextViewPosition? position = CodeEditor.GetPositionFromPoint(Mouse.GetPosition(CodeEditor));
         if (position == null) return;
         GetOverlappedTerm(position.Value, out string selectedTerm, out int termStartIndex);
         FunctionDefinition? selectedFunc = XmlData.FunctionDefinitions
             .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
-        ToolTip funcToolTip = (ToolTip)textEditor.ToolTip;
+        ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
         
         if (selectedFunc != null && _lastFocusedTermStartIndex != termStartIndex)
         {
             _lastFocusedTermStartIndex = termStartIndex;
             funcToolTip.Content = new FunctionToolTip(selectedFunc);
             ToolTipService.SetPlacementRectangle(funcToolTip,
-                new Rect(Mouse.GetPosition(textEditor), new Size(textEditor.FontSize, textEditor.FontSize)));
+                new Rect(Mouse.GetPosition(CodeEditor), new Size(CodeEditor.FontSize, CodeEditor.FontSize)));
             //funcToolTip.PlacementRectangle = new Rect(Mouse.GetPosition(textEditor), new Size(textEditor.FontSize, textEditor.FontSize));
             funcToolTip.IsOpen = true;
             _toolTipMode = ToolTipMode.Function;
@@ -186,12 +187,12 @@ public partial class CodeTextBox : UserControl
 
     private void TextEditor_OnMouseMove(object sender, MouseEventArgs e)
     {
-        TextViewPosition? position = textEditor.GetPositionFromPoint(Mouse.GetPosition(textEditor));
+        TextViewPosition? position = CodeEditor.GetPositionFromPoint(Mouse.GetPosition(CodeEditor));
         if (position == null) return;
         GetOverlappedTerm(position.Value, out string selectedTerm, out int termStartIndex);
         FunctionDefinition? selectedFunc = XmlData.FunctionDefinitions
             .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
-        ToolTip funcToolTip = (ToolTip)textEditor.ToolTip;
+        ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
 
         if (selectedFunc != null && termStartIndex != _lastFocusedTermStartIndex)
         {
@@ -200,7 +201,7 @@ public partial class CodeTextBox : UserControl
         }
         else
         {
-            string searchRange = textEditor.Text[..(termStartIndex + 1)];
+            string searchRange = CodeEditor.Text[..(termStartIndex + 1)];
             CodeEditorUtils.GetParentFunctionInfo(termStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
             FunctionDefinition? parentFunc = XmlData.FunctionDefinitions
                 .FirstOrDefault(x => x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
@@ -221,7 +222,7 @@ public partial class CodeTextBox : UserControl
         FunctionDefinition? selectedFunc = XmlData.FunctionDefinitions
             .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
 
-        ToolTip funcToolTip = (ToolTip)textEditor.ToolTip;
+        ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
         if (selectedFunc != null)
         {
             _detailedFunctionView.SetFunctionToDisplay(selectedFunc, -1);
@@ -231,9 +232,9 @@ public partial class CodeTextBox : UserControl
                 _lastFocusedTermStartIndex = -1;
             }
         }
-        else if (termStartIndex < textEditor.Text.Length - 1 && termStartIndex > 0)
+        else if (termStartIndex < CodeEditor.Text.Length - 1 && termStartIndex > 0)
         {
-            string searchRange = textEditor.Text[..(termStartIndex + 1)];
+            string searchRange = CodeEditor.Text[..(termStartIndex + 1)];
             CodeEditorUtils.GetParentFunctionInfo(termStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
             FunctionDefinition? parentFunc = XmlData.FunctionDefinitions
                 .FirstOrDefault(x => x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
@@ -242,7 +243,7 @@ public partial class CodeTextBox : UserControl
                 _detailedFunctionView.SetFunctionToDisplay(parentFunc, parameterIndex);
                 funcToolTip.Content = new FunctionToolTip(parentFunc, parameterIndex);
                 Rect caretRect = caret.CalculateCaretRectangle();
-                TranslateTransform transform = new(-textEditor.HorizontalOffset, -textEditor.VerticalOffset);
+                TranslateTransform transform = new(-CodeEditor.HorizontalOffset, -CodeEditor.VerticalOffset);
                 Matrix matrix = transform.Value;
                 caretRect.Transform(matrix);
                 ToolTipService.SetPlacementRectangle(funcToolTip, caretRect);
@@ -261,8 +262,8 @@ public partial class CodeTextBox : UserControl
     private void GetOverlappedTerm(TextViewPosition textPosition, out string term, out int termStartIndex)
     {
         term = "";
-        DocumentLine line = textEditor.Document.GetLineByNumber(textPosition.Line);
-        string lineText = textEditor.Text.Substring(line.Offset, line.Length);
+        DocumentLine line = CodeEditor.Document.GetLineByNumber(textPosition.Line);
+        string lineText = CodeEditor.Text.Substring(line.Offset, line.Length);
         termStartIndex = textPosition.VisualColumn;
         if (termStartIndex < line.Length && termStartIndex >= 1)
         {
@@ -290,17 +291,30 @@ public partial class CodeTextBox : UserControl
         
         if (e.Delta > 0)
         {
-            textEditor.FontSize += 1.0;
+            CodeEditor.FontSize += 1.0;
             //textEditor.ScrollToVerticalOffset(textEditor.VerticalOffset + textEditor.FontSize * 2);
         }
-        else if (textEditor.FontSize > 1.0)
+        else if (CodeEditor.FontSize > 1.0)
         {
-            textEditor.FontSize -= 1.0;
+            CodeEditor.FontSize -= 1.0;
             //textEditor.ScrollToVerticalOffset(textEditor.VerticalOffset - textEditor.FontSize * 2);
         }
         
-        textEditor.TextArea.Caret.BringCaretToView();
+        CodeEditor.TextArea.Caret.BringCaretToView();
 
         e.Handled = true;
+    }
+
+    private void CodeEditor_OnTextChanged(object? sender, EventArgs e)
+    {
+        TextEditor? editor = (TextEditor?) sender;
+        if (editor == null) return;
+        if (editor.IsEnabled == false) return;
+        ESDViewModel esd = (ESDViewModel)DataContext;
+        if (esd.IsESDEdited == false)
+        {
+            esd.IsESDEdited = true;
+        }
+        esd.Code = editor.Text;
     }
 }

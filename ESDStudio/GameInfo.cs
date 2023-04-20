@@ -17,6 +17,7 @@ public class GameInfo
 
     public Game Type;
     public string Name = "Unknown";
+    public string FilePathStart;
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
 
@@ -27,7 +28,7 @@ public class GameInfo
         {
             Type = Game.DarkSoulsIII;
             Name = "ds3";
-
+            FilePathStart = @"N:\FDP\data\INTERROOT_win64";
         }
         ReadDefaultMapDescriptions(Name);
         ReadDefaultESDDescriptions(Name);

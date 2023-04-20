@@ -147,9 +147,9 @@ public class MainWindowReplaceViewModel : ViewModelBase
         {
             TabItem tabItem = (TabItem)mainWindow.Tabs.ItemContainerGenerator
                 .ContainerFromItem(mainWindow.Tabs.SelectedItem);
-            if (tabItem.Content is CodeTextBox codeTextBox)
+            if (tabItem.Content is ESDView codeTextBox)
             {
-                return codeTextBox.textEditor;
+                return codeTextBox.CodeEditor;
             }
         }
 

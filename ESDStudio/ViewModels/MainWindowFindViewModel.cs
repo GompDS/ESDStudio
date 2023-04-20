@@ -80,8 +80,8 @@ public class MainWindowFindViewModel : ViewModelBase
     {
         if (Application.Current.MainWindow is not MainWindow mainWindow) return;
         TabItem tabItem = (TabItem)mainWindow.Tabs.ItemContainerGenerator.ContainerFromItem(mainWindow.Tabs.SelectedItem);
-        if (tabItem.Content is not CodeTextBox codeTextBox) return;
-        TextEditor editor = codeTextBox.textEditor;
+        if (tabItem.Content is not ESDView codeTextBox) return;
+        TextEditor editor = codeTextBox.CodeEditor;
         if (FindEntry.Length == 0) return;
         string pattern = FindEntry;
         if (!IsRegex) pattern = Regex.Escape(pattern);

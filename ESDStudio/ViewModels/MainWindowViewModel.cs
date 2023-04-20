@@ -352,7 +352,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (ESDToOpen.IsDecompiled == false)
         {
-            ESDToOpen.DecompileESD(ProjectModDirectory, ProjectGameDirectory);
+            ESDToOpen.Decompile(ProjectModDirectory, ProjectGameDirectory);
         }
         OpenTabs.Add(ESDToOpen);
         CurrentTab = ESDToOpen;
