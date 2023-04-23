@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace ESDStudio;
 
@@ -15,5 +16,21 @@ public static class StringExtensions
                 return indexes;
             indexes.Add(index);
         }
+    }
+    
+    public static string ReplaceWordMatches(this string input, string searchWord, string replacement)
+    {
+        string pattern = Regex.Escape(searchWord);
+        Match match = Regex.Match(input, $"\\b{pattern}\\b");
+        int startIndex = 0;
+        while (match.Success)
+        {
+            input = input.Remove(match.Index + startIndex, match.Length);
+            input = input.Insert(match.Index + startIndex, replacement);
+            startIndex += match.Index + replacement.Length;
+            match = Regex.Match(input[startIndex..], $"\\b{pattern}\\b");
+        }
+
+        return input;
     }
 }

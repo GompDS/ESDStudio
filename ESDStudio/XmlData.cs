@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 
 namespace ESDStudio;
 

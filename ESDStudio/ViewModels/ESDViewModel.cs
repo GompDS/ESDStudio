@@ -33,7 +33,7 @@ public class ESDViewModel : ViewModelBase
         SaveCommand = new RelayCommand(Save, CanSave);
     }
     
-    private ESDModel ESD;
+    public ESDModel ESD;
     public BNDViewModel ParentViewModel;
     public ICommand EditIdCommand { get; }
     public ICommand EditDescriptionCommand { get; }
@@ -144,6 +144,8 @@ public class ESDViewModel : ViewModelBase
         }
     }
 
+    public ESDViewModel? SourceESD = null;
+
     private void EditId()
     {
         EditESDIdViewModel editIdViewModel = new(Id, ParentViewModel.ESDViewModels.Select(x => x.Id).ToList());
@@ -198,8 +200,20 @@ public class ESDViewModel : ViewModelBase
 
     public void Decompile(string modDirectory, string gameDirectory)
     {
-        BND4 parentBND = GetTalkBND(modDirectory, gameDirectory);
-        BinderFile BNDFile = parentBND.Files.First(x => x.Name.EndsWith(Name + ".esd", StringComparison.OrdinalIgnoreCase));
+        BND4 parentBND;
+        string ESDSourceName;
+        if (SourceESD != null)
+        {
+            ESDViewModel CopiedESD = GetCopiedESD();
+            parentBND = CopiedESD.GetTalkBND(modDirectory, gameDirectory);
+            ESDSourceName = CopiedESD.Name;
+        }
+        else
+        {
+            parentBND = GetTalkBND(modDirectory, gameDirectory);
+            ESDSourceName = Name;
+        }
+        BinderFile BNDFile = parentBND.Files.First(x => x.Name.EndsWith(ESDSourceName + ".esd", StringComparison.OrdinalIgnoreCase));
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
         string tempESDFile = cwd + $"esdtool\\{Name}.esd";
         File.WriteAllBytes(tempESDFile, BNDFile.Bytes);
@@ -243,20 +257,20 @@ public class ESDViewModel : ViewModelBase
         {
             Compression = DCX.Type.DCX_DFLT_10000_44_9
         };
-        return new BND4();
+        return newBND;
     }
 
     public bool Compile(GameInfo? game, string modDirectory, string gameDirectory)
     {
         if (game == null) return false;
         string codeCopy = Code;
-        codeCopy = codeCopy.Replace("true", "1");
-        codeCopy = codeCopy.Replace("false", "0");
+        codeCopy = codeCopy.ReplaceWordMatches("true", "1");
+        codeCopy = codeCopy.ReplaceWordMatches("false", "0");
         foreach (string enumType in XmlData.EnumTemplates.Keys)
         {
             foreach (Tuple<int,string> enumValuePair in XmlData.EnumTemplates[enumType])
             {
-                codeCopy = codeCopy.Replace($"{enumType}.{enumValuePair.Item2}",
+                codeCopy = codeCopy.ReplaceWordMatches($"{enumType}.{enumValuePair.Item2}",
                     enumValuePair.Item1.ToString());
             }
         }
@@ -340,7 +354,17 @@ public class ESDViewModel : ViewModelBase
                             if (string.Compare(bnd.Files[i].Name, file.Name, StringComparison.Ordinal) > 0)
                             {
                                 bnd.Files.Insert(i, file);
+                                break;
                             }
+                            if (i == bnd.Files.Count - 1)
+                            {
+                                bnd.Files.Add(file);
+                                break;
+                            }
+                        }
+
+                        for (int i = 0; i < bnd.Files.Count; i++)
+                        {
                             bnd.Files[i].ID = i;
                         }
                     }
@@ -359,5 +383,16 @@ public class ESDViewModel : ViewModelBase
     private bool CanSave()
     {
         return IsESDEdited || IsDescriptionEdited;
+    }
+
+    private ESDViewModel GetCopiedESD()
+    {
+        ESDViewModel currentESD = this;
+        while (currentESD.SourceESD != null)
+        {
+            currentESD = currentESD.SourceESD;
+        }
+
+        return currentESD;
     }
 }

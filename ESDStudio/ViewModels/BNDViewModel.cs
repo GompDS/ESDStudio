@@ -179,8 +179,11 @@ public class BNDViewModel : ViewModelBase
         MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
         ESDViewModel? copiedESD = mainViewModel?.CopiedESDViewModel;
         if (mainViewModel?.ProjectGame == null || copiedESD == null) return;
-        ESDModel newESD = new ESDModel(copiedESD.Id, copiedESD.Description, BND);
-        ESDViewModel newESDViewModel = new ESDViewModel(newESD, this);
+        ESDModel newESD = new ESDModel(copiedESD.ESD, BND);
+        ESDViewModel newESDViewModel = new ESDViewModel(newESD, this)
+        {
+            SourceESD = copiedESD
+        };
         if (ESDViewModels.Any(x => x.Id == copiedESD.Id))
         {
             MessageBoxResult result = ShowErrorMessageBox("Another ESD with the same ID already exists in this map. Please specify a new ID.");
@@ -201,6 +204,7 @@ public class BNDViewModel : ViewModelBase
         {
             ESDViewModels.Add(newESDViewModel);
         }
+        newESDViewModel.Decompile(mainViewModel.ProjectModDirectory, mainViewModel.ProjectGameDirectory);
         ESDViewModels = new ObservableCollection<ESDViewModel>(
             ESDViewModels.OrderBy(x => x.Id));
     }

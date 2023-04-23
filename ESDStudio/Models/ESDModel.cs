@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using ESDStudio.ViewModels;
 using SoulsFormats;
 
 namespace ESDStudio.Models;
@@ -17,6 +18,8 @@ public class ESDModel
             return $"t{ParentBNDModel.MapId:D2}{ParentBNDModel.BlockId:D1}{Id:D3}";
         }
     }
+
+    public string? OriginalName = null;
 
     private string _description = "";
     public string Description
@@ -99,11 +102,23 @@ public class ESDModel
     public ESDModel(int id, string description, BNDModel parent)
     {
         ParentBNDModel = parent;
+        Code = $"# -*- coding: utf-8 -*-\r\ndef t{parent.MapId:D2}{parent.BlockId:D1}{id:D3}_1():\r\n" +
+               "    \"\"\"State 0,1\"\"\"\r\n    Quit()\r\n\r\n";
+        IsDescriptionEdited = false;
+        IsESDEdited = true;
+        IsDecompiled = true;
+        Id = id;
+        Description = description;
+    }
+    
+    public ESDModel(ESDModel CopiedESD, BNDModel parent)
+    {
+        ParentBNDModel = parent;
         Code = "";
         IsDescriptionEdited = false;
         IsESDEdited = true;
         IsDecompiled = false;
-        Id = id;
-        Description = description;
+        Id = CopiedESD.Id;
+        Description = CopiedESD.Description;
     }
 }

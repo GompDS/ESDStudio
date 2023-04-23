@@ -201,6 +201,7 @@ public partial class ESDView : UserControl
         }
         else
         {
+            if (termStartIndex + 1 >= CodeEditor.Text.Length) return;
             string searchRange = CodeEditor.Text[..(termStartIndex + 1)];
             CodeEditorUtils.GetParentFunctionInfo(termStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
             FunctionDefinition? parentFunc = XmlData.FunctionDefinitions
