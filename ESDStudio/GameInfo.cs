@@ -17,7 +17,7 @@ public class GameInfo
 
     public Game Type;
     public string Name = "Unknown";
-    public string FilePathStart;
+    public string FilePathStart = "";
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
 
@@ -30,36 +30,20 @@ public class GameInfo
             Name = "ds3";
             FilePathStart = @"N:\FDP\data\INTERROOT_win64";
         }
-        ReadDefaultMapDescriptions(Name);
-        ReadDefaultESDDescriptions(Name);
+        ReadDefaultMapDescriptions();
+        ReadDefaultESDDescriptions();
     }
 
-    private void ReadDefaultMapDescriptions(string gameId)
+    private void ReadDefaultMapDescriptions()
     {
-        string tomlPath = AppDomain.CurrentDomain.BaseDirectory + @"DefaultDescriptions\DefaultMapDescriptions.toml";
-        TomlTable defaultDescriptionsModel = Toml.ToModel(File.ReadAllText(tomlPath), tomlPath);
-        defaultDescriptionsModel.TryGetValue(gameId, out object gameObj);
-        TomlTable gameModel = (TomlTable)gameObj;
-        foreach (string mapName in gameModel.Keys)
-        {
-            MapDescriptions.Add(mapName, (string)gameModel[mapName]);
-        }
+        string tomlPath = AppDomain.CurrentDomain.BaseDirectory + $"DefaultDescriptions\\DefaultMapDescriptions_{Name}.toml";
+        MapDescriptions = ProjectUtils.ReadMapDescriptions(tomlPath);
     }
 
-    private void ReadDefaultESDDescriptions(string gameId)
+    private void ReadDefaultESDDescriptions()
     {
-        string tomlPath = AppDomain.CurrentDomain.BaseDirectory + $"DefaultDescriptions\\DefaultESDDescriptions_{gameId}.toml";
-        TomlTable defaultDescriptionsModel = Toml.ToModel(File.ReadAllText(tomlPath), tomlPath);
-        foreach (string mapName in defaultDescriptionsModel.Keys.Where(x => Regex.IsMatch(x, @"m\d\d_\d\d_\d\d_\d\d")))
-        {
-            TomlTable mapModel = (TomlTable) defaultDescriptionsModel[mapName];
-            Dictionary<int, string> esdDictionary = new();
-            foreach (int id in mapModel.Keys.Select(int.Parse))
-            {
-                esdDictionary.Add(id, (string)mapModel[id.ToString()]);
-            }
-            ESDDescriptions.Add(mapName, esdDictionary);
-        }
+        string tomlPath = AppDomain.CurrentDomain.BaseDirectory + $"DefaultDescriptions\\DefaultESDDescriptions_{Name}.toml";
+        ESDDescriptions = ProjectUtils.ReadESDDescriptions(tomlPath);
     }
 
     public override string ToString()

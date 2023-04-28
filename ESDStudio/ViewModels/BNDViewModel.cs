@@ -29,6 +29,7 @@ public class BNDViewModel : ViewModelBase
         EditDescriptionCommand = new RelayCommand(EditDescription);
         NewESDCommand = new RelayCommand(NewESD);
         PasteESDCommand = new RelayCommand(PasteESD);
+        SaveCommand = new RelayCommand(Save);
     }
     
     public BNDViewModel(int mapId, int blockId, string description, GameInfo gameInfo)
@@ -38,10 +39,12 @@ public class BNDViewModel : ViewModelBase
         EditDescriptionCommand = new RelayCommand(EditDescription);
         NewESDCommand = new RelayCommand(NewESD);
         PasteESDCommand = new RelayCommand(PasteESD);
+        SaveCommand = new RelayCommand(Save);
     }
     public ICommand EditDescriptionCommand { get; }
     public ICommand NewESDCommand { get; }
     public ICommand PasteESDCommand { get; }
+    public ICommand SaveCommand { get; }
 
     private Visibility _visibility;
     public Visibility Visibility
@@ -207,5 +210,50 @@ public class BNDViewModel : ViewModelBase
         newESDViewModel.Decompile(mainViewModel.ProjectModDirectory, mainViewModel.ProjectGameDirectory);
         ESDViewModels = new ObservableCollection<ESDViewModel>(
             ESDViewModels.OrderBy(x => x.Id));
+    }
+
+    private void Save()
+    {
+        foreach (ESDViewModel esd in ESDViewModels.Where(x => x.IsESDEdited))
+        {
+            esd.SaveCommand.Execute(null);
+        }
+        
+        object? mainWindow = Application.Current.MainWindow;
+        if (mainWindow == null) return;
+        MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
+        BND4 bnd = GetTalkBND(mainViewModel.ProjectModDirectory, mainViewModel.ProjectGameDirectory);
+        bnd.Files = bnd.Files.Where(x => 
+            ESDViewModels.Any(y => y.Name == Path.GetFileNameWithoutExtension(x.Name))).ToList();
+        bnd.Write($"{mainViewModel.ProjectModDirectory}\\script\\talk\\{Name}.talkesdbnd.dcx");
+        UpdateIsBNDEdited();
+    }
+    
+    public BND4 GetTalkBND(string modDirectory, string gameDirectory)
+    {
+        string talkPath = $"\\script\\talk\\{Name}.talkesdbnd.dcx";
+        string basePath;
+        if (File.Exists($"{modDirectory}\\{talkPath}"))
+        {
+            basePath = modDirectory;
+        }
+        else
+        {
+            basePath = gameDirectory;
+        }
+        string BNDPath = $"{basePath}\\{talkPath}";
+        if (File.Exists(BNDPath))
+        {
+            if (BND4.IsRead(BNDPath, out BND4 bnd))
+            {
+                return bnd;
+            }
+        }
+
+        BND4 newBND = new BND4
+        {
+            Compression = DCX.Type.DCX_DFLT_10000_44_9
+        };
+        return newBND;
     }
 }

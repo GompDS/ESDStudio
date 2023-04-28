@@ -39,6 +39,7 @@ public class MainWindowViewModel : ViewModelBase
         FindCommand = new RelayCommand(Find, CanCloseTab);
         ReplaceCommand = new RelayCommand(Replace, CanCloseTab);
         OpenRecentProjectCommand = new RelayCommand(OpenRecentProject);
+        SaveCommand = new RelayCommand(Save);
         RecentProjects = GetRecentProjects();
         if (RecentProjects.Count > 0)
         {
@@ -53,6 +54,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand CloseTabCommand { get; }
     public ICommand FindCommand { get; }
     public ICommand ReplaceCommand { get; }
+    public ICommand SaveCommand { get; }
 
     private ObservableCollection<Tuple<string, string>> _recentProjects = new();
     public ObservableCollection<Tuple<string, string>> RecentProjects
@@ -133,6 +135,8 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
     public GameInfo? ProjectGame { get; set; }
+    public Dictionary<string, string> ProjectMapDescriptions = new();
+    public Dictionary<string, Dictionary<int, string>> ProjectESDDescriptions = new();
     public ObservableCollection<BNDViewModel> BNDViewModels { get; }
     private object? _selectedTreeItem;
     public object? SelectedTreeItem
@@ -241,6 +245,14 @@ public class MainWindowViewModel : ViewModelBase
         ProjectModDirectory = (string)modDirObj;
         projectInfo.TryGetValue("game", out object gameObj);
         ProjectGame = new GameInfo((string)gameObj);
+        if (File.Exists(ProjectBaseDirectory + @"\MapDescriptions.toml"))
+        {
+            ProjectMapDescriptions = ProjectUtils.ReadMapDescriptions(ProjectBaseDirectory + @"\MapDescriptions.toml");
+        }
+        if (File.Exists(ProjectBaseDirectory + @"\ESDDescriptions.toml"))
+        {
+            ProjectESDDescriptions = ProjectUtils.ReadESDDescriptions(ProjectBaseDirectory + @"\ESDDescriptions.toml");
+        }
         ShowBNDControl();
         AddCurrentProjectToRecent();
     }
@@ -402,5 +414,10 @@ public class MainWindowViewModel : ViewModelBase
             DataContext = replaceViewModel
         };
         replaceView.Show();
+    }
+
+    private void Save()
+    {
+        
     }
 }

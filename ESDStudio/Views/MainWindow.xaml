@@ -82,12 +82,15 @@
                     Command="{Binding SelectedTreeItem.PasteESDCommand}"/>
         <KeyBinding Key="V" Modifiers="Control" 
                     Command="{Binding SelectedTreeItem.PasteCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control"
+                    Command="{Binding SelectedTreeItem.SaveCommand}"/>
         <KeyBinding Key="W" Modifiers="Control"
                     Command="{Binding CloseTabCommand}"/>
         <KeyBinding Key="F" Modifiers="Control"
                     Command="{Binding FindCommand}"/>
         <KeyBinding Key="H" Modifiers="Control"
                     Command="{Binding ReplaceCommand}"/>
+        
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>

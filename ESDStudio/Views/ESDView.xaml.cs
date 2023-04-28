@@ -22,8 +22,6 @@ public partial class ESDView : UserControl
     {
         InitializeComponent();
         DataContext = dataContext;
-        CodeEditor.Text = dataContext.Code;
-        CodeEditor.IsEnabled = true;
         ToolTip editorToolTip = new ToolTip
         {
             IsOpen = false
@@ -36,6 +34,7 @@ public partial class ESDView : UserControl
         CodeEditor.TextArea.TextEntering += textEditor_TextArea_TextEntering;
         CodeEditor.TextArea.TextEntered += textEditor_TextArea_TextEntered;
         CodeEditor.TextArea.Caret.PositionChanged += TextEditor_OnCaretPositionChanged;
+        CodeEditor.IsEnabled = true;
     }
     
     private DetailPanel _detailedFunctionView;
@@ -306,7 +305,7 @@ public partial class ESDView : UserControl
         e.Handled = true;
     }
 
-    private void CodeEditor_OnTextChanged(object? sender, EventArgs e)
+    private void CodeEditor_OnTextChanged(object? sender, EventArgs eventArgs)
     {
         TextEditor? editor = (TextEditor?) sender;
         if (editor == null) return;
@@ -316,6 +315,5 @@ public partial class ESDView : UserControl
         {
             esd.IsESDEdited = true;
         }
-        esd.Code = editor.Text;
     }
 }

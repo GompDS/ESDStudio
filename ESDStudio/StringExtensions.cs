@@ -18,17 +18,21 @@ public static class StringExtensions
         }
     }
     
-    public static string ReplaceWordMatches(this string input, string searchWord, string replacement)
+    public static string ReplaceMatches(this string input, string searchTerm, string replacement, bool useRegex, bool matchWholeWord)
     {
-        string pattern = Regex.Escape(searchWord);
-        Match match = Regex.Match(input, $"\\b{pattern}\\b");
+        string pattern = useRegex ? searchTerm : Regex.Escape(searchTerm);
+        if (matchWholeWord)
+        {
+            pattern = $"\\b{pattern}\\b";
+        }
+        Match match = Regex.Match(input, pattern);
         int startIndex = 0;
         while (match.Success)
         {
             input = input.Remove(match.Index + startIndex, match.Length);
             input = input.Insert(match.Index + startIndex, replacement);
             startIndex += match.Index + replacement.Length;
-            match = Regex.Match(input[startIndex..], $"\\b{pattern}\\b");
+            match = Regex.Match(input[startIndex..], pattern);
         }
 
         return input;

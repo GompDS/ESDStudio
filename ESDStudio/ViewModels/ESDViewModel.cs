@@ -15,7 +15,10 @@ using System.Windows.Shapes;
 using CommunityToolkit.Mvvm.Input;
 using ESDStudio.Models;
 using ESDStudio.Views;
+using ICSharpCode.AvalonEdit.Document;
 using SoulsFormats;
+using Tomlyn;
+using Tomlyn.Model;
 
 namespace ESDStudio.ViewModels;
 
@@ -85,19 +88,11 @@ public class ESDViewModel : ViewModelBase
         }
     }
     
-    public string Code
+    public TextDocument Code
     {
         get 
         {
             return ESD.Code;
-        }
-        set
-        {
-            if (ESD.Code != value)
-            {
-                ESD.Code = value;
-                OnPropertyChanged();
-            }
         }
     }
     
@@ -157,8 +152,19 @@ public class ESDViewModel : ViewModelBase
         };
         editIdViewModel.LocalESDIds.Remove(Id);
         editIdView.ShowDialog();
+        int newId = int.Parse(editIdViewModel.NewIdEntry);
         if (editIdView.DialogResult != true) return;
-        Id = int.Parse(editIdViewModel.NewIdEntry);
+        MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
+        if (mainWindow == null) return;
+        MainWindowViewModel? vm = mainWindow.DataContext as MainWindowViewModel;
+        if (vm == null) return;
+        if (IsDecompiled == false)
+        {
+            Decompile(vm.ProjectModDirectory, vm.ProjectGameDirectory);
+        }
+        Code.Text = Code.Text.ReplaceMatches(@"(?<=t[0-9]{3})" + Regex.Escape($"{Id:D3}"),
+            newId.ToString("D3"), true, false);
+        Id = newId;
         ParentViewModel.ESDViewModels = new ObservableCollection<ESDViewModel>(
             ParentViewModel.ESDViewModels.OrderBy(x => x.Id));
     }
@@ -196,6 +202,7 @@ public class ESDViewModel : ViewModelBase
         if (messageBoxResult == MessageBoxResult.No) return;
         IsESDEdited = true;
         ParentViewModel.ESDViewModels.Remove(this);
+        ParentViewModel.BND.ESDModels.Remove(ESD);
     }
 
     public void Decompile(string modDirectory, string gameDirectory)
@@ -205,12 +212,12 @@ public class ESDViewModel : ViewModelBase
         if (SourceESD != null)
         {
             ESDViewModel CopiedESD = GetCopiedESD();
-            parentBND = CopiedESD.GetTalkBND(modDirectory, gameDirectory);
+            parentBND = CopiedESD.ParentViewModel.GetTalkBND(modDirectory, gameDirectory);
             ESDSourceName = CopiedESD.Name;
         }
         else
         {
-            parentBND = GetTalkBND(modDirectory, gameDirectory);
+            parentBND = ParentViewModel.GetTalkBND(modDirectory, gameDirectory);
             ESDSourceName = Name;
         }
         BinderFile BNDFile = parentBND.Files.First(x => x.Name.EndsWith(ESDSourceName + ".esd", StringComparison.OrdinalIgnoreCase));
@@ -221,57 +228,29 @@ public class ESDViewModel : ViewModelBase
         File.Delete(tempESDFile);
         if (success == false) return;
         string tempPyFile = cwd + $"esdtool\\{Name}.esd.py";
-        Code = File.ReadAllText(tempPyFile);
+        Code.Text = File.ReadAllText(tempPyFile);
         foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions.
                      Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
                                 x.ReturnValue is { Type: "enum" or "bool" }))
         {
-            Code = funcDef.MakeNumberValuesDescriptive(Code);
+            Code.Text = funcDef.MakeNumberValuesDescriptive(Code.Text);
         }
         File.Delete(tempPyFile);
         IsDecompiled = true;
     }
 
-    private BND4 GetTalkBND(string modDirectory, string gameDirectory)
-    {
-        string talkPath = $"\\script\\talk\\{ParentViewModel.Name}.talkesdbnd.dcx";
-        string basePath;
-        if (File.Exists($"{modDirectory}\\{talkPath}"))
-        {
-            basePath = modDirectory;
-        }
-        else
-        {
-            basePath = gameDirectory;
-        }
-        string BNDPath = $"{basePath}\\{talkPath}";
-        if (File.Exists(BNDPath))
-        {
-            if (BND4.IsRead(BNDPath, out BND4 bnd))
-            {
-                return bnd;
-            }
-        }
-
-        BND4 newBND = new BND4
-        {
-            Compression = DCX.Type.DCX_DFLT_10000_44_9
-        };
-        return newBND;
-    }
-
     public bool Compile(GameInfo? game, string modDirectory, string gameDirectory)
     {
         if (game == null) return false;
-        string codeCopy = Code;
-        codeCopy = codeCopy.ReplaceWordMatches("true", "1");
-        codeCopy = codeCopy.ReplaceWordMatches("false", "0");
+        string codeCopy = Code.Text;
+        codeCopy = codeCopy.ReplaceMatches("true", "1", false, true);
+        codeCopy = codeCopy.ReplaceMatches("false", "0", false, true);
         foreach (string enumType in XmlData.EnumTemplates.Keys)
         {
             foreach (Tuple<int,string> enumValuePair in XmlData.EnumTemplates[enumType])
             {
-                codeCopy = codeCopy.ReplaceWordMatches($"{enumType}.{enumValuePair.Item2}",
-                    enumValuePair.Item1.ToString());
+                codeCopy = codeCopy.ReplaceMatches($"{enumType}.{enumValuePair.Item2}",
+                    enumValuePair.Item1.ToString(), false, true);
             }
         }
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
@@ -336,48 +315,82 @@ public class ESDViewModel : ViewModelBase
         if (vm.ProjectGame == null) return;
         if (IsESDEdited)
         {
-            if (Code.Length > 0)
-            {
-                bool success = Compile(vm.ProjectGame, vm.ProjectModDirectory, vm.ProjectGameDirectory);
-                if (success)
-                {
-                    BND4 bnd = GetTalkBND(vm.ProjectModDirectory, vm.ProjectGameDirectory);
-                    BinderFile? file = bnd.Files.FirstOrDefault(x => x.Name.EndsWith($"{Name}.esd"));
-                    string tempESDFile = $"{cwd}\\esdtool\\{Name}.esd";
-                    if (file == null)
-                    {
-                        file = new BinderFile(Binder.FileFlags.Flag1, 
-                            $"{vm.ProjectGame.FilePathStart}\\script\\talk\\{ParentViewModel.Name}\\{Name}.esd",
-                            File.ReadAllBytes(tempESDFile));
-                        for (int i = 0; i < bnd.Files.Count; i++)
-                        {
-                            if (string.Compare(bnd.Files[i].Name, file.Name, StringComparison.Ordinal) > 0)
-                            {
-                                bnd.Files.Insert(i, file);
-                                break;
-                            }
-                            if (i == bnd.Files.Count - 1)
-                            {
-                                bnd.Files.Add(file);
-                                break;
-                            }
-                        }
+            SaveESD(vm);
+        }
+        
+        if (IsDescriptionEdited)
+        {
+            SaveDescription(vm);
+        }
+    }
 
-                        for (int i = 0; i < bnd.Files.Count; i++)
+    private void SaveESD(MainWindowViewModel vm)
+    {
+        string cwd = AppDomain.CurrentDomain.BaseDirectory;
+        if (Code.TextLength > 0)
+        {
+            bool success = Compile(vm.ProjectGame, vm.ProjectModDirectory, vm.ProjectGameDirectory);
+            if (success)
+            {
+                BND4 bnd = ParentViewModel.GetTalkBND(vm.ProjectModDirectory, vm.ProjectGameDirectory);
+                BinderFile? file = bnd.Files.FirstOrDefault(x => x.Name.EndsWith($"{Name}.esd"));
+                string tempESDFile = $"{cwd}\\esdtool\\{Name}.esd";
+                if (file == null)
+                {
+                    file = new BinderFile(Binder.FileFlags.Flag1, 
+                        $"{vm.ProjectGame.FilePathStart}\\script\\talk\\{ParentViewModel.Name}\\{Name}.esd",
+                        File.ReadAllBytes(tempESDFile));
+                    for (int i = 0; i < bnd.Files.Count; i++)
+                    {
+                        if (string.Compare(bnd.Files[i].Name, file.Name, StringComparison.Ordinal) > 0)
                         {
-                            bnd.Files[i].ID = i;
+                            bnd.Files.Insert(i, file);
+                            break;
+                        }
+                        if (i == bnd.Files.Count - 1)
+                        {
+                            bnd.Files.Add(file);
+                            break;
                         }
                     }
-                    else
+
+                    for (int i = 0; i < bnd.Files.Count; i++)
                     {
-                        file.Bytes = File.ReadAllBytes($"{cwd}\\esdtool\\{Name}.esd");
+                        bnd.Files[i].ID = i;
                     }
-                    File.Delete(tempESDFile);
-                    bnd.Write($"{vm.ProjectModDirectory}\\script\\talk\\{ParentViewModel.Name}.talkesdbnd.dcx");
-                    IsESDEdited = false;
                 }
+                else
+                {
+                    file.Bytes = File.ReadAllBytes($"{cwd}\\esdtool\\{Name}.esd");
+                }
+                File.Delete(tempESDFile);
+                bnd.Write($"{vm.ProjectModDirectory}\\script\\talk\\{ParentViewModel.Name}.talkesdbnd.dcx");
+                IsESDEdited = false;
             }
         }
+    }
+
+    private void SaveDescription(MainWindowViewModel vm)
+    {
+        vm.ProjectESDDescriptions.TryGetValue(ParentViewModel.Name, out Dictionary<int, string>? map);
+        if (map == null)
+        {
+            map = new Dictionary<int, string>();
+            vm.ProjectESDDescriptions.Add(ParentViewModel.Name, map);
+        }
+
+        map.TryGetValue(Id, out string? oldDescription);
+        if (oldDescription == null)
+        {
+            map.Add(Id, Description);
+        }
+        else
+        {
+            map[Id] = Description;
+        }
+        
+        ProjectUtils.WriteESDDescriptions(vm.ProjectESDDescriptions, "ESDDescriptions",
+            vm.ProjectBaseDirectory + @"\ESDDescriptions.toml");
     }
     
     private bool CanSave()

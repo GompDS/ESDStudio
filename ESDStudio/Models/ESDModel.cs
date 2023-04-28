@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using ESDStudio.ViewModels;
+using ICSharpCode.AvalonEdit.Document;
 using SoulsFormats;
 
 namespace ESDStudio.Models;
@@ -81,7 +82,7 @@ public class ESDModel
             }
         }
     }
-    public string Code { get; set; }
+    public TextDocument Code { get; }
     public BNDModel ParentBNDModel { get; }
     
     public bool IsDescriptionEdited { get; set; }
@@ -93,7 +94,7 @@ public class ESDModel
         ParentBNDModel = parent;
         string esdName = Path.GetFileNameWithoutExtension(BNDFile.Name);
         Id = int.Parse(esdName[4..7]);
-        Code = "";
+        Code = new TextDocument();
         IsDescriptionEdited = false;
         IsESDEdited = false;
         IsDecompiled = false;
@@ -102,8 +103,8 @@ public class ESDModel
     public ESDModel(int id, string description, BNDModel parent)
     {
         ParentBNDModel = parent;
-        Code = $"# -*- coding: utf-8 -*-\r\ndef t{parent.MapId:D2}{parent.BlockId:D1}{id:D3}_1():\r\n" +
-               "    \"\"\"State 0,1\"\"\"\r\n    Quit()\r\n\r\n";
+        Code = new TextDocument($"# -*- coding: utf-8 -*-\r\ndef t{parent.MapId:D2}{parent.BlockId:D1}{id:D3}_1():\r\n" +
+                                "    \"\"\"State 0,1\"\"\"\r\n    Quit()\r\n\r\n");
         IsDescriptionEdited = false;
         IsESDEdited = true;
         IsDecompiled = true;
@@ -114,7 +115,7 @@ public class ESDModel
     public ESDModel(ESDModel CopiedESD, BNDModel parent)
     {
         ParentBNDModel = parent;
-        Code = "";
+        Code = new TextDocument();
         IsDescriptionEdited = false;
         IsESDEdited = true;
         IsDecompiled = false;

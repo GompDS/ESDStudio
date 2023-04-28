@@ -1,5 +1,6 @@
-title = "DefaultESDNames_DS3"
-[m30_00_00_00]
+title = "DefaultESDDescriptions_ds3"
+[maps]
+[maps.m30_00_00_00]
 0 = "High Wall of Lothric Bonfire"
 1 = "Oceiros, the Consumed King Bonfire"
 2 = "Vordt of the Boreal Valley Bonfire"
@@ -9,12 +10,12 @@ title = "DefaultESDNames_DS3"
 220 = "Greirat of the Undead Settlement"
 324 = "Oceiros, the Consumed King"
 330 = "Emma, High Priestess of Lothric Castle"
-[m30_01_00_00]
+[maps.m30_01_00_00]
 0 = "Lothric Castle Bonfire"
 1 = "Dragonslayer Armour Bonfire"
 2 = "Dragon Barracks Bonfire"
 20 = "Altar of Sunlight"
-[m31_00_00_00]
+[maps.m31_00_00_00]
 0 = "Undead Settlement Bonfire"
 1 = "Pit of Hollows Bonfire"
 2 = "Cliff Underside Bonfire"
@@ -32,12 +33,12 @@ title = "DefaultESDNames_DS3"
 380 = "Talking Cage Hollow"
 410 = "Holy Knight Hodrick"
 610 = "Giant Archer"
-[m32_00_00_00]
+[maps.m32_00_00_00]
 0 = "Archdragon Peak Bonfire"
 1 = "Nameless King Bonfire"
 2 = "Great Belfry Bonfire"
 3 = "Dragon-Kin Mausoleum Bonfire"
-[m33_00_00_00]
+[maps.m33_00_00_00]
 0 = "Halfway Fortress Bonfire"
 1 = "Abyss Watchers Bonfire"
 2 = "Crystal Sage Bonfire"
@@ -53,11 +54,11 @@ title = "DefaultESDNames_DS3"
 290 = "Anri of Astora (male)"
 295 = "Anri of Astora (female)"
 360 = "Horace the Hushed"
-[m34_01_00_00]
+[maps.m34_01_00_00]
 0 = "Twin Princes Bonfire"
 1 = "Grand Archives Bonfire"
 320 = "Lothric, Younger Prince"
-[m35_00_00_00]
+[maps.m35_00_00_00]
 0 = "Cleansing Chapel Bonfire"
 1 = "Rosaria's Bed Chamber Bonfire"
 2 = "Deacons of the Deep Bonfire"
@@ -69,7 +70,7 @@ title = "DefaultESDNames_DS3"
 302 = "Unbreakable Patches (door side 2)"
 310 = "Siegward of Catarina"
 510 = "Slave Knight Gael"
-[m37_00_00_00]
+[maps.m37_00_00_00]
 0 = "Church of Yorshka Bonfire"
 1 = "Pontiff Sulyvahn Bonfire"
 2 = "Aldrich, Devourer of Gods Bonfire"
@@ -90,7 +91,7 @@ title = "DefaultESDNames_DS3"
 310 = "Siegward of Catarina"
 400 = "Londor Assassin (Church of Yorshka)"
 401 = "Londor Assassin (Darkmoon Tomb)"
-[m38_00_00_00]
+[maps.m38_00_00_00]
 0 = "High Lord Wolnir Bonfire"
 1 = "Abandoned Tomb Bonfire"
 2 = "Old King's Antechamber Bonfire"
@@ -102,14 +103,14 @@ title = "DefaultESDNames_DS3"
 291 = "Anri of Astora (male) (near Wolnir)"
 295 = "Anri of Astora (female) (upper catacombs)"
 296 = "Anri of Astora (female) (near Wolnir)"
-[m39_00_00_00]
+[maps.m39_00_00_00]
 0 = "Irithyll Dungeon Bonfire"
 1 = "Yhorm the Giant Bonfire"
 2 = "Profaned Capital Bonfire"
 250 = "Karla"
 310 = "Siegward of Catarina (cell)"
 311 = "Siegward of Catarina (Yhorm)"
-[m40_00_00_00]
+[maps.m40_00_00_00]
 0 = "Firelink Shrine Bonfire"
 1 = "Cemetery of Ash Bonfire"
 2 = "Iudex Gundyr Bonfire"
@@ -143,13 +144,13 @@ title = "DefaultESDNames_DS3"
 301 = "Unbreakable Patches (Firelink Shrine)"
 360 = "Horace the Hushed"
 390 = "Pickle Pee, Pump-a-Rum"
-[m41_00_00_00]
+[maps.m41_00_00_00]
 1 = "Kiln of the First Flame Bonfire"
 2 = "The First Flame"
 10 = "Flameless Shrine Bonfire"
 120 = "Fire Keeper"
 990 = "Begin New Journey Prompt"
-[m45_00_00_00]
+[maps.m45_00_00_00]
 0 = "Sister Friede Bonfire"
 1 = "Snowfield Bonfire"
 2 = "Rope Bridge Cave Bonfire"
@@ -170,7 +171,7 @@ title = "DefaultESDNames_DS3"
 560 = "Father Ariandel (passive)"
 561 = "Father Ariandel (boss)"
 590 = "Drowsy Forlorn"
-[m50_00_00_00]
+[maps.m50_00_00_00]
 0 = "The Demon Prince Bonfire"
 1 = "The Dreg Heap Bonfire"
 2 = "Earthen Peak Ruins Bonfire"
@@ -180,7 +181,7 @@ title = "DefaultESDNames_DS3"
 731 = "Amnesiac Lapp (Earthen Peak Ruins 1)"
 732 = "Amnesiac Lapp (Earthen Peak Ruins 2)"
 760 = "Stone-humped Hag"
-[m51_00_00_00]
+[maps.m51_00_00_00]
 0 = "Church of Filianore Bonfire"
 1 = "Darkeater Midir Bonfire"
 2 = "Mausoleum Lookout Bonfire"
@@ -198,7 +199,7 @@ title = "DefaultESDNames_DS3"
 752 = "Locust Preacher (near Ringed City Streets)"
 770 = "Pygmy Lord"
 780 = "Judicator Argo"
-[m51_01_00_00]
+[maps.m51_01_00_00]
 0 = "Slave Knight Gael Bonfire"
 1 = "Filianore's Rest Bonfire"
 740 = "Shira, Knight of Filianore"
