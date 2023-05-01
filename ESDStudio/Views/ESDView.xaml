@@ -14,7 +14,7 @@
     <Grid>
         <avalonedit:TextEditor
             Name="CodeEditor"
-            Document="{Binding Code, Mode=TwoWay}"
+            Document="{Binding Code}"
             SyntaxHighlighting="ESDLang"
             FontFamily="Consolas"
             FontSize="10pt"

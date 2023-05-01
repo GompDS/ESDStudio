@@ -34,25 +34,34 @@ public class ESDModel
             if (_description.Equals(value) == false)
             {
                 _description = value;
-                if (ParentBNDModel.ESDDescriptionDictionary.Keys.Any(x => x == Id))
+                if (ProjectData.ESDDescriptionsContainsId(Id, ParentBNDModel.Name))
                 {
-                    if (_description.Length > 0)
+                    if (_description.Length > 0 || ProjectData.Game.ESDDescriptionsContainsId(Id, ParentBNDModel.Name))
                     {
-                        if (ParentBNDModel.ESDDescriptionDictionary[Id] != _description)
-                        {
-                            ParentBNDModel.ESDDescriptionDictionary[Id] = _description;
-                            IsDescriptionEdited = true;
-                        }
+                        ProjectData.ESDDescriptions[ParentBNDModel.Name][Id] = _description;
                     }
                     else
                     {
-                        ParentBNDModel.ESDDescriptionDictionary.Remove(Id);
+                        ProjectData.ESDDescriptions[ParentBNDModel.Name].Remove(Id);
+                        if (ProjectData.ESDDescriptions[ParentBNDModel.Name].Keys.Count == 0)
+                        {
+                            ProjectData.ESDDescriptions.Remove(ParentBNDModel.Name);
+                        }
                     }
-                }
-                else if (_description.Length > 0)
-                {
-                    ParentBNDModel.ESDDescriptionDictionary.Add(Id, _description);
                     IsDescriptionEdited = true;
+                }
+                else
+                {
+                    ProjectData.Game.GetESDDescription(Id, ParentBNDModel.Name, out string? defaultDescription);
+                    if (_description != defaultDescription)
+                    {
+                        if (ProjectData.ESDDescriptions.Keys.Contains(ParentBNDModel.Name) == false)
+                        {
+                            ProjectData.ESDDescriptions.Add(ParentBNDModel.Name, new Dictionary<int, string>());
+                        }
+                        ProjectData.ESDDescriptions[ParentBNDModel.Name].Add(Id, _description);
+                        IsDescriptionEdited = true;
+                    }
                 }
             }
         }
@@ -70,14 +79,23 @@ public class ESDModel
             if (_id != value)
             {
                 _id = value;
-                ParentBNDModel.ESDDescriptionDictionary.TryGetValue(value, out string? description);
-                if (description != null)
+                
+                ProjectData.GetESDDescription(value, ParentBNDModel.Name, out string? projectDescription);
+                if (projectDescription != null)
                 {
-                    Description = description;
+                    Description = projectDescription;
                 }
                 else
                 {
-                    Description = "";
+                    ProjectData.Game.GetESDDescription(value, ParentBNDModel.Name, out string? defaultDescription);
+                    if (defaultDescription != null)
+                    {
+                        Description = defaultDescription;
+                    }
+                    else
+                    {
+                        Description = "";
+                    }
                 }
             }
         }
@@ -89,15 +107,24 @@ public class ESDModel
     public bool IsESDEdited { get; set; }
     public bool IsDecompiled { get; set; }
 
-    public ESDModel(BinderFile BNDFile, BNDModel parent)
+    public ESDModel(string esdName, BNDModel parent)
     {
         ParentBNDModel = parent;
-        string esdName = Path.GetFileNameWithoutExtension(BNDFile.Name);
         Id = int.Parse(esdName[4..7]);
         Code = new TextDocument();
         IsDescriptionEdited = false;
         IsESDEdited = false;
         IsDecompiled = false;
+    }
+    
+    public ESDModel(string esdName, string codeText, BNDModel parent)
+    {
+        ParentBNDModel = parent;
+        Id = int.Parse(esdName[4..7]);
+        Code = new TextDocument(codeText);
+        IsDescriptionEdited = false;
+        IsESDEdited = false;
+        IsDecompiled = true;
     }
     
     public ESDModel(int id, string description, BNDModel parent)

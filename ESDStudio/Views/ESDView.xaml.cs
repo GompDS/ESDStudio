@@ -36,7 +36,8 @@ public partial class ESDView : UserControl
         CodeEditor.TextArea.Caret.PositionChanged += TextEditor_OnCaretPositionChanged;
         CodeEditor.IsEnabled = true;
     }
-    
+
+    private bool _isReadyToEdit = false;
     private DetailPanel _detailedFunctionView;
     private CompletionWindow? _completionWindow;
 
@@ -132,7 +133,7 @@ public partial class ESDView : UserControl
 
         foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions)
         {
-            if (!Regex.IsMatch(funcDef.Name, enteredText, RegexOptions.IgnoreCase)) continue;
+            if (!Regex.IsMatch(funcDef.Name, Regex.Escape(enteredText), RegexOptions.IgnoreCase)) continue;
             data.Add(new CompletionData(funcDef.Name, enteredText, insertionOffset, parameterIndex));
         }
 
@@ -307,9 +308,17 @@ public partial class ESDView : UserControl
 
     private void CodeEditor_OnTextChanged(object? sender, EventArgs eventArgs)
     {
+
         TextEditor? editor = (TextEditor?) sender;
         if (editor == null) return;
-        if (editor.IsEnabled == false) return;
+        if (editor.Document == null) return;
+        
+        if (_isReadyToEdit == false)
+        {
+            _isReadyToEdit = true;
+            return;
+        }
+
         ESDViewModel esd = (ESDViewModel)DataContext;
         if (esd.IsESDEdited == false)
         {

@@ -50,4 +50,27 @@ public class GameInfo
     {
         return Name;
     }
+
+    public bool ESDDescriptionsContainsId(int esdId, string mapName)
+    {
+        if (ESDDescriptions.Keys.Any(x => x == mapName))
+        {
+            if (ESDDescriptions[mapName].Keys.Any(x => x == esdId))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void GetESDDescription(int esdId, string mapName, out string? description)
+    {
+        description = null;
+        ESDDescriptions.TryGetValue(mapName, out Dictionary<int, string>? esds);
+        if (esds != null)
+        {
+            esds.TryGetValue(esdId, out description);
+        }
+    }
 }

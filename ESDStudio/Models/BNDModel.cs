@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using ICSharpCode.AvalonEdit.Document;
 using SoulsFormats;
 
 namespace ESDStudio.Models;
@@ -22,40 +23,46 @@ public class BNDModel
             return ESDModels.Any(x => x.IsESDEdited || x.IsDescriptionEdited);
         }
     }
-    
-    public Dictionary<int, string> ESDDescriptionDictionary { get; }
-    
+
     public BNDModel(string BNDPath, GameInfo gameInfo)
     {
         Name = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(BNDPath));
-        gameInfo.MapDescriptions.TryGetValue(Name, out string? mapName);
-        if (mapName != null)
+        ProjectData.MapDescriptions.TryGetValue(Name, out string? projectDescription);
+        if (projectDescription != null)
         {
-            Description = mapName;
+            Description = projectDescription;
         }
         else
         {
-            Description = "";
+            gameInfo.MapDescriptions.TryGetValue(Name, out string? defaultDescription);
+            if (defaultDescription != null)
+            {
+                Description = defaultDescription;
+            }
+            else
+            {
+                Description = "";
+            }
         }
+
         MapId = int.Parse(Name[1..3]);
         BlockId = int.Parse(Name[4..6]);
         ESDModels = new ObservableCollection<ESDModel>();
 
-        gameInfo.ESDDescriptions.TryGetValue($"m{MapId:D2}_{BlockId:D2}_00_00",
-            out Dictionary<int, string>? mapDictionary);
-        if (mapDictionary != null)
-        {
-            ESDDescriptionDictionary = mapDictionary;
-        }
-        else
-        {
-            ESDDescriptionDictionary = new Dictionary<int, string>();
-        }
-        
         BND4 BND = BND4.Read(BNDPath);
         foreach (BinderFile BNDFile in BND.Files.OrderBy(x => x.Name))
         {
-            ESDModel newESDModel = new(BNDFile, this);
+            string esdName = Path.GetFileNameWithoutExtension(BNDFile.Name);
+            string fileName = $"{ProjectData.BaseDirectory}\\{Name}\\{esdName}.py";
+            ESDModel newESDModel;
+            if (File.Exists(fileName))
+            {
+                newESDModel = new(esdName, File.ReadAllText(fileName), this);
+            }
+            else
+            {
+                newESDModel = new(esdName, this);
+            }
             ESDModels.Add(newESDModel);
         }
     }
@@ -67,16 +74,5 @@ public class BNDModel
         Name = $"m{MapId:D2}_{BlockId:D2}_00_00";
         Description = description;
         ESDModels = new ObservableCollection<ESDModel>();
-
-        gameInfo.ESDDescriptions.TryGetValue(Name,
-            out Dictionary<int, string>? mapDictionary);
-        if (mapDictionary != null)
-        {
-            ESDDescriptionDictionary = mapDictionary;
-        }
-        else
-        {
-            ESDDescriptionDictionary = new Dictionary<int, string>();
-        }
     }
 }

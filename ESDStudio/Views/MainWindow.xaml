@@ -90,6 +90,8 @@
                     Command="{Binding FindCommand}"/>
         <KeyBinding Key="H" Modifiers="Control"
                     Command="{Binding ReplaceCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift"
+                    Command="{Binding SaveAllCommand}"/>
         
     </Window.InputBindings>
     <Grid>
@@ -132,6 +134,7 @@
                               Command="{Binding NewBNDCommand}"/>
                     <Separator/>
                     <MenuItem Header="_Save" InputGestureText="Ctrl+S"/>
+                    <MenuItem Header="_Save All" InputGestureText="Ctrl+Shift+S"/>
                     <Separator/>
                     <MenuItem Header="_Close Tab" InputGestureText="Ctrl+W"
                               Command="{Binding CloseTabCommand}"/>

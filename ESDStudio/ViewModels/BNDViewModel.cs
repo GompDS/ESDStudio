@@ -153,12 +153,37 @@ public class BNDViewModel : ViewModelBase
         };
         editDescriptionView.ShowDialog();
         if (editDescriptionView.DialogResult != true) return;
-        Description = editDescriptionViewModel.NewDescriptionEntry;
+        string newDescription = editDescriptionViewModel.NewDescriptionEntry;
+        if (Description.Equals(newDescription) == false)
+        {
+            Description = newDescription;
+            if (ProjectData.MapDescriptions.Keys.Contains(Name))
+            {
+                if (Description.Length > 0 || ProjectData.Game.MapDescriptions.Keys.Contains(Name))
+                {
+                    ProjectData.MapDescriptions[Name] = Description;
+                }
+                else
+                {
+                    ProjectData.MapDescriptions.Remove(Name);
+                }
+                IsDescriptionEdited = true;
+            }
+            else
+            {
+                ProjectData.Game.MapDescriptions.TryGetValue(Name, out string? defaultDescription);
+                if (Description != defaultDescription)
+                {
+                    ProjectData.MapDescriptions.Add(Name, Description);
+                    IsDescriptionEdited = true;
+                }
+            }
+        }
     }
 
     private void NewESD()
     {
-        BNDNewESDViewModel newESDViewModel = new(BND.ESDDescriptionDictionary, ESDViewModels.Select(x => x.Id).ToList());
+        BNDNewESDViewModel newESDViewModel = new(this);
         BNDNewESDView newESDView = new()
         {
             Owner = Application.Current.MainWindow,
@@ -181,7 +206,7 @@ public class BNDViewModel : ViewModelBase
         if (mainWindow == null) return;
         MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
         ESDViewModel? copiedESD = mainViewModel?.CopiedESDViewModel;
-        if (mainViewModel?.ProjectGame == null || copiedESD == null) return;
+        if (ProjectData.Game == null || copiedESD == null) return;
         ESDModel newESD = new ESDModel(copiedESD.ESD, BND);
         ESDViewModel newESDViewModel = new ESDViewModel(newESD, this)
         {
@@ -207,25 +232,30 @@ public class BNDViewModel : ViewModelBase
         {
             ESDViewModels.Add(newESDViewModel);
         }
-        newESDViewModel.Decompile(mainViewModel.ProjectModDirectory, mainViewModel.ProjectGameDirectory);
+        newESDViewModel.Decompile(ProjectData.ModDirectory, ProjectData.GameDirectory);
         ESDViewModels = new ObservableCollection<ESDViewModel>(
             ESDViewModels.OrderBy(x => x.Id));
     }
 
     private void Save()
     {
+        if (IsDescriptionEdited)
+        {
+            IsDescriptionEdited = false;
+        
+            ProjectUtils.WriteMapDescriptions(ProjectData.MapDescriptions, "MapDescriptions",
+                ProjectData.BaseDirectory + @"\MapDescriptions.toml");
+        }
+        
         foreach (ESDViewModel esd in ESDViewModels.Where(x => x.IsESDEdited))
         {
             esd.SaveCommand.Execute(null);
         }
         
-        object? mainWindow = Application.Current.MainWindow;
-        if (mainWindow == null) return;
-        MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
-        BND4 bnd = GetTalkBND(mainViewModel.ProjectModDirectory, mainViewModel.ProjectGameDirectory);
+        BND4 bnd = GetTalkBND(ProjectData.ModDirectory, ProjectData.GameDirectory);
         bnd.Files = bnd.Files.Where(x => 
             ESDViewModels.Any(y => y.Name == Path.GetFileNameWithoutExtension(x.Name))).ToList();
-        bnd.Write($"{mainViewModel.ProjectModDirectory}\\script\\talk\\{Name}.talkesdbnd.dcx");
+        bnd.Write($"{ProjectData.ModDirectory}\\script\\talk\\{Name}.talkesdbnd.dcx");
         UpdateIsBNDEdited();
     }
     

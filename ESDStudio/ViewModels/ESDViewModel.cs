@@ -154,13 +154,9 @@ public class ESDViewModel : ViewModelBase
         editIdView.ShowDialog();
         int newId = int.Parse(editIdViewModel.NewIdEntry);
         if (editIdView.DialogResult != true) return;
-        MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
-        if (mainWindow == null) return;
-        MainWindowViewModel? vm = mainWindow.DataContext as MainWindowViewModel;
-        if (vm == null) return;
         if (IsDecompiled == false)
         {
-            Decompile(vm.ProjectModDirectory, vm.ProjectGameDirectory);
+            Decompile(ProjectData.ModDirectory, ProjectData.GameDirectory);
         }
         Code.Text = Code.Text.ReplaceMatches(@"(?<=t[0-9]{3})" + Regex.Escape($"{Id:D3}"),
             newId.ToString("D3"), true, false);
@@ -201,6 +197,10 @@ public class ESDViewModel : ViewModelBase
             ShowConfirmationMessageBox($"Are you sure you want to delete {Name}?");
         if (messageBoxResult == MessageBoxResult.No) return;
         IsESDEdited = true;
+        object? mainWindow = Application.Current.MainWindow;
+        if (mainWindow == null) return;
+        MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
+        mainViewModel.CloseTab(this);
         ParentViewModel.ESDViewModels.Remove(this);
         ParentViewModel.BND.ESDModels.Remove(ESD);
     }
@@ -239,7 +239,7 @@ public class ESDViewModel : ViewModelBase
         IsDecompiled = true;
     }
 
-    public bool Compile(GameInfo? game, string modDirectory, string gameDirectory)
+    public bool Compile(GameInfo? game, string gameDirectory)
     {
         if (game == null) return false;
         string codeCopy = Code.Text;
@@ -259,6 +259,11 @@ public class ESDViewModel : ViewModelBase
         bool success = RunESDTool($"-{game} " +
                                   $"-basedir \"{gameDirectory}\" " +
                                   $"-i \"{tempPyFile}\" -writeloose \"{cwd}esdtool\\{Name}.esd\"");
+        if (Directory.Exists($"{ProjectData.BaseDirectory}\\{ParentViewModel.Name}") == false)
+        {
+            Directory.CreateDirectory($"{ProjectData.BaseDirectory}\\{ParentViewModel.Name}");
+        }
+        File.WriteAllText($"{ProjectData.BaseDirectory}\\{ParentViewModel.Name}\\{Name}.py", codeCopy);
         File.Delete(tempPyFile);
         return success;
     }
@@ -300,45 +305,40 @@ public class ESDViewModel : ViewModelBase
         string stderr = esdtool.StandardError.ReadToEnd();
         if (stderr.Length > 0)
         {
-            ShowErrorMessageBox($"{errorDescription}\n({lineColumn}) \"{lineContents}\"\n" + stderr);
+            ShowErrorMessageBox($"{errorDescription}\n{Name} ({lineColumn}) \"{lineContents}\"\n" + stderr);
         }
         return stderr.Length == 0;
     }
 
     private void Save()
     {
-        string cwd = AppDomain.CurrentDomain.BaseDirectory;
-        MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
-        if (mainWindow == null) return;
-        MainWindowViewModel? vm = mainWindow.DataContext as MainWindowViewModel;
-        if (vm == null) return;
-        if (vm.ProjectGame == null) return;
+        if (ProjectData.Game == null) return;
         if (IsESDEdited)
         {
-            SaveESD(vm);
+            SaveESD();
         }
         
         if (IsDescriptionEdited)
         {
-            SaveDescription(vm);
+            SaveDescription();
         }
     }
 
-    private void SaveESD(MainWindowViewModel vm)
+    private void SaveESD()
     {
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
         if (Code.TextLength > 0)
         {
-            bool success = Compile(vm.ProjectGame, vm.ProjectModDirectory, vm.ProjectGameDirectory);
+            bool success = Compile(ProjectData.Game, ProjectData.GameDirectory);
             if (success)
             {
-                BND4 bnd = ParentViewModel.GetTalkBND(vm.ProjectModDirectory, vm.ProjectGameDirectory);
+                BND4 bnd = ParentViewModel.GetTalkBND(ProjectData.ModDirectory, ProjectData.GameDirectory);
                 BinderFile? file = bnd.Files.FirstOrDefault(x => x.Name.EndsWith($"{Name}.esd"));
                 string tempESDFile = $"{cwd}\\esdtool\\{Name}.esd";
                 if (file == null)
                 {
                     file = new BinderFile(Binder.FileFlags.Flag1, 
-                        $"{vm.ProjectGame.FilePathStart}\\script\\talk\\{ParentViewModel.Name}\\{Name}.esd",
+                        $"{ProjectData.Game.FilePathStart}\\script\\talk\\{ParentViewModel.Name}\\{Name}.esd",
                         File.ReadAllBytes(tempESDFile));
                     for (int i = 0; i < bnd.Files.Count; i++)
                     {
@@ -364,19 +364,19 @@ public class ESDViewModel : ViewModelBase
                     file.Bytes = File.ReadAllBytes($"{cwd}\\esdtool\\{Name}.esd");
                 }
                 File.Delete(tempESDFile);
-                bnd.Write($"{vm.ProjectModDirectory}\\script\\talk\\{ParentViewModel.Name}.talkesdbnd.dcx");
+                bnd.Write($"{ProjectData.ModDirectory}\\script\\talk\\{ParentViewModel.Name}.talkesdbnd.dcx");
                 IsESDEdited = false;
             }
         }
     }
 
-    private void SaveDescription(MainWindowViewModel vm)
+    private void SaveDescription()
     {
-        vm.ProjectESDDescriptions.TryGetValue(ParentViewModel.Name, out Dictionary<int, string>? map);
+        /*ProjectData.ESDDescriptions.TryGetValue(ParentViewModel.Name, out Dictionary<int, string>? map);
         if (map == null)
         {
             map = new Dictionary<int, string>();
-            vm.ProjectESDDescriptions.Add(ParentViewModel.Name, map);
+            ProjectData.ESDDescriptions.Add(ParentViewModel.Name, map);
         }
 
         map.TryGetValue(Id, out string? oldDescription);
@@ -387,10 +387,11 @@ public class ESDViewModel : ViewModelBase
         else
         {
             map[Id] = Description;
-        }
+        }*/
+        IsDescriptionEdited = false;
         
-        ProjectUtils.WriteESDDescriptions(vm.ProjectESDDescriptions, "ESDDescriptions",
-            vm.ProjectBaseDirectory + @"\ESDDescriptions.toml");
+        ProjectUtils.WriteESDDescriptions(ProjectData.ESDDescriptions, "ESDDescriptions",
+            ProjectData.BaseDirectory + @"\ESDDescriptions.toml");
     }
     
     private bool CanSave()

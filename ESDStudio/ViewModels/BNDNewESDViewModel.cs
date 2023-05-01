@@ -8,10 +8,9 @@ namespace ESDStudio.ViewModels;
 
 public class BNDNewESDViewModel : DialogViewModelBase
 {
-    public BNDNewESDViewModel(Dictionary<int,string> descriptionDictionary, List<int> localESDIds)
+    public BNDNewESDViewModel(BNDViewModel bnd)
     {
-        _localESDIds = localESDIds;
-        _descriptionDictionary = descriptionDictionary;
+        _bnd = bnd;
     }
     
     private string _idEntry = "";
@@ -24,14 +23,22 @@ public class BNDNewESDViewModel : DialogViewModelBase
             {
                 _idEntry = value;
                 OnPropertyChanged();
-                _descriptionDictionary.TryGetValue(int.Parse(value), out string? description);
-                if (description != null)
+                ProjectData.GetESDDescription(int.Parse(value), _bnd.Name, out string? projectDescription);
+                if (projectDescription != null)
                 {
-                    DescriptionEntry = description;
+                    DescriptionEntry = projectDescription;
                 }
                 else
                 {
-                    DescriptionEntry = "";
+                    ProjectData.Game.GetESDDescription(int.Parse(value), _bnd.Name, out string? defaultDescription);
+                    if (defaultDescription != null)
+                    {
+                        DescriptionEntry = defaultDescription;
+                    }
+                    else
+                    {
+                        DescriptionEntry = "";
+                    }
                 }
             }
         }
@@ -51,8 +58,7 @@ public class BNDNewESDViewModel : DialogViewModelBase
         }
     }
 
-    private List<int> _localESDIds;
-    private Dictionary<int, string> _descriptionDictionary;
+    private BNDViewModel _bnd;
 
     protected override void Confirm()
     {
@@ -64,7 +70,7 @@ public class BNDNewESDViewModel : DialogViewModelBase
             if (result == MessageBoxResult.OK) return;
         }
         
-        if (_localESDIds.Contains(int.Parse(IdEntry)))
+        if (_bnd.ESDViewModels.Select(x => x.Id).Contains(int.Parse(IdEntry)))
         {
             MessageBoxResult result = ShowErrorMessageBox("Another ESD with the same ID already exists in this map.");
             if (result == MessageBoxResult.OK) return;
