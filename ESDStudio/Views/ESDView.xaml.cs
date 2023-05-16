@@ -320,9 +320,6 @@ public partial class ESDView : UserControl
         }
 
         ESDViewModel esd = (ESDViewModel)DataContext;
-        if (esd.IsESDEdited == false)
-        {
-            esd.IsESDEdited = true;
-        }
+        esd.ESDEditCount++;
     }
 }

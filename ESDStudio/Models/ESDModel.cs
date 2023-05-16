@@ -48,7 +48,7 @@ public class ESDModel
                             ProjectData.ESDDescriptions.Remove(ParentBNDModel.Name);
                         }
                     }
-                    IsDescriptionEdited = true;
+                    //IsDescriptionEdited = true;
                 }
                 else
                 {
@@ -60,7 +60,7 @@ public class ESDModel
                             ProjectData.ESDDescriptions.Add(ParentBNDModel.Name, new Dictionary<int, string>());
                         }
                         ProjectData.ESDDescriptions[ParentBNDModel.Name].Add(Id, _description);
-                        IsDescriptionEdited = true;
+                        //IsDescriptionEdited = true;
                     }
                 }
             }
@@ -104,7 +104,9 @@ public class ESDModel
     public BNDModel ParentBNDModel { get; }
     
     public bool IsDescriptionEdited { get; set; }
-    public bool IsESDEdited { get; set; }
+
+    public bool IsESDEdited => ESDEditCount > 0;
+    public int ESDEditCount { get; set; }
     public bool IsDecompiled { get; set; }
 
     public ESDModel(string esdName, BNDModel parent)
@@ -113,7 +115,6 @@ public class ESDModel
         Id = int.Parse(esdName[4..7]);
         Code = new TextDocument();
         IsDescriptionEdited = false;
-        IsESDEdited = false;
         IsDecompiled = false;
     }
     
@@ -123,7 +124,6 @@ public class ESDModel
         Id = int.Parse(esdName[4..7]);
         Code = new TextDocument(codeText);
         IsDescriptionEdited = false;
-        IsESDEdited = false;
         IsDecompiled = true;
     }
     
@@ -133,7 +133,7 @@ public class ESDModel
         Code = new TextDocument($"# -*- coding: utf-8 -*-\r\ndef t{parent.MapId:D2}{parent.BlockId:D1}{id:D3}_1():\r\n" +
                                 "    \"\"\"State 0,1\"\"\"\r\n    Quit()\r\n\r\n");
         IsDescriptionEdited = false;
-        IsESDEdited = true;
+        ESDEditCount++;
         IsDecompiled = true;
         Id = id;
         Description = description;
@@ -144,7 +144,7 @@ public class ESDModel
         ParentBNDModel = parent;
         Code = new TextDocument();
         IsDescriptionEdited = false;
-        IsESDEdited = true;
+        ESDEditCount++;
         IsDecompiled = false;
         Id = CopiedESD.Id;
         Description = CopiedESD.Description;

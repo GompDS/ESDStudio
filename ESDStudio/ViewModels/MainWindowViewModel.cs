@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
 using CommunityToolkit.Mvvm.Input;
+using ESDStudio.Commands;
 using ESDStudio.Models;
 using ESDStudio.UserControls;
 using ESDStudio.Views;
@@ -32,6 +33,8 @@ public class MainWindowViewModel : ViewModelBase
     {
         BNDViewModels = new ObservableCollection<BNDViewModel>();
         OpenTabs = new ObservableCollection<ESDViewModel>();
+        UndoCommand = new RelayCommand(Undo);
+        RedoCommand = new RelayCommand(Redo);
         OpenProjectCommand = new RelayCommand(OpenProject);
         NewProjectCommand = new RelayCommand(NewProject);
         NewBNDCommand = new RelayCommand(NewBND, CanSaveBND);
@@ -48,6 +51,12 @@ public class MainWindowViewModel : ViewModelBase
         }
         XmlData.ReadFunctionDefXml();
     }
+
+    public static Stack<CommandBase> UndoStack = new();
+    public static Stack<CommandBase> RedoStack = new();
+    
+    public ICommand UndoCommand { get; }
+    public ICommand RedoCommand { get; }
     public ICommand OpenProjectCommand { get; }
     public ICommand NewProjectCommand { get; }
     public ICommand OpenRecentProjectCommand { get; }
@@ -405,5 +414,21 @@ public class MainWindowViewModel : ViewModelBase
         {
             bnd.SaveCommand.Execute(null);
         }
+    }
+
+    private void Undo()
+    {
+        if (UndoStack.Count == 0) return;
+        CommandBase command = UndoStack.Pop();
+        command.Undo();
+        RedoStack.Push(command);
+    }
+
+    private void Redo()
+    {
+        if (RedoStack.Count == 0) return;
+        CommandBase command = RedoStack.Pop();
+        command.Execute(null);
+        UndoStack.Push(command);
     }
 }

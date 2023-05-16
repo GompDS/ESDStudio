@@ -13,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using CommunityToolkit.Mvvm.Input;
+using ESDStudio.Commands;
 using ESDStudio.Models;
 using ESDStudio.Views;
 using ICSharpCode.AvalonEdit.Document;
@@ -66,7 +67,7 @@ public class ESDViewModel : ViewModelBase
                 ESD.Id = value;
                 OnPropertyChanged();
                 OnPropertyChanged("Name");
-                IsESDEdited = true;
+                ESDEditCount++;
             }
         }
     }
@@ -83,7 +84,7 @@ public class ESDViewModel : ViewModelBase
             {
                 ESD.Description = value;
                 OnPropertyChanged();
-                IsDescriptionEdited = true;
+                //IsDescriptionEdited = true;
             }
         }
     }
@@ -102,12 +103,28 @@ public class ESDViewModel : ViewModelBase
         {
             return ESD.IsESDEdited;
         }
+    }
+
+    public int ESDEditCount
+    {
+        get
+        {
+            return ESD.ESDEditCount;
+        }
         set
         {
-            ESD.IsESDEdited = value;
-            OnPropertyChanged();
-            ParentViewModel.UpdateIsBNDEdited();
-            ((RelayCommand)SaveCommand).NotifyCanExecuteChanged();
+            if (value < 0) return;
+            if ((ESD.ESDEditCount == 0 && value > 0) || (ESD.ESDEditCount > 0 && value == 0))
+            {
+                ESD.ESDEditCount = value;
+                OnPropertyChanged("IsESDEdited");
+                ParentViewModel.UpdateIsBNDEdited();
+                ((RelayCommand)SaveCommand).NotifyCanExecuteChanged();
+            }
+            else
+            {
+                ESD.ESDEditCount = value;
+            }
         }
     }
     
@@ -152,17 +169,10 @@ public class ESDViewModel : ViewModelBase
         };
         editIdViewModel.LocalESDIds.Remove(Id);
         editIdView.ShowDialog();
-        int newId = int.Parse(editIdViewModel.NewIdEntry);
         if (editIdView.DialogResult != true) return;
-        if (IsDecompiled == false)
-        {
-            Decompile(ProjectData.ModDirectory, ProjectData.GameDirectory);
-        }
-        Code.Text = Code.Text.ReplaceMatches(@"(?<=t[0-9]{3})" + Regex.Escape($"{Id:D3}"),
-            newId.ToString("D3"), true, false);
-        Id = newId;
-        ParentViewModel.ESDViewModels = new ObservableCollection<ESDViewModel>(
-            ParentViewModel.ESDViewModels.OrderBy(x => x.Id));
+        EditESDIdCommand command = new(this, int.Parse(editIdViewModel.NewIdEntry));
+        command.Execute(null);
+        MainWindowViewModel.UndoStack.Push(command);
     }
     private void EditDescription()
     {
@@ -175,6 +185,10 @@ public class ESDViewModel : ViewModelBase
         };
         editDescriptionView.ShowDialog();
         if (editDescriptionView.DialogResult != true) return;
+        if (Description != editDescriptionViewModel.NewDescriptionEntry)
+        {
+            IsDescriptionEdited = true;
+        }
         Description = editDescriptionViewModel.NewDescriptionEntry;
     }
     
@@ -196,13 +210,13 @@ public class ESDViewModel : ViewModelBase
         MessageBoxResult messageBoxResult =
             ShowConfirmationMessageBox($"Are you sure you want to delete {Name}?");
         if (messageBoxResult == MessageBoxResult.No) return;
-        IsESDEdited = true;
         object? mainWindow = Application.Current.MainWindow;
         if (mainWindow == null) return;
         MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
-        mainViewModel.CloseTab(this);
-        ParentViewModel.ESDViewModels.Remove(this);
-        ParentViewModel.BND.ESDModels.Remove(ESD);
+        DeleteESDCommand command = new DeleteESDCommand(this, ParentViewModel.ESDViewModels.IndexOf(this),
+            mainViewModel.OpenTabs.Contains(this), mainViewModel.OpenTabs.IndexOf(this));
+        command.Execute(null);
+        MainWindowViewModel.UndoStack.Push(command);
     }
 
     public void Decompile(string modDirectory, string gameDirectory)
@@ -365,7 +379,7 @@ public class ESDViewModel : ViewModelBase
                 }
                 File.Delete(tempESDFile);
                 bnd.Write($"{ProjectData.ModDirectory}\\script\\talk\\{ParentViewModel.Name}.talkesdbnd.dcx");
-                IsESDEdited = false;
+                ESDEditCount = 0;
             }
         }
     }

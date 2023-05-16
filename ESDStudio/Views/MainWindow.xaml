@@ -86,12 +86,16 @@
                     Command="{Binding SelectedTreeItem.SaveCommand}"/>
         <KeyBinding Key="W" Modifiers="Control"
                     Command="{Binding CloseTabCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift"
+                    Command="{Binding SaveAllCommand}"/>
         <KeyBinding Key="F" Modifiers="Control"
                     Command="{Binding FindCommand}"/>
         <KeyBinding Key="H" Modifiers="Control"
                     Command="{Binding ReplaceCommand}"/>
-        <KeyBinding Key="S" Modifiers="Control+Shift"
-                    Command="{Binding SaveAllCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Control"
+                    Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Y" Modifiers="Control"
+                    Command="{Binding RedoCommand}"/>
         
     </Window.InputBindings>
     <Grid>
@@ -140,10 +144,19 @@
                               Command="{Binding CloseTabCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Edit" IsTabStop="False">
+                    <MenuItem Header="_Undo" InputGestureText="Ctrl+Z"/>
+                    <MenuItem Header="_Redo" InputGestureText="Ctrl+Y"/>
+                    <Separator/>
+                    <MenuItem Header="_Cut" InputGestureText="Ctrl+X"/>
+                    <MenuItem Header="_Copy" InputGestureText="Ctrl+C"/>
+                    <MenuItem Header="_Paste" InputGestureText="Ctrl+V"/>
+                    <Separator/>
                     <MenuItem Header="_Find" InputGestureText="Ctrl+F"
                               Command="{Binding FindCommand}"/>
                     <MenuItem Header="_Replace" InputGestureText="Ctrl+H"
                               Command="{Binding ReplaceCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="_Select All" InputGestureText="Ctrl+A"/>
                 </MenuItem>
             </Menu>
             <Separator VerticalAlignment="Bottom"/>
