@@ -122,16 +122,18 @@
                     <MenuItem Header="_Open Project" InputGestureText="Ctrl+O"
                               Command="{Binding OpenProjectCommand}"/>
                     <MenuItem Header="_Recent Projects" ItemsSource="{Binding RecentProjects}">
+                        <MenuItem.Resources>
+                            <Image x:Key="img"
+                                   x:Shared="False"
+                                   Source="{Binding Game.IconPath}"/>
+                        </MenuItem.Resources>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
                                 <EventSetter Event="Click" Handler="Click_RecentProject"/>
+                                <Setter Property="Header" Value="{Binding Name}"/>
+                                <Setter Property="Icon" Value="{StaticResource img}"/>
                             </Style>
                         </MenuItem.ItemContainerStyle>
-                        <MenuItem.ItemTemplate>
-                            <DataTemplate DataType="{x:Type system:Tuple}">
-                                <TextBlock Text="{Binding Item1}"/>
-                            </DataTemplate>
-                        </MenuItem.ItemTemplate>
                     </MenuItem>
                     <Separator/>
                     <MenuItem Header="_New BND"

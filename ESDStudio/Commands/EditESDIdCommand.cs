@@ -23,7 +23,7 @@ public class EditESDIdCommand : CommandBase
     {
         if (_esd.IsDecompiled == false)
         {
-            _esd.Decompile(ProjectData.ModDirectory, ProjectData.GameDirectory);
+            _esd.Decompile(Project.Current.ModDirectory, Project.Current.GameDirectory);
         }
         _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t[0-9]{3})" + Regex.Escape($"{_esd.Id:D3}"),
             _newId.ToString("D3"), true, false);

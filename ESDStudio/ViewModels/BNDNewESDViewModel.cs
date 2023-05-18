@@ -23,14 +23,14 @@ public class BNDNewESDViewModel : DialogViewModelBase
             {
                 _idEntry = value;
                 OnPropertyChanged();
-                ProjectData.GetESDDescription(int.Parse(value), _bnd.Name, out string? projectDescription);
+                Project.Current.GetESDDescription(int.Parse(value), _bnd.Name, out string? projectDescription);
                 if (projectDescription != null)
                 {
                     DescriptionEntry = projectDescription;
                 }
                 else
                 {
-                    ProjectData.Game.GetESDDescription(int.Parse(value), _bnd.Name, out string? defaultDescription);
+                    Project.Current.Game.GetESDDescription(int.Parse(value), _bnd.Name, out string? defaultDescription);
                     if (defaultDescription != null)
                     {
                         DescriptionEntry = defaultDescription;

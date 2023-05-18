@@ -104,7 +104,7 @@ public class MainWindowNewProjectViewModel : ViewModelBase
         if (ProjectBaseDirectoryEntry.EndsWith("\\")) ProjectBaseDirectoryEntry = ProjectBaseDirectoryEntry[..^1];
         if (ProjectModDirectoryEntry.EndsWith("\\")) ProjectModDirectoryEntry = ProjectModDirectoryEntry[..^1];
         
-        if (ProjectNameEntry?.Length == 0)
+        if (ProjectNameEntry.Length == 0)
         {
             MessageBoxResult result = ShowErrorMessageBox("Project Name must be at least 1 character long.");
             if (result == MessageBoxResult.OK) return;
@@ -125,6 +125,12 @@ public class MainWindowNewProjectViewModel : ViewModelBase
         if (File.Exists(GameExecutableEntry) == false)
         {
             MessageBoxResult result = ShowErrorMessageBox("Game Executable does not exist.");
+            if (result == MessageBoxResult.OK) return;
+        }
+
+        if (!GameInfo.IsValidExecutable(GameExecutableEntry))
+        {
+            MessageBoxResult result = ShowErrorMessageBox("Executable is from an unsupported game.");
             if (result == MessageBoxResult.OK) return;
         }
         

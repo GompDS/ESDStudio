@@ -20,6 +20,7 @@ public class GameInfo
     public string FilePathStart = "";
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
+    public string IconPath { get; }
 
     public GameInfo(string text)
     {
@@ -30,8 +31,14 @@ public class GameInfo
             Name = "ds3";
             FilePathStart = @"N:\FDP\data\INTERROOT_win64";
         }
+        IconPath = $"{AppDomain.CurrentDomain.BaseDirectory}Content\\Images\\{Name}.jpg";
         ReadDefaultMapDescriptions();
         ReadDefaultESDDescriptions();
+    }
+
+    public static bool IsValidExecutable(string exePath)
+    {
+        return exePath.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase);
     }
 
     private void ReadDefaultMapDescriptions()

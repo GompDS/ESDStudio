@@ -54,7 +54,7 @@ namespace ESDStudio.Views
         private void Click_RecentProject(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)sender;
-            ((MainWindowViewModel)DataContext).SelectedRecentProject = item.Header;
+            ((MainWindowViewModel)DataContext).SelectedRecentProject = item;
             ((MainWindowViewModel)DataContext).OpenRecentProjectCommand.Execute(null);
         }
 

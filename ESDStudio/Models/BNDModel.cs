@@ -27,7 +27,7 @@ public class BNDModel
     public BNDModel(string BNDPath, GameInfo gameInfo)
     {
         Name = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(BNDPath));
-        ProjectData.MapDescriptions.TryGetValue(Name, out string? projectDescription);
+        Project.Current.MapDescriptions.TryGetValue(Name, out string? projectDescription);
         if (projectDescription != null)
         {
             Description = projectDescription;
@@ -53,7 +53,7 @@ public class BNDModel
         foreach (BinderFile BNDFile in BND.Files.OrderBy(x => x.Name))
         {
             string esdName = Path.GetFileNameWithoutExtension(BNDFile.Name);
-            string fileName = $"{ProjectData.BaseDirectory}\\{Name}\\{esdName}.py";
+            string fileName = $"{Project.Current.BaseDirectory}\\{Name}\\{esdName}.py";
             ESDModel newESDModel;
             if (File.Exists(fileName))
             {

@@ -31,23 +31,24 @@ public class MainWindowViewModel : ViewModelBase
 {
     public MainWindowViewModel()
     {
+        RecentProjects = new ObservableCollection<Project>();
         BNDViewModels = new ObservableCollection<BNDViewModel>();
         OpenTabs = new ObservableCollection<ESDViewModel>();
         UndoCommand = new RelayCommand(Undo);
         RedoCommand = new RelayCommand(Redo);
         OpenProjectCommand = new RelayCommand(OpenProject);
         NewProjectCommand = new RelayCommand(NewProject);
-        NewBNDCommand = new RelayCommand(NewBND, CanSaveBND);
+        NewBNDCommand = new RelayCommand(NewBND, CanMakeNewBND);
         CloseTabCommand = new RelayCommand(CloseCurrentTab, CanCloseTab);
         FindCommand = new RelayCommand(Find, CanCloseTab);
         ReplaceCommand = new RelayCommand(Replace, CanCloseTab);
         OpenRecentProjectCommand = new RelayCommand(OpenRecentProject);
         SaveCommand = new RelayCommand(Save);
         SaveAllCommand = new RelayCommand(SaveAll);
-        RecentProjects = GetRecentProjects();
+        GetRecentProjects();
         if (RecentProjects.Count > 0)
         {
-            LoadProjectFromToml(RecentProjects[0].Item2);
+            LoadProject(RecentProjects[0]);
         }
         XmlData.ReadFunctionDefXml();
     }
@@ -67,33 +68,13 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand SaveCommand { get; }
     public ICommand SaveAllCommand { get; }
 
-    private ObservableCollection<Tuple<string, string>> _recentProjects = new();
-    public ObservableCollection<Tuple<string, string>> RecentProjects
-    {
-        get
-        {
-            return _recentProjects;
-        }
-        set
-        {
-            _recentProjects = value;
-            OnPropertyChanged();
-        }
-    }
+    public ObservableCollection<Project> RecentProjects { get; }
 
     public string ProjectName
     {
         get
         {
-            return ProjectData.Name;
-        }
-        set
-        {
-            if (ProjectData.Name != value)
-            {
-                ProjectData.Name = value;
-                OnPropertyChanged();
-            }
+            return Project.Current.Name;
         }
     }
     
@@ -130,9 +111,8 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    private ObservableCollection<Tuple<string, string>> GetRecentProjects()
+    private void GetRecentProjects()
     {
-        ObservableCollection<Tuple<string, string>> recentProjects = new();
         string tomlPath = AppDomain.CurrentDomain.BaseDirectory + "RecentProjects.toml";
         if (File.Exists(tomlPath))
         {
@@ -144,11 +124,9 @@ public class MainWindowViewModel : ViewModelBase
                 projectsModel.TryGetValue(projectName, out object pathObj);
                 string projectPath = (string)pathObj;
                 if (File.Exists(projectPath) == false) continue;
-                recentProjects.Add(new Tuple<string, string>(projectName, projectPath));
+                RecentProjects.Add(Project.ReadFromToml(projectPath));
             }
         }
-
-        return recentProjects;
     }
 
     private void AddCurrentProjectToRecent()
@@ -158,18 +136,17 @@ public class MainWindowViewModel : ViewModelBase
             RecentProjects.Remove(RecentProjects[i-1]);
         }
 
-        if (RecentProjects.Any(x => x.Item1.Equals(ProjectName)))
+        if (RecentProjects.Any(x => x.Name.Equals(ProjectName)))
         {
-            RecentProjects.Remove(RecentProjects.First(x => x.Item1.Equals(ProjectName)));
+            RecentProjects.Remove(RecentProjects.First(x => x.Name.Equals(ProjectName)));
         }
-        RecentProjects.Insert(0, 
-            new Tuple<string, string>(ProjectName, ProjectData.BaseDirectory + @"\ESDStudioProject.toml"));
+        RecentProjects.Insert(0, Project.Current);
         TomlTable model = new TomlTable();
         model.Add("Title", "RecentProjects");
         TomlTable subModel = new TomlTable();
-        foreach (Tuple<string,string> project in RecentProjects)
+        foreach (Project project in RecentProjects)
         {
-            subModel.Add(project.Item1, project.Item2);
+            subModel.Add(project.Name, project.BaseDirectory + @"\ESDStudioProject.toml");
         }
         model.Add("recent_projects", subModel);
         File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "RecentProjects.toml", Toml.FromModel(model));
@@ -184,79 +161,57 @@ public class MainWindowViewModel : ViewModelBase
         };
         if (fileDialog.ShowDialog() == true)
         {
-            LoadProjectFromToml(fileDialog.FileName);
+            LoadProject(Project.ReadFromToml(fileDialog.FileName));
         }
     }
 
-    private void LoadProjectFromToml(string tomlPath)
+    private void LoadProject(Project project)
     {
         BNDViewModels.Clear();
         OpenTabs.Clear();
-        TomlTable model = Toml.ToModel(File.ReadAllText(tomlPath), tomlPath);
-        model.TryGetValue("project_info", out object obj);
-        TomlTable projectInfo = (TomlTable)obj;
-        projectInfo.TryGetValue("name", out object nameObj);
-        ProjectName = (string)nameObj;
-        projectInfo.TryGetValue("base_directory", out object baseDirObj);
-        ProjectData.BaseDirectory = (string)baseDirObj;
-        projectInfo.TryGetValue("game_directory", out object gameDirObj);
-        ProjectData.GameDirectory = (string)gameDirObj;
-        projectInfo.TryGetValue("mod_directory", out object modDirObj);
-        ProjectData.ModDirectory = (string)modDirObj;
-        projectInfo.TryGetValue("game", out object gameObj);
-        ProjectData.Game = new GameInfo((string)gameObj);
-        if (File.Exists(ProjectData.BaseDirectory + @"\MapDescriptions.toml"))
-        {
-            ProjectData.MapDescriptions = ProjectUtils.ReadMapDescriptions(ProjectData.BaseDirectory + @"\MapDescriptions.toml");
-        }
-        if (File.Exists(ProjectData.BaseDirectory + @"\ESDDescriptions.toml"))
-        {
-            ProjectData.ESDDescriptions = ProjectUtils.ReadESDDescriptions(ProjectData.BaseDirectory + @"\ESDDescriptions.toml");
-        }
+        Project.Current = project;
+        OnPropertyChanged("ProjectName");
         ShowBNDControl();
         AddCurrentProjectToRecent();
     }
 
     private void NewProject()
     {
-        MainWindowNewProjectViewModel newProjectViewModel = new();
+        MainWindowNewProjectViewModel newProjectVM = new();
         MainWindowNewProjectView newProjectView = new()
         {
             Owner = Application.Current.MainWindow,
             ShowInTaskbar = false,
-            DataContext = newProjectViewModel
+            DataContext = newProjectVM
         };
         newProjectView.ShowDialog();
         if (newProjectView.DialogResult != true) return;
-        BNDViewModels.Clear();
-        ProjectName = newProjectViewModel.ProjectNameEntry;
-        ProjectData.BaseDirectory = newProjectViewModel.ProjectBaseDirectoryEntry + $"\\{ProjectName}";
-        Directory.CreateDirectory(ProjectData.BaseDirectory);
-        string? gameDir = Path.GetDirectoryName(newProjectViewModel.GameExecutableEntry);
+        string baseDir = newProjectVM.ProjectBaseDirectoryEntry + $"\\{newProjectVM.ProjectNameEntry}";
+        Directory.CreateDirectory(baseDir);
+        string? gameDir = Path.GetDirectoryName(newProjectVM.GameExecutableEntry);
         if (gameDir == null) return;
-        ProjectData.GameDirectory = gameDir;
-        ProjectData.ModDirectory = newProjectViewModel.ProjectModDirectoryEntry;
-        ProjectData.Game = new GameInfo(newProjectViewModel.GameExecutableEntry);
-        
+        Project newProject = new(newProjectVM.ProjectNameEntry, baseDir, gameDir, 
+            newProjectVM.ProjectModDirectoryEntry, newProjectVM.GameExecutableEntry);
+
         TomlTable model = new() { { "title", "ESDStudioProject" } };
         TomlTable projectInfo = new()
         {
-            { "name", ProjectName },
-            { "base_directory", ProjectData.BaseDirectory },
-            { "game_directory", ProjectData.GameDirectory },
-            { "mod_directory", ProjectData.ModDirectory },
-            { "game", ProjectData.Game.ToString() }
+            { "name", newProject.Name },
+            { "base_directory", newProject.BaseDirectory },
+            { "game_directory", newProject.GameDirectory },
+            { "mod_directory", newProject.ModDirectory },
+            { "game", newProject.Game.ToString() }
         };
         model.Add("project_info", projectInfo);
-        File.WriteAllText(ProjectData.BaseDirectory + @"\ESDStudioProject.toml", Toml.FromModel(model));
-        ShowBNDControl();
-        AddCurrentProjectToRecent();
+        File.WriteAllText(newProject.BaseDirectory + @"\ESDStudioProject.toml", Toml.FromModel(model));
+        LoadProject(newProject);
     }
 
     private void OpenRecentProject()
     {
         if (SelectedRecentProject == null) return;
-        LoadProjectFromToml(((Tuple<string, string>)SelectedRecentProject).Item2);
+        MenuItem item = (MenuItem)SelectedRecentProject;
+        LoadProject((Project)item.DataContext);
     }
     
     private void PopulateBNDViewModels(string modDirectory, string gameDirectory, GameInfo gameInfo)
@@ -283,16 +238,14 @@ public class MainWindowViewModel : ViewModelBase
 
     private void ShowBNDControl()
     {
-        if (ProjectData.Game == null) return;
-        PopulateBNDViewModels(ProjectData.ModDirectory, ProjectData.GameDirectory, ProjectData.Game);
+        PopulateBNDViewModels(Project.Current.ModDirectory, Project.Current.GameDirectory, Project.Current.Game);
         ((RelayCommand)NewBNDCommand).NotifyCanExecuteChanged();
     }
 
     private void NewBND()
     {
-        if (ProjectData.Game == null) return;
         List<string> BNDNames = BNDViewModels.Select(x => x.Name).ToList();
-        MainWindowNewBNDViewModel newBndViewModel = new(ProjectData.Game, BNDNames);
+        MainWindowNewBNDViewModel newBndViewModel = new(Project.Current.Game, BNDNames);
         MainWindowNewBNDView newBNDView = new()
         {
             Owner = Application.Current.MainWindow,
@@ -303,19 +256,20 @@ public class MainWindowViewModel : ViewModelBase
         if (newBNDView.DialogResult != true) return;
         int mapId = int.Parse(newBndViewModel.MapIdEntry);
         int blockId = int.Parse(newBndViewModel.BlockIdEntry);
-        BNDViewModel newBND = new BNDViewModel(mapId, blockId, newBndViewModel.DescriptionEntry, ProjectData.Game);
-        if (newBND.Description.Length > 0 && 
-            !ProjectData.Game.MapDescriptions.Keys.Any(x => x.Equals(newBND.Name)))
+        BNDViewModel newBND = new BNDViewModel(mapId, blockId, newBndViewModel.DescriptionEntry, Project.Current.Game);
+        if (newBND.Description.Length > 0 &&
+            !Project.Current.Game.MapDescriptions.Keys.Any(x => x.Equals(newBND.Name)))
         {
-            ProjectData.Game.MapDescriptions.Add(newBND.Name, newBND.Description);
+            Project.Current.Game.MapDescriptions.Add(newBND.Name, newBND.Description);
             newBND.IsDescriptionEdited = true;
         }
+
         BNDViewModels.Add(newBND);
         ICollectionView collectionView = CollectionViewSource.GetDefaultView(BNDViewModels);
         collectionView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
     }
 
-    private bool CanSaveBND()
+    private bool CanMakeNewBND()
     {
         return BNDViewModels.Count > 0;
     }
@@ -323,31 +277,23 @@ public class MainWindowViewModel : ViewModelBase
     public void OpenNewTab(ESDViewModel ESDToOpen)
     {
         if (OpenTabs.Contains(ESDToOpen)) return;
-        if (ESDToOpen.IsDecompiled == false)
+        /*if (ESDToOpen.IsDecompiled == false)
         {
-            ESDToOpen.Decompile(ProjectData.ModDirectory, ProjectData.GameDirectory);
+            ESDToOpen.Decompile(Project.Current.ModDirectory, Project.Current.GameDirectory);
         }
         OpenTabs.Add(ESDToOpen);
-        CurrentTab = ESDToOpen;
+        CurrentTab = ESDToOpen;*/
+        OpenESDCommand command = new(ESDToOpen);
+        command.Execute(null);
+        UndoStack.Push(command);
     }
 
     private void CloseCurrentTab()
     {
         if (CurrentTab == null) return;
-        int tabIndex = OpenTabs.IndexOf(CurrentTab);
-        OpenTabs.Remove(CurrentTab);
-        if (OpenTabs.Count > tabIndex)
-        {
-            CurrentTab = OpenTabs[tabIndex];
-        }
-        else if (OpenTabs.Count > 0)
-        {
-            CurrentTab = OpenTabs[tabIndex - 1];
-        }
-        else
-        {
-            CurrentTab = null;
-        }
+        CloseESDCommand command = new(CurrentTab, OpenTabs.Contains(CurrentTab), OpenTabs.IndexOf(CurrentTab));
+        command.Execute(null);
+        UndoStack.Push(command);
     }
     
     public void CloseTab(ESDViewModel tab)
