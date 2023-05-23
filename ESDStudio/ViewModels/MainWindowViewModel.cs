@@ -261,7 +261,7 @@ public class MainWindowViewModel : ViewModelBase
             !Project.Current.Game.MapDescriptions.Keys.Any(x => x.Equals(newBND.Name)))
         {
             Project.Current.Game.MapDescriptions.Add(newBND.Name, newBND.Description);
-            newBND.IsDescriptionEdited = true;
+            newBND.DescriptionEditCount++;
         }
 
         BNDViewModels.Add(newBND);

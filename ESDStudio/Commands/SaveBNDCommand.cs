@@ -1,0 +1,56 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using ESDStudio.ViewModels;
+using SoulsFormats;
+
+namespace ESDStudio.Commands;
+
+public class SaveBNDCommand : CommandBase
+{
+    public SaveBNDCommand(BNDViewModel bnd)
+    {
+        _bnd = bnd;
+        _bndDescriptionEditCount = _bnd.DescriptionEditCount;
+        _esdEditCounts = _bnd.ESDViewModels.Select(x => x.ESDEditCount).ToList();
+        _esdDescriptionEditCounts = _bnd.ESDViewModels.Select(x => x.DescriptionEditCount).ToList();
+    }
+    
+    private BNDViewModel _bnd;
+    private int _bndDescriptionEditCount;
+    private List<int> _esdEditCounts;
+    private List<int> _esdDescriptionEditCounts;
+
+    public override void Execute(object? parameter)
+    {
+        if (_bnd.IsDescriptionEdited)
+        {
+            _bnd.DescriptionEditCount = 0;
+        
+            ProjectUtils.WriteMapDescriptions(Project.Current.MapDescriptions, "MapDescriptions",
+                Project.Current.BaseDirectory + @"\MapDescriptions.toml");
+        }
+        
+        foreach (ESDViewModel esd in _bnd.ESDViewModels.Where(x => x.IsESDEdited))
+        {
+            esd.SaveCommand.Execute(null);
+        }
+        
+        BND4 bnd = _bnd.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory);
+        bnd.Files = bnd.Files.Where(x => 
+            _bnd.ESDViewModels.Any(y => y.Name == Path.GetFileNameWithoutExtension(x.Name))).ToList();
+        bnd.Write($"{Project.Current.ModDirectory}\\script\\talk\\{_bnd.Name}.talkesdbnd.dcx");
+        _bnd.UpdateIsBNDEdited();
+    }
+
+    public override void Undo()
+    {
+        _bnd.DescriptionEditCount = _bndDescriptionEditCount;
+        for (int i = 0; i < _bnd.ESDViewModels.Count; i++)
+        {
+            _bnd.ESDViewModels[i].ESDEditCount = _esdEditCounts[i];
+            _bnd.ESDViewModels[i].DescriptionEditCount = _esdDescriptionEditCounts[i];
+        }
+        _bnd.UpdateIsBNDEdited();
+    }
+}

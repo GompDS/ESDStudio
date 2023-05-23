@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -201,9 +202,12 @@ public class ESDViewModel : ViewModelBase
         };
         editDescriptionView.ShowDialog();
         if (editDescriptionView.DialogResult != true) return;
-        EditESDDescriptionCommand command = new(this, editDescriptionViewModel.NewDescriptionEntry);
-        command.Execute(null);
-        MainWindowViewModel.UndoStack.Push(command);
+        if (editDescriptionViewModel.NewDescriptionEntry != Description)
+        {
+            EditESDDescriptionCommand command = new(this, editDescriptionViewModel.NewDescriptionEntry);
+            command.Execute(null);
+            MainWindowViewModel.UndoStack.Push(command);
+        }
     }
     
     private void Copy()
@@ -282,7 +286,7 @@ public class ESDViewModel : ViewModelBase
             }
         }
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
-        string tempPyFile = $"{cwd}\\esdtool\\{Name}.esd.py";
+        string tempPyFile = $"{cwd}esdtool\\{Name}.esd.py";
         File.WriteAllText(tempPyFile, codeCopy);
         bool success = RunESDTool($"-{game} " +
                                   $"-basedir \"{gameDirectory}\" " +
@@ -306,36 +310,92 @@ public class ESDViewModel : ViewModelBase
                 FileName = cwd + @"esdtool\esdtool.exe",
                 Arguments = arguments,
                 WorkingDirectory = cwd + "esdtool",
-                RedirectStandardError = true,
-                RedirectStandardOutput = true
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             }
         };
+        esdtool.OutputDataReceived += EsdtoolOnOutputDataReceived;
+        esdtool.ErrorDataReceived += EsdtoolOnErrorDataReceived;
+        outputString = "";
+        errorString = "";
         esdtool.Start();
+        esdtool.BeginOutputReadLine();
+        esdtool.BeginErrorReadLine();
+        //Task t1 = ConsumeReader(esdtool.StandardOutput);
+        //Task t2 = ConsumeReader(esdtool.StandardError);
         esdtool.WaitForExit();
-        string stdout = esdtool.StandardOutput.ReadToEnd();
-        string errorDescription = "ERROR:";
-        string lineColumn = "-:-";
-        string lineContents = "";
-        int errorIndex = stdout.IndexOf("ERROR", StringComparison.Ordinal);
-        if (errorIndex > -1)
+        esdtool.CancelOutputRead();
+        esdtool.CancelErrorRead();
+        //string stdout = esdtool.StandardOutput.ReadToEnd();
+        string stdout = outputString;
+        List<string> errors = new();
+        int nextError = stdout.IndexOf("ERROR", StringComparison.Ordinal);
+        while (nextError > -1 && nextError < stdout.Length)
         {
-            int errorEnd = stdout.IndexOf('\r', errorIndex);
-            errorDescription = stdout.Substring(errorIndex, errorEnd - errorIndex + 1);
-            Match match = Regex.Match(stdout, @":[0-9]+:[0-9]+:");
+            int errorEnd = stdout.IndexOf('\r', nextError);
+            string errorDescription = stdout.Substring(nextError, errorEnd - nextError + 1);
+            Match match = Regex.Match(stdout.Substring(errorEnd), @":[0-9]+:[0-9]+:");
             if (match.Success)
             {
-                lineColumn = match.Value.Substring(1, match.Length - 2);
-                int startIndex = match.Index + match.Length;
+                string lineColumn = match.Value.Substring(1, match.Length - 2);
+                int startIndex = match.Index + errorEnd + match.Length;
                 int lineEndIndex = stdout.IndexOf('\r', startIndex);
-                lineContents = stdout.Substring(startIndex, lineEndIndex - startIndex);
+                string lineContents = stdout.Substring(startIndex, lineEndIndex - startIndex);
+                errors.Add($"{errorDescription}\n{Name} ({lineColumn}) \"{lineContents}\"\n");
+                nextError = stdout.IndexOf("ERROR", lineEndIndex, StringComparison.Ordinal);
+            }
+            else
+            {
+                break;
             }
         }
-        string stderr = esdtool.StandardError.ReadToEnd();
+        string stderr = errorString;
         if (stderr.Length > 0)
         {
-            ShowErrorMessageBox($"{errorDescription}\n{Name} ({lineColumn}) \"{lineContents}\"\n" + stderr);
+            string message = $"Errors were encountered when attempting to compile {Name}";
+            if (Description.Length > 0)
+            {
+                message += $" \"{Description}\"";
+            }
+            message += ".\r\n\r\n";
+            foreach (string error in errors)
+            {
+                message += error;
+            }
+            ShowErrorMessageBox(message);
         }
         return stderr.Length == 0;
+    }
+
+    private void EsdtoolOnErrorDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (e.Data != null)
+        {
+            errorString += e.Data + "\r\n";
+        }
+    }
+
+    private string errorString = ";";
+    
+    private string outputString = ";";
+    
+    private void EsdtoolOnOutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (e.Data != null)
+        {
+            outputString += e.Data + "\r\n";
+        }
+    }
+
+    static async Task ConsumeReader(TextReader reader)
+    {
+        string text;
+
+        while ((text = await reader.ReadLineAsync()) != null)
+        {
+            Console.WriteLine(text);
+        }
     }
 
     private void Save()

@@ -108,7 +108,7 @@ public class BNDViewModel : ViewModelBase
             {
                 BND.Description = value;
                 OnPropertyChanged();
-                IsDescriptionEdited = true;
+                //IsDescriptionEdited = true;
             }
         }
     }
@@ -121,19 +121,27 @@ public class BNDViewModel : ViewModelBase
         }
     }
     
-    public bool IsDescriptionEdited
+    public bool IsDescriptionEdited => BND.IsDescriptionEdited;
+
+    public int DescriptionEditCount
     {
         get
         {
-            return BND.IsDescriptionEdited;
+            return BND.DescriptionEditCount;
         }
         set
         {
-            if (BND.IsDescriptionEdited != value)
+            if (value < 0) return;
+            if ((BND.DescriptionEditCount == 0 && value > 0) || (BND.DescriptionEditCount > 0 && value == 0))
             {
-                BND.IsDescriptionEdited = value;
-                OnPropertyChanged();
+                BND.DescriptionEditCount = value;
+                OnPropertyChanged("IsDescriptionEdited");
                 UpdateIsBNDEdited();
+                ((RelayCommand)SaveCommand).NotifyCanExecuteChanged();
+            }
+            else
+            {
+                BND.DescriptionEditCount = value;
             }
         }
     }
@@ -154,7 +162,10 @@ public class BNDViewModel : ViewModelBase
         };
         editDescriptionView.ShowDialog();
         if (editDescriptionView.DialogResult != true) return;
-        string newDescription = editDescriptionViewModel.NewDescriptionEntry;
+        EditBNDDescriptionCommand command = new(this, editDescriptionViewModel.NewDescriptionEntry);
+        command.Execute(null);
+        MainWindowViewModel.UndoStack.Push(command);
+        /*string newDescription = editDescriptionViewModel.NewDescriptionEntry;
         if (Description.Equals(newDescription) == false)
         {
             Description = newDescription;
@@ -168,7 +179,8 @@ public class BNDViewModel : ViewModelBase
                 {
                     Project.Current.MapDescriptions.Remove(Name);
                 }
-                IsDescriptionEdited = true;
+
+                DescriptionEditCount++;
             }
             else
             {
@@ -176,10 +188,10 @@ public class BNDViewModel : ViewModelBase
                 if (Description != defaultDescription)
                 {
                     Project.Current.MapDescriptions.Add(Name, Description);
-                    IsDescriptionEdited = true;
+                    DescriptionEditCount++;
                 }
             }
-        }
+        }*/
     }
 
     private void NewESD()
@@ -236,9 +248,12 @@ public class BNDViewModel : ViewModelBase
 
     private void Save()
     {
-        if (IsDescriptionEdited)
+        SaveBNDCommand command = new(this);
+        command.Execute(null);
+        MainWindowViewModel.UndoStack.Push(command);
+        /*if (IsDescriptionEdited)
         {
-            IsDescriptionEdited = false;
+            DescriptionEditCount = 0;
         
             ProjectUtils.WriteMapDescriptions(Project.Current.MapDescriptions, "MapDescriptions",
                 Project.Current.BaseDirectory + @"\MapDescriptions.toml");
@@ -253,7 +268,7 @@ public class BNDViewModel : ViewModelBase
         bnd.Files = bnd.Files.Where(x => 
             ESDViewModels.Any(y => y.Name == Path.GetFileNameWithoutExtension(x.Name))).ToList();
         bnd.Write($"{Project.Current.ModDirectory}\\script\\talk\\{Name}.talkesdbnd.dcx");
-        UpdateIsBNDEdited();
+        UpdateIsBNDEdited();*/
     }
     
     public BND4 GetTalkBND(string modDirectory, string gameDirectory)

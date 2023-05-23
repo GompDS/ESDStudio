@@ -14,8 +14,8 @@ public class BNDModel
     public int MapId { get; }
     public int BlockId { get; }
     public ObservableCollection<ESDModel> ESDModels { get; }
-
-    public bool IsDescriptionEdited { get; set; }
+    public bool IsDescriptionEdited => DescriptionEditCount > 0;
+    public int DescriptionEditCount { get; set; }
     public bool IsContentsEdited
     {
         get
