@@ -1,0 +1,43 @@
+﻿<Window x:Class="ESDStudio.Views.MainWindowAboutView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ESDStudio.Views"
+        mc:Ignorable="d"
+        Title="About" Height="400" Width="300">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Label>
+                    <TextBlock FontWeight="Bold" Text="ESD Studio"/> 
+                </Label>
+                <Label>
+                    <TextBlock FontWeight="Bold" Text="{Binding AppVersion}"/> 
+                </Label>
+            </StackPanel>
+            <Separator/>
+            <Label Content="Created by Gomp"/>
+            <Separator/>
+            <Label>
+                <TextBlock TextDecorations="Underline" Text="Credits"/> 
+            </Label>
+            <Label Content="Game Icons - Souv"/>
+            <Label Content="esdtool - thefifthmatt"/>
+            <Separator/>
+            <Label>
+                <TextBlock TextDecorations="Underline" Text="Libraries Used"/> 
+            </Label>
+            <Label Content="AvalonEdit - icsharpcode"/>
+            <Label Content="Ookii.Dialogs.Wpf - Ookii Dialogs"/>
+            <Label Content="Tomlyn - xoofx"/>
+            <Label Content="SoulsFormats - TKGP/JKAnderson"/>
+            <Separator/>
+            <Label>
+               <TextBlock TextDecorations="Underline" Text="Special Thanks"/> 
+            </Label>
+            <Label Content="The12thAvenger"/>
+            <Label Content="Vawser"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -25,6 +25,9 @@
             <Parameter type="uint" name="newBonfireLevelTotal"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="call.Done">
+        <ReturnValue type="bool" name="hasCallReturned"/>
+    </FunctionDef>
     <FunctionDef name="ChangePlayerStats">
         <Parameters>
             <Parameter type="enum" name="stat" enum="PlayerStat"/>

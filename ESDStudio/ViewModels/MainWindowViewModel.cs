@@ -46,6 +46,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenRecentProjectCommand = new RelayCommand(OpenRecentProject);
         SaveCommand = new RelayCommand(Save);
         SaveAllCommand = new RelayCommand(SaveAll);
+        ShowAboutCommand = new RelayCommand(ShowAbout);
         GetRecentProjects();
         if (RecentProjects.Count > 0)
         {
@@ -67,6 +68,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand ReplaceCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand SaveAllCommand { get; }
+    public ICommand ShowAboutCommand { get; }
 
     public ObservableCollection<Project> RecentProjects { get; }
 
@@ -167,6 +169,7 @@ public class MainWindowViewModel : ViewModelBase
 
     private void LoadProject(Project project)
     {
+        Project.IsProjectLoaded = true;
         BNDViewModels.Clear();
         OpenTabs.Clear();
         Project.Current = project;
@@ -376,5 +379,16 @@ public class MainWindowViewModel : ViewModelBase
         CommandBase command = RedoStack.Pop();
         command.Execute(null);
         UndoStack.Push(command);
+    }
+    
+    private void ShowAbout()
+    {
+        MainWindowAboutView aboutView = new()
+        {
+            ResizeMode = ResizeMode.NoResize,
+            ShowInTaskbar = false,
+            Owner = Application.Current.MainWindow
+        };
+        aboutView.ShowDialog();
     }
 }

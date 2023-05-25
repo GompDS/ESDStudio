@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Tomlyn;
 using Tomlyn.Model;
 
@@ -15,7 +17,8 @@ public class Project
     public GameInfo Game { get; }
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
-    public static Project? Current = null!;
+    public static Project Current = new();
+    public static bool IsProjectLoaded = false;
 
     public Project(string name, string baseDir, string gameDir, string modDir, string gameName)
     {
@@ -33,7 +36,16 @@ public class Project
             ESDDescriptions = ProjectUtils.ReadESDDescriptions(BaseDirectory + @"\ESDDescriptions.toml");
         }
     }
-    
+
+    public Project()
+    {
+        Name = "";
+        BaseDirectory = "";
+        GameDirectory = "";
+        ModDirectory = "";
+        Game = new GameInfo("");
+    }
+
     public bool ESDDescriptionsContainsId(int esdId, string mapName)
     {
         if (ESDDescriptions.Keys.Any(x => x == mapName))

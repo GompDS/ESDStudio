@@ -105,7 +105,7 @@ public class MainWindowReplaceViewModel : ViewModelBase
         {
             ShowErrorMessageBox($"Can't find the text: \"{FindEntry}\".");
             return;
-        };
+        }
         editor.CaretOffset = nextIndex;
         editor.TextArea.Caret.BringCaretToView();
         TextViewPosition pos = new(editor.TextArea.Caret.Line, editor.TextArea.Caret.Column + m.Value.Length);

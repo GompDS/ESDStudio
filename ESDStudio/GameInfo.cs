@@ -24,16 +24,21 @@ public class GameInfo
 
     public GameInfo(string text)
     {
+        bool validGame = false;
         if (text.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
             text.Equals("ds3", StringComparison.OrdinalIgnoreCase))
         {
             Type = Game.DarkSoulsIII;
             Name = "ds3";
             FilePathStart = @"N:\FDP\data\INTERROOT_win64";
+            validGame = true;
         }
         IconPath = $"{AppDomain.CurrentDomain.BaseDirectory}Content\\Images\\{Name}.jpg";
-        ReadDefaultMapDescriptions();
-        ReadDefaultESDDescriptions();
+        if (validGame)
+        {
+            ReadDefaultMapDescriptions();
+            ReadDefaultESDDescriptions();
+        }
     }
 
     public static bool IsValidExecutable(string exePath)

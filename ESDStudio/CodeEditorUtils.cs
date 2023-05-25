@@ -38,6 +38,8 @@ public static class CodeEditorUtils
         completionList.Add(new CompletionData("def"));
         completionList.Add(new CompletionData("break"));
         completionList.Add(new CompletionData("while True"));
+        completionList.Add(new CompletionData("call"));
+        completionList = completionList.OrderBy(x => x.Text).ToList();
         return completionList;
     }
 

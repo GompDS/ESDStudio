@@ -5,6 +5,8 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <Version>0.1.0</Version>
+        <ApplicationIcon>Assets\icon-256.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,36 +15,25 @@
 
     <ItemGroup>
         <Compile Remove="esdtool\SoulsIds\**" />
-        <Compile Remove="esdtool\**" />
     </ItemGroup>
     
     <ItemGroup>
         <EmbeddedResource Remove="esdtool\SoulsIds\**" />
-        <EmbeddedResource Remove="esdtool\**" />
         <EmbeddedResource Include="ESDLang.xshd" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="esdtool\SoulsIds\**" />
-      <None Remove="esdtool\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Page Remove="esdtool\SoulsIds\**" />
-      <Page Remove="esdtool\**" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <CopyESDTool Include="esdtool/**/**/*" />
-        <CopyDefaultDescriptions Include="DefaultDescriptions/*" />
-        <CopyResources Include="Resources/*" />
     </ItemGroup>
     
     <ItemGroup>
       <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0-preview1" />
       <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
-      <PackageReference Include="PresentationFramework.Aero2" Version="1.0.1" />
       <PackageReference Include="Tomlyn" Version="0.16.2" />
     </ItemGroup>
     
@@ -57,12 +48,44 @@
       <Content Include="Content\Images\ds3.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="esdtool\**" />
+      <Content Include="esdtool\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     
-    <Target Name="CopyFiles" AfterTargets="AfterBuild">
-        <Copy SourceFiles="@(CopyESDTool)" DestinationFolder="bin\Debug\net6.0-windows\esdtool\%(RecursiveDir)" />
-        <Copy SourceFiles="@(CopyDefaultDescriptions)" DestinationFolder="bin\Debug\net6.0-windows\DefaultDescriptions\%(RecursiveDir)" />
-        <Copy SourceFiles="@(CopyResources)" DestinationFolder="bin\Debug\net6.0-windows\Resources\%(RecursiveDir)" />
-    </Target>
-
+    <ItemGroup>
+      <None Remove="LICENSES\AvalonEdit_LICENSE.txt" />
+      <AdditionalFiles Include="LICENSES\AvalonEdit_LICENSE.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="LICENSES\Ookii.Dialogs.Wpf_LICENSE.txt" />
+      <AdditionalFiles Include="LICENSES\Ookii.Dialogs.Wpf_LICENSE.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="LICENSES\Tomlyn_LICENSE.txt" />
+      <AdditionalFiles Include="LICENSES\Tomlyn_LICENSE.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="DefaultDescriptions\DefaultESDDescriptions_ds3.toml" />
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_ds3.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="DefaultDescriptions\DefaultMapDescriptions_ds3.toml" />
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_ds3.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Resources\EnumTemplates.xml" />
+      <Content Include="Resources\EnumTemplates.xml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\FunctionDefinitions.xml" />
+      <Content Include="Resources\FunctionDefinitions.xml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Page Remove="Resources\TextEditorResources.xaml" />
+      <Content Include="Resources\TextEditorResources.xaml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>

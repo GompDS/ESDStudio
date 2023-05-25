@@ -31,6 +31,7 @@ public class OpenESDCommand : CommandBase
             {
                 _esd.Decompile(Project.Current.ModDirectory, Project.Current.GameDirectory);
             }
+            _esd.Code.UndoStack.ClearAll();
             mainViewModel.OpenTabs.Add(_esd);
             mainViewModel.CurrentTab = _esd;
         }

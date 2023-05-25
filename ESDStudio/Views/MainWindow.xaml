@@ -160,6 +160,8 @@
                     <Separator/>
                     <MenuItem Header="_Select All" InputGestureText="Ctrl+A"/>
                 </MenuItem>
+                <MenuItem Header="About" IsTabStop="False"
+                          Command="{Binding ShowAboutCommand}"/>
             </Menu>
             <Separator VerticalAlignment="Bottom"/>
             <Label Grid.Column="1" IsTabStop="False">_Current Project:</Label>

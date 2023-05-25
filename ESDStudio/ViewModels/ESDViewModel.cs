@@ -396,16 +396,6 @@ public class ESDViewModel : ViewModelBase
         }
     }
 
-    static async Task ConsumeReader(TextReader reader)
-    {
-        string text;
-
-        while ((text = await reader.ReadLineAsync()) != null)
-        {
-            Console.WriteLine(text);
-        }
-    }
-
     private void Save()
     {
         if (IsESDEdited)

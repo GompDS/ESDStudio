@@ -103,7 +103,7 @@ public class CompletionData : ICompletionData
         }
     }
 
-    public double Priority { get; }
+    public double Priority { get; set; }
 
     public void Complete(TextArea textArea, ISegment completionSegment,
         EventArgs insertionRequestEventArgs)

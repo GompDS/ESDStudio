@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Timers;
@@ -79,12 +81,32 @@ public partial class ESDView : UserControl
             {
                 //if (!completionTerm.Text.StartsWith(enteredText, StringComparison.OrdinalIgnoreCase)) continue;
                 //if (!Regex.IsMatch(completionTerm, Regex.Escape(enteredText), RegexOptions.IgnoreCase)) continue;
+                if (completionTerm.Text.StartsWith(enteredText, StringComparison.OrdinalIgnoreCase))
+                {
+                    completionTerm.Priority = 2.0;
+                }
+                else
+                {
+                    completionTerm.Priority = 1.0;
+                }
                 completionTerm.InsertionOffset = insertionOffset;
                 completionTerm.LengthToRemove = enteredText.Length;
                 completionTerm.ParameterIndex = parameterIndex;
                 data.Add(completionTerm);
             }
 
+            for (int p = 0; p <= data.Count - 2; p++)
+            {
+                for (int i = 0; i <= data.Count - 2; i++)
+                {
+                    if (data[i].Priority < data[i + 1].Priority)
+                    {
+                        ICompletionData t = data[i + 1];
+                        data[i + 1] = data[i];
+                        data[i] = t;
+                    }
+                } 
+            }
             if (data.Count == 0) return;
             _completionWindow.Show();
             _completionWindow.Closed += delegate {

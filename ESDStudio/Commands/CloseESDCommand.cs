@@ -19,7 +19,6 @@ public class CloseESDCommand : CommandBase
     
     public override void Execute(object? parameter)
     {
-        _esd.ESDEditCount++;
         if (_tabWasOpen)
         {
             object? mainWindow = Application.Current.MainWindow;
@@ -33,7 +32,6 @@ public class CloseESDCommand : CommandBase
 
     public override void Undo()
     {
-        _esd.ESDEditCount--;
         if (_tabWasOpen)
         {
             object? mainWindow = Application.Current.MainWindow;
