@@ -267,6 +267,7 @@ public class ESDViewModel : ViewModelBase
         {
             Code.Text = funcDef.MakeNumberValuesDescriptive(Code.Text);
         }
+        Code.Text = Code.Text.ReplaceMatches("    ", "\t", false, false);
         File.Delete(tempPyFile);
         IsDecompiled = true;
     }
@@ -277,6 +278,7 @@ public class ESDViewModel : ViewModelBase
         string codeCopy = Code.Text;
         codeCopy = codeCopy.ReplaceMatches("true", "1", false, true);
         codeCopy = codeCopy.ReplaceMatches("false", "0", false, true);
+        codeCopy = codeCopy.ReplaceMatches("\t", "    ", false, false);
         foreach (string enumType in XmlData.EnumTemplates.Keys)
         {
             foreach (Tuple<int,string> enumValuePair in XmlData.EnumTemplates[enumType])
@@ -295,7 +297,11 @@ public class ESDViewModel : ViewModelBase
         {
             Directory.CreateDirectory($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}");
         }
-        File.WriteAllText($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}\\{Name}.py", codeCopy);
+
+        if (success)
+        {
+            File.WriteAllText($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}\\{Name}.py", codeCopy);
+        }
         File.Delete(tempPyFile);
         return success;
     }
@@ -363,6 +369,8 @@ public class ESDViewModel : ViewModelBase
             {
                 message += error;
             }
+
+            message += stderr;
             ShowErrorMessageBox(message);
         }
         return stderr.Length == 0;

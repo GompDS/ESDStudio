@@ -22,19 +22,19 @@ namespace ESDStudio;
 /// completion drop down.
 public class CompletionData : ICompletionData
 {
-    public CompletionData(string completionText, string enteredText, int insertionOffset, int parameterIndex)
+    public CompletionData(string completionText)
     {
         Text = completionText;
         Priority = 1.0;
-        InsertionOffset = insertionOffset;
-        LengthToRemove = enteredText.Length;
-        ParameterIndex = parameterIndex;
+        //InsertionOffset = insertionOffset;
+        //LengthToRemove = enteredText.Length;
+        //ParameterIndex = parameterIndex;
     }
 
     public FunctionDefinition? parentFunction { get; set; }
-    public int ParameterIndex = 0;
-    public int InsertionOffset { get; }
-    public int LengthToRemove { get; }
+    public int ParameterIndex { get; set; }
+    public int InsertionOffset { get; set; }
+    public int LengthToRemove { get; set; }
 
     public ImageSource? Image 
     {

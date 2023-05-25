@@ -31,6 +31,7 @@ public class MainWindowViewModel : ViewModelBase
 {
     public MainWindowViewModel()
     {
+        XmlData.ReadFunctionDefXml();
         RecentProjects = new ObservableCollection<Project>();
         BNDViewModels = new ObservableCollection<BNDViewModel>();
         OpenTabs = new ObservableCollection<ESDViewModel>();
@@ -50,7 +51,6 @@ public class MainWindowViewModel : ViewModelBase
         {
             LoadProject(RecentProjects[0]);
         }
-        XmlData.ReadFunctionDefXml();
     }
 
     public static Stack<CommandBase> UndoStack = new();

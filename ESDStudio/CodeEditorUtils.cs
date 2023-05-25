@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -7,9 +8,40 @@ namespace ESDStudio;
 
 public static class CodeEditorUtils
 {
-    public static readonly Regex Delimiters = new ("[,\\+\\-\\*\\(\\) \n]");
+    public static readonly Regex Delimiters = new ("[,\\+\\-\\*\\(\\) \n\t]");
 
-    public static void AddIfMatch(this IList<ICompletionData> collection, string completionText, string enteredText,
+    public static readonly List<CompletionData> CompletionTerms = MakeCompletionTermsList();
+
+    public static List<CompletionData> MakeCompletionTermsList()
+    {
+        List<CompletionData> completionList = new();
+        foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions)
+        {
+            completionList.Add(new CompletionData(funcDef.Name));
+        }
+        foreach (string enumType in XmlData.EnumTemplates.Keys)
+        {
+            foreach (Tuple<int, string> enumValuePair in XmlData.EnumTemplates[enumType])
+            {
+                string enumValueName = $"{enumType}.{enumValuePair.Item2}";
+                completionList.Add(new CompletionData(enumValueName));
+            }
+        }
+        completionList.Add(new CompletionData("true"));
+        completionList.Add(new CompletionData("false"));
+        completionList.Add(new CompletionData("if"));
+        completionList.Add(new CompletionData("elif"));
+        completionList.Add(new CompletionData("else"));
+        completionList.Add(new CompletionData("assert"));
+        completionList.Add(new CompletionData("pass"));
+        completionList.Add(new CompletionData("return"));
+        completionList.Add(new CompletionData("def"));
+        completionList.Add(new CompletionData("break"));
+        completionList.Add(new CompletionData("while True"));
+        return completionList;
+    }
+
+    /*public static void AddIfMatch(this IList<ICompletionData> collection, string completionText, string enteredText,
         int insertionOffset, int parameterIndex)
     {
         if (Regex.IsMatch(completionText, enteredText, RegexOptions.IgnoreCase))
@@ -49,7 +81,7 @@ public static class CodeEditorUtils
             CompletionData newData = new (funcDef.Name, enteredText, insertionOffset, 0);
             data.Add(newData);
         }
-    }
+    }*/
 
     public static void GetParentFunctionInfo(int startIndex, string searchRange, out string parentFunctionName, out int parameterIndex)
     {

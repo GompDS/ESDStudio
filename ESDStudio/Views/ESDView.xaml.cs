@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -35,6 +36,61 @@ public partial class ESDView : UserControl
         CodeEditor.TextArea.TextEntered += textEditor_TextArea_TextEntered;
         CodeEditor.TextArea.Caret.PositionChanged += TextEditor_OnCaretPositionChanged;
         CodeEditor.IsEnabled = true;
+        completionTimer.Elapsed += CompletionTimerOnElapsed;
+    }
+
+    private void CompletionTimerOnElapsed(object? sender, ElapsedEventArgs e)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            completionTimer.Stop();
+            DocumentLine line = CodeEditor.Document.GetLineByNumber(CodeEditor.TextArea.Caret.Line);
+            string enteredText = CodeEditor.Text.Substring(line.Offset, CodeEditor.TextArea.Caret.Column - 1);
+            int insertionOffset = line.Offset;
+            _completionWindow = new CompletionWindow(CodeEditor.TextArea)
+            {
+                Style = Application.Current.FindResource("CodeCompletionWindow") as Style,
+                SizeToContent = SizeToContent.WidthAndHeight
+            };
+            IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
+            int searchStartIndex = line.Offset + enteredText.Length - 1;
+            string searchRange = CodeEditor.Text.Substring(0, searchStartIndex + 1);
+            CodeEditorUtils.GetParentFunctionInfo(searchStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
+            
+            int delimIndex = -1;
+            for (int i = enteredText.Length - 1; i >= 0; i--)
+            {
+                if (CodeEditorUtils.Delimiters.Match(enteredText[i].ToString()).Success)
+                {
+                    delimIndex = i;
+                    break;
+                }
+            }
+            if (delimIndex > -1)
+            {
+                enteredText = enteredText.Substring(delimIndex + 1);
+                insertionOffset = line.Offset + delimIndex + 1;
+            }
+
+            if (enteredText.Length == 0) return;
+
+            foreach (CompletionData completionTerm in CodeEditorUtils.CompletionTerms.Where(x =>
+                         Regex.IsMatch(x.Text, Regex.Escape(enteredText), RegexOptions.IgnoreCase)))
+            {
+                //if (!completionTerm.Text.StartsWith(enteredText, StringComparison.OrdinalIgnoreCase)) continue;
+                //if (!Regex.IsMatch(completionTerm, Regex.Escape(enteredText), RegexOptions.IgnoreCase)) continue;
+                completionTerm.InsertionOffset = insertionOffset;
+                completionTerm.LengthToRemove = enteredText.Length;
+                completionTerm.ParameterIndex = parameterIndex;
+                data.Add(completionTerm);
+            }
+
+            if (data.Count == 0) return;
+            _completionWindow.Show();
+            _completionWindow.Closed += delegate {
+                _completionWindow = null;
+            };
+        });
     }
 
     private bool _isReadyToEdit = false;
@@ -49,111 +105,12 @@ public partial class ESDView : UserControl
 
     private ToolTipMode _toolTipMode;
     private int _lastFocusedTermStartIndex = -1;
+    private Timer completionTimer = new(0.5 * 1000);
 
     private void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
     {
-        DocumentLine line = CodeEditor.Document.GetLineByNumber(CodeEditor.TextArea.Caret.Line);
-        string enteredText = CodeEditor.Text.Substring(line.Offset, CodeEditor.TextArea.Caret.Column - 1);
-        int insertionOffset = line.Offset;
-        _completionWindow = new CompletionWindow(CodeEditor.TextArea)
-        {
-            Style = Application.Current.FindResource("CodeCompletionWindow") as Style,
-            SizeToContent = SizeToContent.WidthAndHeight
-        };
-        IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
-        int searchStartIndex = line.Offset + enteredText.Length - 1;
-        string searchRange = CodeEditor.Text.Substring(0, searchStartIndex + 1);
-        CodeEditorUtils.GetParentFunctionInfo(searchStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
-        
-        int delimIndex = -1;
-        for (int i = enteredText.Length - 1; i >= 0; i--)
-        {
-            if (CodeEditorUtils.Delimiters.Match(enteredText[i].ToString()).Success)
-            {
-                delimIndex = i;
-                break;
-            }
-        }
-        if (delimIndex > -1)
-        {
-            enteredText = enteredText.Substring(delimIndex + 1);
-            insertionOffset = line.Offset + delimIndex + 1;
-        }
-
-        if (enteredText.Length == 0) return;
-        
-        /*if (parentFunctionName.Length == 0)
-        {
-            data.AddMatchingFunctions(enteredText, insertionOffset);
-        }
-        else
-        {
-            string pattern = "";
-            FunctionDefinition? parentFunction = XmlData.FunctionDefinitions
-                .FirstOrDefault(x => x.Name == parentFunctionName);
-            if (parentFunction != null)
-            {
-                if (parentFunction.Parameters.Count <= parameterIndex) return;
-                FunctionParameter currentParam = parentFunction.Parameters[parameterIndex];
-                switch (currentParam.Type)
-                {
-                    case "int":
-                        pattern = "int|uint";
-                        break;
-                    case "uint":
-                        pattern = "uint";
-                        break;
-                    case "bool":
-                        pattern = "int|uint|enum|bool";
-                        data.AddIfMatch("true", enteredText, insertionOffset, parameterIndex);
-                        data.AddIfMatch("false", enteredText, insertionOffset, parameterIndex);
-                        break;
-                    case "enum":
-                        pattern = "enum";
-                        XmlData.EnumTemplates.TryGetValue(currentParam.EnumType,
-                            out List<Tuple<int, string>>? enumValues);
-                        if (enumValues != null)
-                        {
-                            foreach (Tuple<int, string> enumValuePair in enumValues)
-                            {
-                                string enumValueName = $"{currentParam.EnumType}.{enumValuePair.Item2}";
-                                data.AddIfMatch(enumValueName, enteredText, insertionOffset, parameterIndex);
-                            }
-                        }
-
-                        break;
-                }
-            }
-            else
-            {
-                
-            }
-            data.AddMatchingFunctions(pattern, enteredText, insertionOffset, parentFunction, parameterIndex);
-        }*/
-
-        foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions)
-        {
-            if (!Regex.IsMatch(funcDef.Name, Regex.Escape(enteredText), RegexOptions.IgnoreCase)) continue;
-            data.Add(new CompletionData(funcDef.Name, enteredText, insertionOffset, parameterIndex));
-        }
-
-        foreach (string enumType in XmlData.EnumTemplates.Keys)
-        {
-            foreach (Tuple<int, string> enumValuePair in XmlData.EnumTemplates[enumType])
-            {
-                string enumValueName = $"{enumType}.{enumValuePair.Item2}";
-                data.AddIfMatch(enumValueName, enteredText, insertionOffset, parameterIndex);
-            }
-        }
-        
-        data.AddIfMatch("true", enteredText, insertionOffset, parameterIndex);
-        data.AddIfMatch("false", enteredText, insertionOffset, parameterIndex);
-
-        if (data.Count == 0) return;
-        _completionWindow.Show();
-        _completionWindow.Closed += delegate {
-            _completionWindow = null;
-        };
+        completionTimer.Stop();
+        completionTimer.Start();
     }
 
     private void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)

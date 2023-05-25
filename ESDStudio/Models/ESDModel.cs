@@ -121,6 +121,13 @@ public class ESDModel
         ParentBNDModel = parent;
         Id = int.Parse(esdName[4..7]);
         Code = new TextDocument(codeText);
+        foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions.
+                     Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
+                                x.ReturnValue is { Type: "enum" or "bool" }))
+        {
+            Code.Text = funcDef.MakeNumberValuesDescriptive(Code.Text);
+        }
+        Code.Text = Code.Text.ReplaceMatches("    ", "\t", false, false);
         IsDecompiled = true;
     }
     
