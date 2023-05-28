@@ -16,7 +16,7 @@ public class EditBNDDescriptionCommand : CommandBase
     private string _oldDescription;
     private string _newDescription;
     
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         _bnd.Description = _newDescription;
         if (Project.Current.MapDescriptions.Keys.Contains(_bnd.Name))

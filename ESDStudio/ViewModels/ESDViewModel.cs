@@ -188,7 +188,7 @@ public class ESDViewModel : ViewModelBase
         editIdView.ShowDialog();
         if (editIdView.DialogResult != true) return;
         EditESDIdCommand command = new(this, int.Parse(editIdViewModel.NewIdEntry));
-        command.Execute(null);
+        command.Redo();
         MainWindowViewModel.UndoStack.Push(command);
     }
     private void EditDescription()
@@ -205,7 +205,7 @@ public class ESDViewModel : ViewModelBase
         if (editDescriptionViewModel.NewDescriptionEntry != Description)
         {
             EditESDDescriptionCommand command = new(this, editDescriptionViewModel.NewDescriptionEntry);
-            command.Execute(null);
+            command.Redo();
             MainWindowViewModel.UndoStack.Push(command);
         }
     }
@@ -233,7 +233,7 @@ public class ESDViewModel : ViewModelBase
         MainWindowViewModel mainViewModel = (MainWindowViewModel)((MainWindow)mainWindow).DataContext;
         DeleteESDCommand command = new DeleteESDCommand(this, ParentViewModel.ESDViewModels.IndexOf(this),
             mainViewModel.OpenTabs.Contains(this), mainViewModel.OpenTabs.IndexOf(this));
-        command.Execute(null);
+        command.Redo();
         MainWindowViewModel.UndoStack.Push(command);
     }
 

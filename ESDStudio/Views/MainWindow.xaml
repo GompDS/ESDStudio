@@ -49,6 +49,8 @@
             </Style.Triggers>
         </Style>
         <ContextMenu x:Key="BNDContextMenu">
+            <MenuItem Header="Save" InputGestureText="Ctrl+S"
+                      Command="{Binding SaveCommand}"/>
             <MenuItem Header="Edit Description" 
                       Command="{Binding EditDescriptionCommand}"/>
             <MenuItem Header="New ESD" InputGestureText="Ctrl+Shift+N"
@@ -57,6 +59,8 @@
                       Command="{Binding PasteESDCommand}"/>
         </ContextMenu>
         <ContextMenu x:Key="ESDContextMenu">
+            <MenuItem Header="Save" InputGestureText="Ctrl+S"
+                      Command="{Binding SaveCommand}"/>
             <MenuItem Header="Edit ID" 
                       Command="{Binding EditIdCommand}"/>
             <MenuItem Header="Edit Description"
@@ -139,7 +143,6 @@
                     <MenuItem Header="_New BND"
                               Command="{Binding NewBNDCommand}"/>
                     <Separator/>
-                    <MenuItem Header="_Save" InputGestureText="Ctrl+S"/>
                     <MenuItem Header="_Save All" InputGestureText="Ctrl+Shift+S"/>
                     <Separator/>
                     <MenuItem Header="_Close Tab" InputGestureText="Ctrl+W"

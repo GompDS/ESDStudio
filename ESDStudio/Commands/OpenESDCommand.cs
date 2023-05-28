@@ -20,7 +20,7 @@ public class OpenESDCommand : CommandBase
     private ESDViewModel _esd;
     private ESDViewModel? _oldEsd;
     
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         object? mainWindow = Application.Current.MainWindow;
         if (mainWindow != null)

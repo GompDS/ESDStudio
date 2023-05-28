@@ -260,7 +260,10 @@ public class MainWindowViewModel : ViewModelBase
         int mapId = int.Parse(newBndViewModel.MapIdEntry);
         int blockId = int.Parse(newBndViewModel.BlockIdEntry);
         BNDViewModel newBND = new BNDViewModel(mapId, blockId, newBndViewModel.DescriptionEntry, Project.Current.Game);
-        if (newBND.Description.Length > 0 &&
+        NewBNDCommand command = new(newBND, BNDViewModels);
+        command.Redo();
+        UndoStack.Push(command);
+        /*if (newBND.Description.Length > 0 &&
             !Project.Current.Game.MapDescriptions.Keys.Any(x => x.Equals(newBND.Name)))
         {
             Project.Current.Game.MapDescriptions.Add(newBND.Name, newBND.Description);
@@ -269,7 +272,7 @@ public class MainWindowViewModel : ViewModelBase
 
         BNDViewModels.Add(newBND);
         ICollectionView collectionView = CollectionViewSource.GetDefaultView(BNDViewModels);
-        collectionView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+        collectionView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));*/
     }
 
     private bool CanMakeNewBND()
@@ -287,7 +290,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenTabs.Add(ESDToOpen);
         CurrentTab = ESDToOpen;*/
         OpenESDCommand command = new(ESDToOpen);
-        command.Execute(null);
+        command.Redo();
         UndoStack.Push(command);
     }
 
@@ -295,7 +298,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (CurrentTab == null) return;
         CloseESDCommand command = new(CurrentTab, OpenTabs.Contains(CurrentTab), OpenTabs.IndexOf(CurrentTab));
-        command.Execute(null);
+        command.Redo();
         UndoStack.Push(command);
     }
     
@@ -377,7 +380,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (RedoStack.Count == 0) return;
         CommandBase command = RedoStack.Pop();
-        command.Execute(null);
+        command.Redo();
         UndoStack.Push(command);
     }
     

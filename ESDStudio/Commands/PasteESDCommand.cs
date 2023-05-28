@@ -21,7 +21,7 @@ public class PasteESDCommand : CommandBase
     private int _oldId;
     private int _newId;
 
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         if (_oldId != _newId)
         {

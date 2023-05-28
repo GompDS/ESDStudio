@@ -22,7 +22,7 @@ public class DeleteESDCommand : CommandBase
     private bool _tabWasOpen;
     private int _tabIndex;
 
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         _esd.ESDEditCount++;
         if (_tabWasOpen)

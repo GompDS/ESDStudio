@@ -17,7 +17,7 @@ public class CloseESDCommand : CommandBase
     private bool _tabWasOpen;
     private int _tabIndex;
     
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         if (_tabWasOpen)
         {

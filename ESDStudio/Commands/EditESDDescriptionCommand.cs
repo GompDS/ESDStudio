@@ -15,7 +15,7 @@ public class EditESDDescriptionCommand : CommandBase
     private string _oldDescription;
     private string _newDescription;
     
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         _esd.Description = _newDescription;
         _esd.DescriptionEditCount++;

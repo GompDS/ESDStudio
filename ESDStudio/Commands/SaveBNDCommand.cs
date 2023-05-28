@@ -21,7 +21,7 @@ public class SaveBNDCommand : CommandBase
     private List<int> _esdEditCounts;
     private List<int> _esdDescriptionEditCounts;
 
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         if (_bnd.IsDescriptionEdited)
         {

@@ -19,7 +19,7 @@ public class EditESDIdCommand : CommandBase
     private int _oldId;
     private int _newId;
     private bool _wasDecompiled;
-    public override void Execute(object? parameter)
+    public override void Redo()
     {
         if (_esd.IsDecompiled == false)
         {

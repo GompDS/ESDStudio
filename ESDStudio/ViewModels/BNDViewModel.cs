@@ -30,7 +30,7 @@ public class BNDViewModel : ViewModelBase
         EditDescriptionCommand = new RelayCommand(EditDescription);
         NewESDCommand = new RelayCommand(NewESD);
         PasteESDCommand = new RelayCommand(PasteESD);
-        SaveCommand = new RelayCommand(Save);
+        SaveCommand = new RelayCommand(Save, CanSave);
     }
     
     public BNDViewModel(int mapId, int blockId, string description, GameInfo gameInfo)
@@ -109,6 +109,7 @@ public class BNDViewModel : ViewModelBase
                 BND.Description = value;
                 OnPropertyChanged();
                 //IsDescriptionEdited = true;
+                ((RelayCommand)SaveCommand).NotifyCanExecuteChanged();
             }
         }
     }
@@ -137,7 +138,6 @@ public class BNDViewModel : ViewModelBase
                 BND.DescriptionEditCount = value;
                 OnPropertyChanged("IsDescriptionEdited");
                 UpdateIsBNDEdited();
-                ((RelayCommand)SaveCommand).NotifyCanExecuteChanged();
             }
             else
             {
@@ -149,6 +149,7 @@ public class BNDViewModel : ViewModelBase
     public void UpdateIsBNDEdited()
     {
         OnPropertyChanged("IsBNDEdited");
+        ((RelayCommand)SaveCommand).NotifyCanExecuteChanged();
     }
 
     private void EditDescription()
@@ -163,7 +164,7 @@ public class BNDViewModel : ViewModelBase
         editDescriptionView.ShowDialog();
         if (editDescriptionView.DialogResult != true) return;
         EditBNDDescriptionCommand command = new(this, editDescriptionViewModel.NewDescriptionEntry);
-        command.Execute(null);
+        command.Redo();
         MainWindowViewModel.UndoStack.Push(command);
         /*string newDescription = editDescriptionViewModel.NewDescriptionEntry;
         if (Description.Equals(newDescription) == false)
@@ -242,14 +243,14 @@ public class BNDViewModel : ViewModelBase
             newId = int.Parse(editIdViewModel.NewIdEntry);
         }
         PasteESDCommand command = new(this, newESDViewModel, newId);
-        command.Execute(null);
+        command.Redo();
         MainWindowViewModel.UndoStack.Push(command);
     }
 
     private void Save()
     {
         SaveBNDCommand command = new(this);
-        command.Execute(null);
+        command.Redo();
         MainWindowViewModel.UndoStack.Push(command);
         /*if (IsDescriptionEdited)
         {
@@ -269,6 +270,11 @@ public class BNDViewModel : ViewModelBase
             ESDViewModels.Any(y => y.Name == Path.GetFileNameWithoutExtension(x.Name))).ToList();
         bnd.Write($"{Project.Current.ModDirectory}\\script\\talk\\{Name}.talkesdbnd.dcx");
         UpdateIsBNDEdited();*/
+    }
+    
+    private bool CanSave()
+    {
+        return IsBNDEdited || IsDescriptionEdited;
     }
     
     public BND4 GetTalkBND(string modDirectory, string gameDirectory)

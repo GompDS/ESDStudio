@@ -83,9 +83,5 @@
       <Content Include="Resources\FunctionDefinitions.xml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <Page Remove="Resources\TextEditorResources.xaml" />
-      <Content Include="Resources\TextEditorResources.xaml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
     </ItemGroup>
 </Project>

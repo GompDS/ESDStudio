@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Windows.Input;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace ESDStudio.Commands;
 
-public class CommandBase : ICommand
+public class CommandBase : IUndoableOperation
 {
-    public virtual bool CanExecute(object? parameter)
-    {
-        return true;
-    }
-
-    public virtual void Execute(object? parameter)
+    public virtual void Redo()
     {
         throw new NotImplementedException();
     }
@@ -19,6 +15,4 @@ public class CommandBase : ICommand
     {
         throw new NotImplementedException();
     }
-
-    public event EventHandler? CanExecuteChanged;
 }
