@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EnumTemplates>
+    <Enum key="CompareType">
+        <Value index="0" name="Equal"/>
+        <Value index="1" name="NotEqual"/>
+        <Value index="2" name="Greater"/>
+        <Value index="3" name="Less"/>
+        <Value index="4" name="GreaterOrEqual"/>
+        <Value index="5" name="LessOrEqual"/>
+    </Enum>
+    <Enum key="ChangeType">
+        <Value index="0" name="Add"/>
+        <Value index="1" name="Subtract"/>
+        <Value index="5" name="Set"/>
+    </Enum>
+    <Enum key="ChrType">
+        <Value index="8" name="Hollow"/>
+    </Enum>
+    <Enum key="DialogBoxType">
+        <Value index="1" name="CenterMiddleDimScreen1"/>
+        <Value index="2" name="CenterMiddleDimScreen2"/>
+        <Value index="7" name="CenterBottom1"/>
+        <Value index="8" name="CenterBottom2"/>
+    </Enum>
+    <Enum key="DialogResult">
+        <Value index="0" name="Cancel"/>
+        <Value index="1" name="Left"/>
+        <Value index="2" name="Right"/>
+        <Value index="3" name="Leave"/>
+    </Enum>
+    <Enum key="DialogBoxStyle">
+        <Value index="0" name="OrnateNoOptions"/>
+        <Value index="1" name="DialogOptions"/>
+        <Value index="2" name="OrnateOptions"/>
+        <Value index="3" name="OrnateYesOption"/>
+        <Value index="4" name="Unk"/>
+    </Enum>
+    <Enum key="EnhanceType">
+        <Value index="0" name="UnlimitedRange"/>
+        <Value index="1" name="LimitedRange"/>
+    </Enum>
+    <Enum key="EstusType">
+        <Value index="0" name="HP"/>
+        <Value index="1" name="FP"/>
+    </Enum>
+    <Enum key="FlagState">
+        <Value index="0" name="Off"/>
+        <Value index="1" name="On"/>
+    </Enum>
+    <Enum key="ItemType">
+        <Value index="0" name="Weapon"/>
+        <Value index="1" name="Protector"/>
+        <Value index="2" name="Accessory"/>
+        <Value index="3" name="Goods"/>
+    </Enum>
+    <Enum key="MenuType">
+        <Value index="11" name="Talk"/>
+        <Value index="12" name="Repair"/>
+        <Value index="13" name="Reinforcement"/>
+        <Value index="23" name="LevelUp"/>
+        <Value index="25" name="Attunement"/>
+        <Value index="26" name="Storage"/>
+        <Value index="30" name="CharacterEdit"/>
+        <Value index="31" name="CovenantOffering"/>
+        <Value index="36" name="Warp"/>
+        <Value index="53" name="Unk"/>
+        <Value index="63" name="Bonfire"/>
+    </Enum>
+    <Enum key="PlayerStat">
+        <Value index="0" name="Vigor"/>
+        <Value index="1" name="Mind"/>
+        <Value index="2" name="Endurance"/>
+        <Value index="3" name="Strength"/>
+        <Value index="4" name="Dexterity"/>
+        <Value index="5" name="Intelligence"/>
+        <Value index="6" name="Faith"/>
+        <Value index="7" name="Arcane"/>
+        <Value index="8" name="RunesCollected"/>
+        <Value index="9" name="TotalGetRunes"/>
+        <Value index="10" name="Humanity"/>
+        <Value index="11" name="CovenantType"/>
+        <Value index="12" name="Gender"/>
+        <Value index="15" name="EquippedCovenantPoints"/>
+        <Value index="16" name="EquippedCovenantLevel"/>
+        <Value index="17" name="BladeOfDarkmoonPoints"/>
+        <Value index="18" name="WarriorOfSunlightPoints"/>
+        <Value index="19" name="MoundMakersPoints"/>
+        <Value index="20" name="SpearsOfTheChurchPoints"/>
+        <Value index="21" name="RosariasFingersPoints"/>
+        <Value index="22" name="WatchdogsOfFarronPoints"/>
+        <Value index="23" name="AldrichFaithfulPoints"/>
+        <Value index="24" name="BladeOfDarkmoonLevel"/>
+        <Value index="25" name="WarriorOfSunlightLevel"/>
+        <Value index="26" name="MoundMakersLevel"/>
+        <Value index="27" name="SpearsOfTheChurchLevel"/>
+        <Value index="28" name="RosariasFingersLevel"/>
+        <Value index="29" name="WatchdogsOfFarronLevel"/>
+        <Value index="30" name="AldrichFaithfulLevel"/>
+        <Value index="31" name="Hollowing"/>
+        <Value index="32" name="HollowingCovenantLevel"/>
+        <Value index="33" name="RuneLevel"/>
+        <Value index="34" name="RemainingYoelLevels"/>
+        <Value index="35" name="WayOfBluePoints"/>
+        <Value index="36" name="WayOfBlueLevel"/>
+        <Value index="37" name="BlueSentinelsPoints"/>
+        <Value index="38" name="BlueSentinelsLevel"/>
+    </Enum>
+    <Enum key="TalkOptionsType">
+        <Value index="0" name="Old"/>
+        <Value index="1" name="Regular"/>
+    </Enum>
+    <Enum key="Trophy">
+        <Value index="0" name="AllAchievements"/>
+        <Value index="1" name="LinkTheFirstFlame"/>
+        <Value index="2" name="EndOfFire"/>
+        <Value index="3" name="UsurpationOfFire"/>
+        <Value index="4" name="AbyssWatchers"/>
+        <Value index="5" name="YhormTheGiant"/>
+        <Value index="6" name="Aldrich"/>
+        <Value index="7" name="PrinceLothric"/>
+        <Value index="8" name="SupremeWeapon"/>
+        <Value index="9" name="AllInfusions"/>
+        <Value index="10" name="AllSorceries"/>
+        <Value index="11" name="AllPyromancies"/>
+        <Value index="12" name="AllMiracles"/>
+        <Value index="13" name="AllRings"/>
+        <Value index="14" name="AllGestures"/>
+        <Value index="15" name="UltimateBonfire"/>
+        <Value index="16" name="UltimateEstus"/>
+        <Value index="17" name="WarriorOfSunlight"/>
+        <Value index="18" name="WayOfBlue"/>
+        <Value index="19" name="BlueSentinels"/>
+        <Value index="20" name="BladeOfTheDarkmoon"/>
+        <Value index="21" name="RosariasFingers"/>
+        <Value index="22" name="MoundMakers"/>
+        <Value index="23" name="WatchdogsOfFarron"/>
+        <Value index="24" name="AldrichFaithful"/>
+        <Value index="25" name="UntendedGraves"/>
+        <Value index="26" name="ArchdragonPeak"/>
+        <Value index="27" name="IudexGundyr"/>
+        <Value index="28" name="BorealValleyVordt"/>
+        <Value index="29" name="RottedGreatwood"/>
+        <Value index="30" name="CrystalSage"/>
+        <Value index="31" name="DeepDeacons"/>
+        <Value index="32" name="HighLordWolnir"/>
+        <Value index="33" name="PontiffSulyvahn"/>
+        <Value index="34" name="BorealDancer"/>
+        <Value index="35" name="DragonslayerArmour"/>
+        <Value index="36" name="OldDemonKing"/>
+        <Value index="37" name="ConsumedOceiros"/>
+        <Value index="38" name="ChampionGundyr"/>
+        <Value index="39" name="AncientWyvern"/>
+        <Value index="40" name="NamelessKing"/>
+        <Value index="41" name="Enkindle"/>
+        <Value index="42" name="EmbraceTheFlame"/>
+    </Enum>
+</EnumTemplates>

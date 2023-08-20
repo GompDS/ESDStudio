@@ -12,7 +12,7 @@ public partial class CompletionDataContent : UserControl
         InitializeComponent();
 
         CompletionName.Text = completionName;
-        FunctionDefinition? funcDef = XmlData.FunctionDefinitions.FirstOrDefault(x => x.Name == completionName);
+        FunctionDefinition? funcDef = Project.Current.Game.FunctionDefinitions.FirstOrDefault(x => x.Name == completionName);
         if (funcDef != null)
         {
             CompletionName.Text += "()";

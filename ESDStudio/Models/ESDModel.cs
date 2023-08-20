@@ -16,11 +16,22 @@ public class ESDModel
     {
         get
         {
-            return $"t{ParentBNDModel.MapId:D2}{ParentBNDModel.BlockId:D1}{Id:D3}";
+            if (Project.Current.Game.Type == GameInfo.Game.EldenRing)
+            {
+                if (ParentBNDModel.Name == "m00_00_00_00")
+                {
+                    return "t0000" + Id.ToString(new string('0', Project.Current.Game.IdLength));
+                }
+                
+                return "t" + Id.ToString(new string('0', Project.Current.Game.IdLength)) + 
+                                         $"{ParentBNDModel.MapId:D2}{ParentBNDModel.BlockId:D2}";
+            }
+            
+            return $"t{ParentBNDModel.MapId:D2}{ParentBNDModel.BlockId:D1}" + Id.ToString(new string('0', Project.Current.Game.IdLength));
         }
     }
 
-    public string? OriginalName = null;
+    
 
     private string _description = "";
     public string Description
@@ -111,7 +122,14 @@ public class ESDModel
     public ESDModel(string esdName, BNDModel parent)
     {
         ParentBNDModel = parent;
-        Id = int.Parse(esdName[4..7]);
+        if (Project.Current.Game.Type == GameInfo.Game.EldenRing)
+        {
+            Id = int.Parse(int.Parse(esdName[1..5]) == 0 ? esdName[5..] : esdName[1..6]);
+        }
+        else
+        {
+            Id = int.Parse(esdName[4..7]);
+        }
         Code = new TextDocument();
         IsDecompiled = false;
     }
@@ -119,9 +137,16 @@ public class ESDModel
     public ESDModel(string esdName, string codeText, BNDModel parent)
     {
         ParentBNDModel = parent;
-        Id = int.Parse(esdName[4..7]);
+        if (Project.Current.Game.Type == GameInfo.Game.EldenRing)
+        {
+            Id = int.Parse(int.Parse(esdName[1..5]) == 0 ? esdName[5..] : esdName[1..6]);
+        }
+        else
+        {
+            Id = int.Parse(esdName[4..7]);
+        }
         Code = new TextDocument(codeText);
-        foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions.
+        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
                      Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
                                 x.ReturnValue is { Type: "enum" or "bool" }))
         {

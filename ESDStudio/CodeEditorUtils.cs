@@ -15,13 +15,13 @@ public static class CodeEditorUtils
     public static List<CompletionData> MakeCompletionTermsList()
     {
         List<CompletionData> completionList = new();
-        foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions)
+        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions)
         {
             completionList.Add(new CompletionData(funcDef.Name));
         }
-        foreach (string enumType in XmlData.EnumTemplates.Keys)
+        foreach (string enumType in Project.Current.Game.EnumTemplates.Keys)
         {
-            foreach (Tuple<int, string> enumValuePair in XmlData.EnumTemplates[enumType])
+            foreach (Tuple<int, string> enumValuePair in Project.Current.Game.EnumTemplates[enumType])
             {
                 string enumValueName = $"{enumType}.{enumValuePair.Item2}";
                 completionList.Add(new CompletionData(enumValueName));

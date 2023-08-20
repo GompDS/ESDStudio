@@ -56,7 +56,7 @@ public partial class DetailPanel : UserControl
             textEditor.Text += $"{parameter.Type} {parameter.Name}";
             if (parameter.IsEnum)
             {
-                foreach (Tuple<int, string> enumValue in XmlData.EnumTemplates[parameter.EnumType])
+                foreach (Tuple<int, string> enumValue in Project.Current.Game.EnumTemplates[parameter.EnumType])
                 {
                     textEditor.Text += $"\n      {enumValue.Item1}: {parameter.EnumType}.{enumValue.Item2}";
                 }
@@ -77,7 +77,7 @@ public partial class DetailPanel : UserControl
             if (funcDef.ReturnValue.IsEnum)
             {
                 textEditor.Text += $" {funcDef.ReturnValue.Name}\n";
-                foreach (Tuple<int, string> enumValue in XmlData.EnumTemplates[funcDef.ReturnValue.EnumType])
+                foreach (Tuple<int, string> enumValue in Project.Current.Game.EnumTemplates[funcDef.ReturnValue.EnumType])
                 {
                     textEditor.Text += $"            {enumValue.Item1}: {funcDef.ReturnValue.EnumType}.{enumValue.Item2}\n";
                 }

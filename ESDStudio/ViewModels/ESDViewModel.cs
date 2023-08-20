@@ -244,12 +244,12 @@ public class ESDViewModel : ViewModelBase
         if (SourceESD != null)
         {
             ESDViewModel CopiedESD = GetCopiedESD();
-            parentBND = CopiedESD.ParentViewModel.GetTalkBND(modDirectory, gameDirectory);
+            parentBND = CopiedESD.ParentViewModel.GetTalkBND(modDirectory, gameDirectory, out string BNDPath);
             ESDSourceName = CopiedESD.Name;
         }
         else
         {
-            parentBND = ParentViewModel.GetTalkBND(modDirectory, gameDirectory);
+            parentBND = ParentViewModel.GetTalkBND(modDirectory, gameDirectory, out string BNDPath);
             ESDSourceName = Name;
         }
         BinderFile BNDFile = parentBND.Files.First(x => x.Name.EndsWith(ESDSourceName + ".esd", StringComparison.OrdinalIgnoreCase));
@@ -261,7 +261,7 @@ public class ESDViewModel : ViewModelBase
         if (success == false) return;
         string tempPyFile = cwd + $"esdtool\\{Name}.esd.py";
         Code.Text = File.ReadAllText(tempPyFile);
-        foreach (FunctionDefinition funcDef in XmlData.FunctionDefinitions.
+        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
                      Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
                                 x.ReturnValue is { Type: "enum" or "bool" }))
         {
@@ -279,9 +279,9 @@ public class ESDViewModel : ViewModelBase
         codeCopy = codeCopy.ReplaceMatches("true", "1", false, true);
         codeCopy = codeCopy.ReplaceMatches("false", "0", false, true);
         codeCopy = codeCopy.ReplaceMatches("\t", "    ", false, false);
-        foreach (string enumType in XmlData.EnumTemplates.Keys)
+        foreach (string enumType in Project.Current.Game.EnumTemplates.Keys)
         {
-            foreach (Tuple<int,string> enumValuePair in XmlData.EnumTemplates[enumType])
+            foreach (Tuple<int,string> enumValuePair in Project.Current.Game.EnumTemplates[enumType])
             {
                 codeCopy = codeCopy.ReplaceMatches($"{enumType}.{enumValuePair.Item2}",
                     enumValuePair.Item1.ToString(), false, true);
@@ -417,7 +417,11 @@ public class ESDViewModel : ViewModelBase
             bool success = Compile(Project.Current.Game, Project.Current.GameDirectory);
             if (success)
             {
-                BND4 bnd = ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory);
+                BND4 bnd = ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
+                if (!File.Exists(BNDPath + ".bak"))
+                {
+                    bnd.Write($"{BNDPath}" + ".bak");
+                }
                 BinderFile? file = bnd.Files.FirstOrDefault(x => x.Name.EndsWith($"{Name}.esd"));
                 string tempESDFile = $"{cwd}\\esdtool\\{Name}.esd";
                 if (file == null)

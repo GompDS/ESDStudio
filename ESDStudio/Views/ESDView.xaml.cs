@@ -148,7 +148,7 @@ public partial class ESDView : UserControl
         TextViewPosition? position = CodeEditor.GetPositionFromPoint(Mouse.GetPosition(CodeEditor));
         if (position == null) return;
         GetOverlappedTerm(position.Value, out string selectedTerm, out int termStartIndex);
-        FunctionDefinition? selectedFunc = XmlData.FunctionDefinitions
+        FunctionDefinition? selectedFunc = Project.Current.Game.FunctionDefinitions
             .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
         ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
         
@@ -169,7 +169,7 @@ public partial class ESDView : UserControl
         TextViewPosition? position = CodeEditor.GetPositionFromPoint(Mouse.GetPosition(CodeEditor));
         if (position == null) return;
         GetOverlappedTerm(position.Value, out string selectedTerm, out int termStartIndex);
-        FunctionDefinition? selectedFunc = XmlData.FunctionDefinitions
+        FunctionDefinition? selectedFunc = Project.Current.Game.FunctionDefinitions
             .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
         ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
 
@@ -183,7 +183,7 @@ public partial class ESDView : UserControl
             if (termStartIndex + 1 >= CodeEditor.Text.Length) return;
             string searchRange = CodeEditor.Text[..(termStartIndex + 1)];
             CodeEditorUtils.GetParentFunctionInfo(termStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
-            FunctionDefinition? parentFunc = XmlData.FunctionDefinitions
+            FunctionDefinition? parentFunc = Project.Current.Game.FunctionDefinitions
                 .FirstOrDefault(x => x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
             if (parentFunc == null || _toolTipMode == ToolTipMode.Function)
             {
@@ -199,7 +199,7 @@ public partial class ESDView : UserControl
         Caret caret = (Caret)sender;
         GetOverlappedTerm(caret.Position, out string selectedTerm, out int termStartIndex);
 
-        FunctionDefinition? selectedFunc = XmlData.FunctionDefinitions
+        FunctionDefinition? selectedFunc = Project.Current.Game.FunctionDefinitions
             .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
 
         ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
@@ -216,7 +216,7 @@ public partial class ESDView : UserControl
         {
             string searchRange = CodeEditor.Text[..(termStartIndex + 1)];
             CodeEditorUtils.GetParentFunctionInfo(termStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
-            FunctionDefinition? parentFunc = XmlData.FunctionDefinitions
+            FunctionDefinition? parentFunc = Project.Current.Game.FunctionDefinitions
                 .FirstOrDefault(x => x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
             if (parentFunc is { Parameters.Count: > 0 })
             {

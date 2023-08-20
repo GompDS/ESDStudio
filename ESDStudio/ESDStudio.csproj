@@ -5,7 +5,7 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <Version>0.2.0</Version>
+        <Version>0.3.0</Version>
         <ApplicationIcon>Assets\icon-256.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -20,6 +20,7 @@
     <ItemGroup>
         <EmbeddedResource Remove="esdtool\SoulsIds\**" />
         <EmbeddedResource Include="ESDLang.xshd" />
+        <EmbeddedResource Include="Themes\Dark\ESDLang_Dark.xshd" />
     </ItemGroup>
 
     <ItemGroup>
@@ -52,10 +53,42 @@
       <Content Include="esdtool\**">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <Content Update="Resources\FunctionDefinitions_er.xml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Update="Resources\EnumTemplates_er.xml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Content\Images\er.jpg" />
+      <Content Include="Content\Images\er.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Content\Images\sdt.jpg" />
+      <Content Include="Content\Images\sdt.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     
     <ItemGroup>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_sdt.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_sdt.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Resources\EnumTemplates_sdt.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Resources\FunctionDefinitions_sdt.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
       <None Remove="LICENSES\AvalonEdit_LICENSE.txt" />
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_er.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_er.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
       <AdditionalFiles Include="LICENSES\AvalonEdit_LICENSE.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </AdditionalFiles>
@@ -76,12 +109,22 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </AdditionalFiles>
       <None Remove="Resources\EnumTemplates.xml" />
-      <Content Include="Resources\EnumTemplates.xml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
       <None Remove="Resources\FunctionDefinitions.xml" />
-      <Content Include="Resources\FunctionDefinitions.xml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+      <None Remove="Resources\EnumTemplates_ds3.xml" />
+      <AdditionalFiles Include="Resources\EnumTemplates_ds3.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Resources\EnumTemplates_er.xml" />
+      <AdditionalFiles Include="Resources\EnumTemplates_er.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Resources\FunctionDefinitions_ds3.xml" />
+      <AdditionalFiles Include="Resources\FunctionDefinitions_ds3.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Resources\FunctionDefinitions_er.xml" />
+      <AdditionalFiles Include="Resources\FunctionDefinitions_er.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
     </ItemGroup>
 </Project>

@@ -10,9 +10,7 @@
     <Grid Margin="20, 20, 0, 0">
         <avalonedit:TextEditor
             Name="textEditor"
-            SyntaxHighlighting="ESDLang"
-            FontFamily="Consolas"
-            FontSize="9pt"
-            IsReadOnly="True"/>
+            Style="{StaticResource ReadOnlyEditor}"
+            VerticalScrollBarVisibility="Auto"/>
     </Grid>
 </UserControl>

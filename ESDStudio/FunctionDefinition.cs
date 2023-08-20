@@ -79,7 +79,7 @@ public class FunctionDefinition
 
                     if (Parameters[i].IsEnum)
                     {
-                        XmlData.EnumTemplates.TryGetValue(Parameters[i].EnumType,
+                        Project.Current.Game.EnumTemplates.TryGetValue(Parameters[i].EnumType,
                             out List<Tuple<int, string>>? enumValues);
                         Tuple<int, string>? valueStringPair =
                             enumValues?.FirstOrDefault(x => x.Item1 == intValue);
@@ -146,7 +146,7 @@ public class FunctionDefinition
             string valueToInsert = "";
             if (ReturnValue.IsEnum)
             {
-                XmlData.EnumTemplates.TryGetValue(ReturnValue.EnumType,
+                Project.Current.Game.EnumTemplates.TryGetValue(ReturnValue.EnumType,
                     out List<Tuple<int, string>>? enumValues);
                 Tuple<int, string>? valueStringPair =
                     enumValues?.FirstOrDefault(x => x.Item1 == intValue);

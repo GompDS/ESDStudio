@@ -55,7 +55,7 @@ public class CompletionData : ICompletionData
     {
         get
         {
-            FunctionDefinition? funcDef = XmlData.FunctionDefinitions.FirstOrDefault(x => x.Name == Text);
+            FunctionDefinition? funcDef = Project.Current.Game.FunctionDefinitions.FirstOrDefault(x => x.Name == Text);
             if (funcDef != null)
             {
                 TextEditor funcDescription = new()
@@ -113,7 +113,7 @@ public class CompletionData : ICompletionData
         seg.StartOffset = InsertionOffset;
         seg.EndOffset = seg.StartOffset;
         textArea.Document.Remove(InsertionOffset, LengthToRemove);
-        FunctionDefinition? funcDef = XmlData.FunctionDefinitions.FirstOrDefault(x => x.Name == Text);
+        FunctionDefinition? funcDef = Project.Current.Game.FunctionDefinitions.FirstOrDefault(x => x.Name == Text);
         if (funcDef != null)
         {
             Text += "()";

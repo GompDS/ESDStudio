@@ -27,7 +27,7 @@ namespace ESDStudio.Views
         {
             // Load our custom highlighting definition
             IHighlightingDefinition customHighlighting; 
-            using (Stream? s = typeof(MainWindow).Assembly.GetManifestResourceStream("ESDStudio.ESDLang.xshd")) 
+            using (Stream? s = typeof(MainWindow).Assembly.GetManifestResourceStream("ESDStudio.Themes.Dark.ESDLang_Dark.xshd")) 
             {
                 if (s == null)
                 {
@@ -36,12 +36,11 @@ namespace ESDStudio.Views
                 using (XmlReader reader = new XmlTextReader(s)) 
                 { 
                     customHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd. 
-                        HighlightingLoader.Load(reader, HighlightingManager.Instance); 
+                        HighlightingLoader.Load(reader, HighlightingManager.Instance);
                 } 
             } 
             // and register it in the HighlightingManager 
             HighlightingManager.Instance.RegisterHighlighting("ESDLang", new string[] { ".esdlang" }, customHighlighting);
-            
             InitializeComponent();
         }
 

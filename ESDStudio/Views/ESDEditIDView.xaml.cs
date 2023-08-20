@@ -9,6 +9,7 @@ public partial class ESDEditIDView : Window
     public ESDEditIDView()
     {
         InitializeComponent();
+        EntryBox.MaxLength = Project.Current.Game.IdLength;
     }
     
     private void NewIdEntry_OnPreviewTextInput(object sender, TextCompositionEventArgs e)

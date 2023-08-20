@@ -118,7 +118,24 @@ public class BNDViewModel : ViewModelBase
     {
         get
         {
-            return BND.IsContentsEdited;
+            return BND.IsContentsEdited || LastSavedESDCount != ESDViewModels.Count;
+        }
+    }
+
+    public int LastSavedESDCount
+    {
+        get
+        {
+            return BND.LastSavedESDCount;
+        }
+        set
+        {
+            if (value != BND.LastSavedESDCount)
+            {
+                BND.LastSavedESDCount = value;
+                OnPropertyChanged("LastSavedEditCount");
+                UpdateIsBNDEdited();
+            }
         }
     }
     
@@ -274,10 +291,10 @@ public class BNDViewModel : ViewModelBase
     
     private bool CanSave()
     {
-        return IsBNDEdited || IsDescriptionEdited;
+        return (IsBNDEdited || IsDescriptionEdited || LastSavedESDCount != ESDViewModels.Count);
     }
     
-    public BND4 GetTalkBND(string modDirectory, string gameDirectory)
+    public BND4 GetTalkBND(string modDirectory, string gameDirectory, out string BNDPath)
     {
         string talkPath = $"\\script\\talk\\{Name}.talkesdbnd.dcx";
         string basePath;
@@ -289,7 +306,7 @@ public class BNDViewModel : ViewModelBase
         {
             basePath = gameDirectory;
         }
-        string BNDPath = $"{basePath}\\{talkPath}";
+        BNDPath = $"{basePath}\\{talkPath}";
         if (File.Exists(BNDPath))
         {
             if (BND4.IsRead(BNDPath, out BND4 bnd))

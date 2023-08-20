@@ -8,21 +8,8 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Title="Find and Replace" Height="180" Width="420">
+        Title="Find and Replace" Height="180" Width="420" Style="{StaticResource ThemedWindow}">
     <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Margin" Value="5"></Setter>
-        </Style>
         <RoutedUICommand x:Key="CloseCommand"/>
     </Window.Resources>
     <Window.CommandBindings>
@@ -33,7 +20,7 @@
         <KeyBinding Command="{Binding FindNextCommand}" Key="Enter"/>
         <KeyBinding Command="{StaticResource CloseCommand}"  Key="Escape"/>
     </Window.InputBindings>
-    <Grid Margin="5">
+    <Grid Margin="5" Style="{StaticResource ColoredGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>

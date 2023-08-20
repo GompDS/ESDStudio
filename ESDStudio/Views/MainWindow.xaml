@@ -14,7 +14,7 @@
         Title="ESD Studio" Width="1366" Height="768" IsTabStop="False"> 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <Style x:Key="BNDNameTextBlock" TargetType="TextBlock">
+        <!--<Style x:Key="BNDNameTextBlock" TargetType="TextBlock">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsBNDEdited}" Value="True">
                     <Setter Property="Foreground" Value="Green"/>
@@ -47,7 +47,7 @@
                     <Setter Property="Foreground" Value="DodgerBlue"/>
                 </DataTrigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
         <ContextMenu x:Key="BNDContextMenu">
             <MenuItem Header="Save" InputGestureText="Ctrl+S"
                       Command="{Binding SaveCommand}"/>
@@ -102,7 +102,7 @@
                     Command="{Binding RedoCommand}"/>
         
     </Window.InputBindings>
-    <Grid>
+    <Grid Style="{StaticResource ColoredGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -139,31 +139,31 @@
                             </Style>
                         </MenuItem.ItemContainerStyle>
                     </MenuItem>
-                    <Separator/>
+                    <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_New BND"
                               Command="{Binding NewBNDCommand}"/>
-                    <Separator/>
+                    <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Save All" InputGestureText="Ctrl+Shift+S"/>
-                    <Separator/>
+                    <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Close Tab" InputGestureText="Ctrl+W"
                               Command="{Binding CloseTabCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Edit" IsTabStop="False">
                     <MenuItem Header="_Undo" InputGestureText="Ctrl+Z"/>
                     <MenuItem Header="_Redo" InputGestureText="Ctrl+Y"/>
-                    <Separator/>
+                    <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Cut" InputGestureText="Ctrl+X"/>
                     <MenuItem Header="_Copy" InputGestureText="Ctrl+C"/>
                     <MenuItem Header="_Paste" InputGestureText="Ctrl+V"/>
-                    <Separator/>
+                    <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Find" InputGestureText="Ctrl+F"
                               Command="{Binding FindCommand}"/>
                     <MenuItem Header="_Replace" InputGestureText="Ctrl+H"
                               Command="{Binding ReplaceCommand}"/>
-                    <Separator/>
+                    <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Select All" InputGestureText="Ctrl+A"/>
                 </MenuItem>
-                <MenuItem Header="About" IsTabStop="False"
+                <MenuItem Header="About" IsTabStop="False" BorderBrush="Transparent"
                           Command="{Binding ShowAboutCommand}"/>
             </Menu>
             <Separator VerticalAlignment="Bottom"/>

@@ -23,6 +23,8 @@ public class BNDModel
             return ESDModels.Any(x => x.IsESDEdited || x.IsDescriptionEdited);
         }
     }
+    
+    public int LastSavedESDCount { get; set; }
 
     public BNDModel(string BNDPath, GameInfo gameInfo)
     {
@@ -47,6 +49,7 @@ public class BNDModel
 
         MapId = int.Parse(Name[1..3]);
         BlockId = int.Parse(Name[4..6]);
+        
         ESDModels = new ObservableCollection<ESDModel>();
 
         BND4 BND = BND4.Read(BNDPath);
@@ -65,6 +68,8 @@ public class BNDModel
             }
             ESDModels.Add(newESDModel);
         }
+
+        LastSavedESDCount = ESDModels.Count;
     }
     
     public BNDModel(int mapId, int blockId, string description, GameInfo gameInfo)
@@ -74,5 +79,6 @@ public class BNDModel
         Name = $"m{MapId:D2}_{BlockId:D2}_00_00";
         Description = description;
         ESDModels = new ObservableCollection<ESDModel>();
+        LastSavedESDCount = 0;
     }
 }

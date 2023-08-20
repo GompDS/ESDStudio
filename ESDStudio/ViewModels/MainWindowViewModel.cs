@@ -31,7 +31,6 @@ public class MainWindowViewModel : ViewModelBase
 {
     public MainWindowViewModel()
     {
-        XmlData.ReadFunctionDefXml();
         RecentProjects = new ObservableCollection<Project>();
         BNDViewModels = new ObservableCollection<BNDViewModel>();
         OpenTabs = new ObservableCollection<ESDViewModel>();
@@ -169,6 +168,37 @@ public class MainWindowViewModel : ViewModelBase
 
     private void LoadProject(Project project)
     {
+        // Copy Oodle
+        if (project.Game.Type is GameInfo.Game.EldenRing or GameInfo.Game.Sekiro)
+        {
+            string gameOodlePath = project.GameDirectory + @"\oo2core_6_win64.dll";
+            string localOodlePath = AppDomain.CurrentDomain.BaseDirectory + "oo2core_6_win64.dll";
+            if (!File.Exists(localOodlePath))
+            {
+                try
+                {
+                    File.Copy(gameOodlePath, localOodlePath);
+                }
+                catch (Exception e)
+                {
+                    ShowErrorMessageBox(e.Message);
+                    return;
+                }
+            }
+            string esdtoolOodlePath = AppDomain.CurrentDomain.BaseDirectory + @"esdtool\oo2core_6_win64.dll";
+            if (!File.Exists(esdtoolOodlePath))
+            {
+                try
+                {
+                    File.Copy(gameOodlePath, esdtoolOodlePath);
+                }
+                catch (Exception e)
+                {
+                    ShowErrorMessageBox(e.Message);
+                    return;
+                }
+            }
+        }
         Project.IsProjectLoaded = true;
         BNDViewModels.Clear();
         OpenTabs.Clear();
@@ -190,7 +220,6 @@ public class MainWindowViewModel : ViewModelBase
         newProjectView.ShowDialog();
         if (newProjectView.DialogResult != true) return;
         string baseDir = newProjectVM.ProjectBaseDirectoryEntry + $"\\{newProjectVM.ProjectNameEntry}";
-        Directory.CreateDirectory(baseDir);
         string? gameDir = Path.GetDirectoryName(newProjectVM.GameExecutableEntry);
         if (gameDir == null) return;
         Project newProject = new(newProjectVM.ProjectNameEntry, baseDir, gameDir, 
@@ -206,6 +235,8 @@ public class MainWindowViewModel : ViewModelBase
             { "game", newProject.Game.ToString() }
         };
         model.Add("project_info", projectInfo);
+
+        Directory.CreateDirectory(baseDir);
         File.WriteAllText(newProject.BaseDirectory + @"\ESDStudioProject.toml", Toml.FromModel(model));
         LoadProject(newProject);
     }
@@ -220,21 +251,33 @@ public class MainWindowViewModel : ViewModelBase
     private void PopulateBNDViewModels(string modDirectory, string gameDirectory, GameInfo gameInfo)
     {
         List<string> modTalkBNDNames = new();
-        IEnumerable<string> bndPaths = 
-            Directory.EnumerateFiles(modDirectory + @"\script\talk", "*.talkesdbnd.dcx");
-        foreach (string bndPath in bndPaths)
+        if (Directory.Exists(modDirectory + @"\script\talk"))
         {
-            string bndName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(bndPath));
-            modTalkBNDNames.Add(bndName);
-            BNDViewModels.Add(new BNDViewModel(bndPath, gameInfo));
+            IEnumerable<string> bndPaths = 
+                Directory.EnumerateFiles(modDirectory + @"\script\talk", "*.talkesdbnd.dcx");
+            foreach (string bndPath in bndPaths)
+            {
+                string bndName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(bndPath));
+                modTalkBNDNames.Add(bndName);
+                BNDViewModels.Add(new BNDViewModel(bndPath, gameInfo));
+            }
         }
-            
-        bndPaths = Directory.EnumerateFiles(gameDirectory + @"\script\talk", "*.talkesdbnd.dcx");
-        foreach (string bndPath in bndPaths.Where(x => !modTalkBNDNames.Any(x.Contains)))
+
+        if (Directory.Exists(gameDirectory + @"\script\talk"))
         {
-            BNDViewModels.Add(new BNDViewModel(bndPath, gameInfo));
+            IEnumerable<string> bndPaths =
+                Directory.EnumerateFiles(gameDirectory + @"\script\talk", "*.talkesdbnd.dcx");
+            foreach (string bndPath in bndPaths.Where(x => !modTalkBNDNames.Any(x.Contains)))
+            {
+                BNDViewModels.Add(new BNDViewModel(bndPath, gameInfo));
+            }
         }
-        
+        else
+        {
+            ShowErrorMessageBox(
+                @"The 'script\talk' folder could not be found in the game directory. Make sure your game is unpacked using UXM and then relaunch ESD Studio.");
+        }
+
         ICollectionView collectionView = CollectionViewSource.GetDefaultView(BNDViewModels);
         collectionView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
     }

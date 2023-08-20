@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using ESDStudio.ViewModels;
 using ESDStudio.Views;
 using SoulsFormats;
@@ -53,5 +54,6 @@ public class DeleteESDCommand : CommandBase
         }
         _esd.ParentViewModel.ESDViewModels.Insert(_indexInBnd, _esd);
         _esd.ParentViewModel.BND.ESDModels.Insert(_indexInBnd, _esd.ESD);
+        _esd.ParentViewModel.UpdateIsBNDEdited();
     }
 }

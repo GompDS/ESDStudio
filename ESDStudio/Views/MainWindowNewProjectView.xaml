@@ -9,28 +9,13 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Title="New Project" Height="230" Width="620">
-    <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Margin" Value="5"></Setter>
-        </Style>
-    </Window.Resources>
+        Title="New Project" Height="230" Width="620" Style="{StaticResource ThemedWindow}">
     <Window.InputBindings>
         <KeyBinding Command="{Binding ConfirmCommand}" Key="Enter"/>
         <KeyBinding Command="{Binding CancelCommand}" Key="Escape"/>
     </Window.InputBindings>
     
-    <Grid Margin="5">
+    <Grid Margin="5" Style="{StaticResource ColoredGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -55,15 +40,18 @@
             
             <Label Content="Project Base Directory" Grid.Row="1"/>
             <TextBox Text="{Binding ProjectBaseDirectoryEntry, Mode=TwoWay}" Grid.Column="1" Grid.Row="1"/>
-            <Button Content="Browse" Command="{Binding BrowseBaseDirectoryCommand}" Grid.Column="2" Grid.Row="1"/>
+            <Button Content="Browse" Command="{Binding BrowseBaseDirectoryCommand}" Grid.Column="2" Grid.Row="1"
+                    Width="50"/>
             
             <Label Content="Game Executable" Grid.Row="2"/>
             <TextBox Text="{Binding GameExecutableEntry, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
-            <Button Content="Browse" Command="{Binding BrowseExeCommand}" Grid.Column="2" Grid.Row="2"/>
+            <Button Content="Browse" Command="{Binding BrowseExeCommand}" Grid.Column="2" Grid.Row="2"
+                    Width="50"/>
             
             <Label Content="Project Mod Directory" Grid.Row="3"/>
             <TextBox Text="{Binding ProjectModDirectoryEntry, Mode=TwoWay}" Grid.Column="1" Grid.Row="3"/>
-            <Button Content="Browse" Command="{Binding BrowseModDirectoryCommand}" Grid.Column="2" Grid.Row="3"/>
+            <Button Content="Browse" Command="{Binding BrowseModDirectoryCommand}" Grid.Column="2" Grid.Row="3"
+                    Width="50"/>
         </Grid>
         
         <StackPanel Grid.Row="1"

@@ -52,7 +52,7 @@
     </FunctionDef>
     <FunctionDef name="CheckSpecificPersonMenuIsOpen">
         <Parameters>
-            <Parameter type="int" name="unk" comment="-1 means any menu is open?"/>
+            <Parameter type="int" name="unk" comment="-1 means no menu is open"/>
             <Parameter type="uint" name="unk" comment="usually 0"/>
         </Parameters>
         <ReturnValue type="bool" name="menuIsOpen"/>
@@ -73,7 +73,7 @@
     <FunctionDef name="CloseShopMessage"/>
     <FunctionDef name="CombineMenuFlagAndEventFlag">
         <Parameters>
-            <Parameter type="uint" name="eventFlagId"/>
+            <Parameter type="uint" name="menuFlagId"/>
             <Parameter type="uint" name="eventFlagId"/>
         </Parameters>
     </FunctionDef>
@@ -152,6 +152,9 @@
         <ReturnValue type="bool" name="playerHasSpEffect"/>
     </FunctionDef>
     <FunctionDef name="EndBonfireKindleAnimLoop"/>
+    <FunctionDef name="EquipNinjutsu">
+        <Parameter type="uint" name="ninjutsuGoodsId"/> 
+    </FunctionDef>
     <FunctionDef name="EstusAllocationUpdate">
         <Parameters>
             <Parameter type="uint" name="newFlaskCount"/>
@@ -352,6 +355,9 @@
         </Parameters>
     </FunctionDef>
     <FunctionDef name="OfferHumanity"/>
+    <FunctionDef name="OpenBonfireSubmenu">
+        <Parameter type="int" name="unk"/>
+    </FunctionDef>
     <FunctionDef name="OpenChooseQuantityDialog">
         <Parameters>
             <Parameter type="uint" name="goodsId"/>
@@ -401,17 +407,24 @@
     </FunctionDef>
     <FunctionDef name="OpenRegularShop">
         <Parameters>
-            <Parameter type="uint" name="MinShopLineupParamRow"/>
-            <Parameter type="uint" name="MaxShopLineupParamRow"/>
+            <Parameter type="uint" name="StartShopLineupParamRow"/>
+            <Parameter type="uint" name="EndShopLineupParamRow"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="OpenRepairShop"/>
     <FunctionDef name="OpenRepository"/>
+    <FunctionDef name="OpenSellShop">
+        <Parameters>
+            <Parameter type="uint" name="StartShopLineupParamRow" comment="always -1"/>
+            <Parameter type="uint" name="EndShopLineupParamRow" comment="always -1"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenSkillMenu"/>
     <FunctionDef name="OpenSoul"/>
     <FunctionDef name="OpenTranspositionShop">
         <Parameters>
-            <Parameter type="uint" name="MinShopLineupParamRow"/>
-            <Parameter type="uint" name="MaxShopLineupParamRow"/>
+            <Parameter type="uint" name="StartShopLineupParamRow"/>
+            <Parameter type="uint" name="EbdShopLineupParamRow"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="MainBonfireMenuFlag"/>
@@ -448,6 +461,12 @@
             <Parameter type="int" name="unk" comment="use 1"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="SetEventFlagRange">
+        <Parameters>
+            <Parameter type="uint" name="eventFlagId_A"/>
+            <Parameter type="uint" name="eventFlagId_B"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="SetEventState">
         <Parameters>
             <Parameter type="uint" name="eventFlagId"/>
@@ -477,6 +496,13 @@
             <Parameter type="int" name="valueToStore"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="SetWorkValueIf">
+        <Parameters>
+            <Parameter type="bool" name="condition"/>
+            <Parameter type="uint" name="unk" comment="usually 0"/>
+            <Parameter type="int" name="valueToStore"/>
+        </Parameters>
+    </FunctionDef>
     <FunctionDef name="ShowShopMessage">
         <Parameters>
             <Parameter type="enum" name="optionsType" enum="TalkOptionsType"/>
@@ -497,7 +523,7 @@
     <FunctionDef name="StartBonfireAnimLoop"/>
     <FunctionDef name="StartWarpMenuInit">
         <Parameters>
-            <Parameter type="int" name="unk" comment="use -1" optional="true"/>
+            <Parameter type="int" name="bonfireWarpId" comment="usually uses -1" optional="true"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="SubtractAcquittalCostFromPlayerSouls">

@@ -8,27 +8,12 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Title="New ESD" Height="150" Width="420">
-    <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Margin" Value="5"></Setter>
-        </Style>
-    </Window.Resources>
+        Title="New ESD" Height="150" Width="420" Style="{StaticResource ThemedWindow}">
     <Window.InputBindings>
         <KeyBinding Command="{Binding ConfirmCommand}" Key="Enter"/>
         <KeyBinding Command="{Binding CancelCommand}" Key="Escape"/>
     </Window.InputBindings>
-    <Grid Margin="5">
+    <Grid Margin="5" Style="{StaticResource ColoredGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>

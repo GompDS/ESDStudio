@@ -1,0 +1,142 @@
+﻿<SyntaxDefinition name="ESDLang"
+        xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+    <Color name="Comment" foreground="#6dd769" exampleText="# comment" />
+    <Color name="String" foreground="Gray" exampleText="name = 'abc'"/>
+    <Color name="Function" foreground="#cf76fd" exampleText="t300000_x10()"/>
+    <Color name="MethodCall" foreground="#fda300" exampleText="Hello()"/>
+    <Color name="NumberLiteral" foreground="#E394CB" exampleText="3.1415f"/>
+    <Color name="Number" foreground="#E394CB" exampleText="22"/>
+    <Color name="Keywords" foreground="#fd4b4b" exampleText="if"/>
+    <Color name="Enum" foreground="#08C794" exampleText="enumType.Value"/>
+
+    <Property name="DocCommentMarker" value="///" />
+
+    <RuleSet name="CommentMarkerSet">
+        <Keywords fontWeight="bold" foreground="Red">
+            <Word>FIXME</Word>
+        </Keywords>
+        <Keywords fontWeight="bold" foreground="#E0E000">
+            <Word>HACK</Word>
+            <Word>UNDONE</Word>
+        </Keywords>
+    </RuleSet>
+
+    <RuleSet>
+        <Span color="Comment" ruleSet="CommentMarkerSet">
+            <Begin>\#</Begin>
+        </Span>
+
+        <Span color="String" multiline="true">
+            <Begin>'''</Begin>
+            <End>'''</End>
+        </Span>
+        <Span color="String" multiline="true">
+            <Begin>"""</Begin>
+            <End>"""</End>
+        </Span>
+
+        <Span color="String">
+            <Begin>"</Begin>
+            <End>"</End>
+            <RuleSet>
+                <Span begin="\\" end="."/>
+            </RuleSet>
+        </Span>
+        <Span color="String">
+            <Begin>'</Begin>
+            <End>'</End>
+            <RuleSet>
+                <Span begin="\\" end="."/>
+            </RuleSet>
+        </Span>
+
+        <Keywords color="Keywords">
+            <Word>and</Word>
+            <Word>as</Word>
+            <Word>assert</Word>
+            <Word>break</Word>
+            <Word>class</Word>
+            <Word>continue</Word>
+            <Word>def</Word>
+            <Word>del</Word>
+            <Word>elif</Word>
+            <Word>else</Word>
+            <Word>except</Word>
+            <Word>exec</Word>
+            <Word>False</Word>
+            <Word>finally</Word>
+            <Word>for</Word>
+            <Word>from</Word>
+            <Word>global</Word>
+            <Word>if</Word>
+            <Word>import</Word>
+            <Word>in</Word>
+            <Word>is</Word>
+            <Word>lambda</Word>
+            <Word>None</Word>
+            <Word>nonlocal</Word>
+            <Word>not</Word>
+            <Word>or</Word>
+            <Word>pass</Word>
+            <Word>print</Word>
+            <Word>raise</Word>
+            <Word>return</Word>
+            <Word>True</Word>
+            <Word>try</Word>
+            <Word>while</Word>
+            <Word>with</Word>
+            <Word>yield</Word>
+            <Word>async</Word>
+            <Word>await</Word>
+            <Word>returns</Word>
+        </Keywords>
+        
+        <Keywords foreground="#029afb">
+            <Word>int</Word>
+            <Word>uint</Word>
+            <Word>enum</Word>
+            <Word>bool</Word>
+            <Word>void</Word>
+            <Word>float</Word>
+            <Word>string</Word>
+            <Word>true</Word>
+            <Word>false</Word>
+        </Keywords>
+        
+        <Rule foreground="#029afb">
+            &#x2B9A;
+        </Rule>
+
+        <Rule color="MethodCall">
+            \b((?!t[\d]+_[\d\w]+(?=\())[\d\w]+(?=\s*\())
+        </Rule>
+        
+        <Rule color="Function">
+             \bt[0-9]+_[0-9x]+(?=\s*\()
+        </Rule>
+        
+        <Rule color="NumberLiteral">
+            \b0[xX][0-9a-fA-F]+  # hex number
+            (	\b\d+(\.[0-9]+)?   #number with optional floating point
+            |	\.[0-9]+           #or just starting with floating point
+            )
+            ([eE][+-]?[0-9]+)? # optional exponent
+        </Rule>
+        
+        <Rule color="Number">
+            \b0[xX][0-9a-fA-F]+  # hex number
+            |
+            (	\b\d+(\.[0-9]+)?   #number with optional floating point
+            |	\.[0-9]+           #or just starting with floating point
+            )
+            ([eE][+-]?[0-9]+)? # optional exponent
+        </Rule>
+        
+        
+        <Rule color="Enum">
+            (?&lt;=[A-z_]+\.) # preceded by enum type and dot
+            [0-9-A-z_]+ # enum value
+        </Rule>
+        
+    </RuleSet>
+</SyntaxDefinition>

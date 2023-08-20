@@ -15,10 +15,7 @@
         <avalonedit:TextEditor
             Name="CodeEditor"
             Document="{Binding Code}"
-            SyntaxHighlighting="ESDLang"
-            FontFamily="Consolas"
-            FontSize="10pt"
-            ShowLineNumbers="True"
+            Style="{StaticResource RegularEditor}"
             IsEnabled="False"
             TextChanged="CodeEditor_OnTextChanged"
             PreviewMouseWheel="TextEditor_OnPreviewMouseWheel"

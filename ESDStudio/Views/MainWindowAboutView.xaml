@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ESDStudio.Views"
         mc:Ignorable="d"
         Title="About" Height="400" Width="300">
-    <Grid>
+    <Grid Style="{StaticResource ColoredGrid}">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
                 <Label>
