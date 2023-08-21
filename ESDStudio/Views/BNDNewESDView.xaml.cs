@@ -9,6 +9,7 @@ public partial class BNDNewESDView : Window
     public BNDNewESDView()
     {
         InitializeComponent();
+        EntryBox.MaxLength = Project.Current.Game.IdLength;
     }
     
     private void NewIdEntry_OnPreviewTextInput(object sender, TextCompositionEventArgs e)

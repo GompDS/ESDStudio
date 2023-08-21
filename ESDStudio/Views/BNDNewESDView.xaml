@@ -30,10 +30,9 @@
             </Grid.RowDefinitions>
             
             <Label Content="ID"/>
-            <TextBox Text="{Binding IdEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Name="EntryBox" Text="{Binding IdEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      PreviewTextInput="NewIdEntry_OnPreviewTextInput"
-                     Grid.Column="1" 
-                     MaxLength="3"
+                     Grid.Column="1"
                      Width="50"
                      HorizontalAlignment="Left"/>
             
