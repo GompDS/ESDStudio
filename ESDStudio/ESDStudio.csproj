@@ -134,5 +134,9 @@
       <AdditionalFiles Include="EditorSettings.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
+      <None Remove="LICENSES\ESDLang_LICENSE.txt" />
+      <AdditionalFiles Include="LICENSES\ESDLang_LICENSE.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
     </ItemGroup>
 </Project>
