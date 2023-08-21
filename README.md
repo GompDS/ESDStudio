@@ -8,6 +8,7 @@ If you would like to contribute to this project then you can help me by pinging 
 - Elden Ring
 ## Requirements
 - NET 6.0 Windows
+- The game's script/talk folder must be unpacked using UXM
 ## Credits
 - Game Icons - Souv
 - Esdtool/Esdlang - thefifthmatt
