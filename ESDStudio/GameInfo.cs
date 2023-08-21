@@ -37,7 +37,7 @@ public class GameInfo
             Type = Game.DarkSoulsIII;
             Name = "ds3";
             FilePathStart = @"N:\FDP\data\INTERROOT_win64";
-            IdLength = 3;
+            IdLength = 6;
         }
         else if (text.EndsWith("sekiro.exe", StringComparison.OrdinalIgnoreCase) ||
                  text.Equals("sdt", StringComparison.OrdinalIgnoreCase))
@@ -45,7 +45,7 @@ public class GameInfo
             Type = Game.Sekiro;
             Name = "sdt";
             FilePathStart = @"N:\NTC\data\Target\INTERROOT_win64";
-            IdLength = 3;
+            IdLength = 6;
         }
         else if (text.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase) ||
                     text.Equals("er", StringComparison.OrdinalIgnoreCase))
@@ -53,7 +53,7 @@ public class GameInfo
             Type = Game.EldenRing;
             Name = "er";
             FilePathStart = @"N:\GR\data\INTERROOT_win64";
-            IdLength = 5;
+            IdLength = 9;
         }
         else
         {

@@ -46,6 +46,8 @@ public class MainWindowViewModel : ViewModelBase
         SaveCommand = new RelayCommand(Save);
         SaveAllCommand = new RelayCommand(SaveAll);
         ShowAboutCommand = new RelayCommand(ShowAbout);
+        ShowEditorSettingsCommand = new RelayCommand(ShowEditorSettings);
+        LoadEditorSettings();
         GetRecentProjects();
         if (RecentProjects.Count > 0)
         {
@@ -68,6 +70,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand SaveCommand { get; }
     public ICommand SaveAllCommand { get; }
     public ICommand ShowAboutCommand { get; }
+    public ICommand ShowEditorSettingsCommand { get; }
 
     public ObservableCollection<Project> RecentProjects { get; }
 
@@ -191,6 +194,20 @@ public class MainWindowViewModel : ViewModelBase
                 try
                 {
                     File.Copy(gameOodlePath, esdtoolOodlePath);
+                }
+                catch (Exception e)
+                {
+                    ShowErrorMessageBox(e.Message);
+                    return;
+                }
+            }
+            
+            string esdtool_er_OodlePath = AppDomain.CurrentDomain.BaseDirectory + @"esdtool_er\oo2core_6_win64.dll";
+            if (!File.Exists(esdtool_er_OodlePath))
+            {
+                try
+                {
+                    File.Copy(gameOodlePath, esdtool_er_OodlePath);
                 }
                 catch (Exception e)
                 {
@@ -436,5 +453,57 @@ public class MainWindowViewModel : ViewModelBase
             Owner = Application.Current.MainWindow
         };
         aboutView.ShowDialog();
+    }
+    
+    private void ShowEditorSettings()
+    {
+        MainWindowEditorSettingsViewModel editorSettingsViewModel = new();
+        MainWindowEditorSettingsView editorSettingsView = new()
+        {
+            ShowInTaskbar = false,
+            Owner = Application.Current.MainWindow,
+            DataContext = editorSettingsViewModel
+        };
+        editorSettingsView.ShowDialog();
+        if (editorSettingsView.DialogResult != true) return;
+        WriteEditorSettings();
+    }
+
+    private void LoadEditorSettings()
+    {
+        string cwd = AppDomain.CurrentDomain.BaseDirectory;
+        string tomlPath = cwd + "EditorSettings.toml";
+        if (File.Exists(tomlPath))
+        {
+            TomlTable tomlModel = Toml.ToModel(File.ReadAllText(tomlPath), tomlPath);
+            tomlModel.TryGetValue("settings", out object obj);
+            TomlTable settings = (TomlTable) obj;
+            settings.TryGetValue("useGameDataFlags", out obj);
+            Editor.UseGameDataFlags = bool.Parse((string) obj);
+        }
+        else
+        {
+            Editor.UseGameDataFlags = false;
+            TomlTable model = new() { { "title", "EditorSettings" } };
+            TomlTable settings = new()
+            {
+                { "useGameDataFlags", Editor.UseGameDataFlags.ToString() },
+            };
+            model.Add("settings", settings);
+            File.WriteAllText(cwd + @"\EditorSettings.toml", Toml.FromModel(model));
+        }
+    }
+    
+    private void WriteEditorSettings()
+    {
+        string cwd = AppDomain.CurrentDomain.BaseDirectory;
+        TomlTable model = new() { { "title", "EditorSettings" } };
+        TomlTable settings = new()
+        {
+            { "useGameDataFlags", Editor.UseGameDataFlags.ToString() },
+        };
+        model.Add("settings", settings);
+        
+        File.WriteAllText(cwd + @"\EditorSettings.toml", Toml.FromModel(model));
     }
 }

@@ -25,8 +25,8 @@ public class EditESDIdCommand : CommandBase
         {
             _esd.Decompile(Project.Current.ModDirectory, Project.Current.GameDirectory);
         }
-        _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t[0-9]{3})" + Regex.Escape($"{_esd.Id:D3}"),
-            _newId.ToString("D3"), true, false);
+        _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t)" + Regex.Escape(_esd.Id.ToString(new string('0', Project.Current.Game.IdLength))),
+            _newId.ToString(new string('0', Project.Current.Game.IdLength)), true, false);
         _esd.Id = _newId;
         _esd.ParentViewModel.ESDViewModels = new ObservableCollection<ESDViewModel>(
             _esd.ParentViewModel.ESDViewModels.OrderBy(x => x.Id));
@@ -36,8 +36,8 @@ public class EditESDIdCommand : CommandBase
     {
         if (_wasDecompiled)
         {
-            _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t[0-9]{3})" + Regex.Escape($"{_esd.Id:D3}"),
-                _oldId.ToString("D3"), true, false);
+            _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t)" + Regex.Escape(_esd.Id.ToString(new string('0', Project.Current.Game.IdLength))),
+                _oldId.ToString(new string('0', Project.Current.Game.IdLength)), true, false);
         }
         else
         {

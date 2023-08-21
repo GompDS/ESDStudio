@@ -254,12 +254,12 @@ public class ESDViewModel : ViewModelBase
         }
         BinderFile BNDFile = parentBND.Files.First(x => x.Name.EndsWith(ESDSourceName + ".esd", StringComparison.OrdinalIgnoreCase));
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
-        string tempESDFile = cwd + $"esdtool\\{Name}.esd";
+        string tempESDFile = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd";
         File.WriteAllBytes(tempESDFile, BNDFile.Bytes);
-        bool success = RunESDTool($"-i {Name}.esd -writepy %e.esd.py");
+        bool success = RunESDTool($"{(Editor.UseGameDataFlags ? $"-{Project.Current.Game.Name} " : "")}-i {Name}.esd -writepy %e.esd.py");
         File.Delete(tempESDFile);
         if (success == false) return;
-        string tempPyFile = cwd + $"esdtool\\{Name}.esd.py";
+        string tempPyFile = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd.py";
         Code.Text = File.ReadAllText(tempPyFile);
         foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
                      Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
@@ -288,7 +288,7 @@ public class ESDViewModel : ViewModelBase
             }
         }
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
-        string tempPyFile = $"{cwd}esdtool\\{Name}.esd.py";
+        string tempPyFile = $"{cwd}" + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd.py";
         File.WriteAllText(tempPyFile, codeCopy);
         bool success = RunESDTool($"-{game} " +
                                   $"-basedir \"{gameDirectory}\" " +
@@ -313,9 +313,9 @@ public class ESDViewModel : ViewModelBase
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = cwd + @"esdtool\esdtool.exe",
+                FileName = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? @"esdtool_er\esdtool.exe" : @"esdtool\esdtool.exe"),
                 Arguments = arguments,
-                WorkingDirectory = cwd + "esdtool",
+                WorkingDirectory = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool"),
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true

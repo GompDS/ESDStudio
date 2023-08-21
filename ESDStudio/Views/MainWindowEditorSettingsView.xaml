@@ -1,0 +1,45 @@
+﻿<Window x:Class="ESDStudio.Views.MainWindowEditorSettingsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ESDStudio.Views"
+        xmlns:esdStudio="clr-namespace:ESDStudio"
+        esdStudio:DialogCloser.DialogResult="{Binding DialogResult}"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Title="Editor Settings" Height="120" Width="300" Style="{StaticResource ThemedWindow}">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding ConfirmCommand}" Key="Enter"/>
+        <KeyBinding Command="{Binding CancelCommand}" Key="Escape"/>
+    </Window.InputBindings>
+    
+    <Grid Margin="5" Style="{StaticResource ColoredGrid}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <CheckBox Content="Use game data flags during decompilation"
+                      IsChecked="{Binding GameDataFlagsCheck}"/>
+        </Grid>
+        
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Content="Ok" Command="{Binding ConfirmCommand}" Width="80" Height="24"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Width="80" Height="24"/>
+        </StackPanel>
+    </Grid>
+</Window>

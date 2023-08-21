@@ -5,7 +5,7 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <Version>0.3.0</Version>
+        <Version>0.4.0</Version>
         <ApplicationIcon>Assets\icon-256.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -51,7 +51,7 @@
       </Content>
       <None Remove="esdtool\**" />
       <Content Include="esdtool\**">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
       <Content Update="Resources\FunctionDefinitions_er.xml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -66,6 +66,10 @@
       <None Remove="Content\Images\sdt.jpg" />
       <Content Include="Content\Images\sdt.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="esdtool_er\**" />
+      <Content Include="esdtool_er\**">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
     
@@ -124,6 +128,10 @@
       </AdditionalFiles>
       <None Remove="Resources\FunctionDefinitions_er.xml" />
       <AdditionalFiles Include="Resources\FunctionDefinitions_er.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="EditorSettings.toml" />
+      <AdditionalFiles Include="EditorSettings.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
     </ItemGroup>
