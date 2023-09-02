@@ -296,9 +296,8 @@ public class BNDViewModel : ViewModelBase
     
     public BND4 GetTalkBND(string modDirectory, string gameDirectory, out string BNDPath)
     {
-        string talkPath = $"\\script\\talk\\{Name}.talkesdbnd.dcx";
         string basePath;
-        if (File.Exists($"{modDirectory}\\{talkPath}"))
+        if (File.Exists($"{modDirectory}\\{Project.Current.Game.TalkPath}\\{Name}.talkesdbnd.dcx"))
         {
             basePath = modDirectory;
         }
@@ -306,7 +305,7 @@ public class BNDViewModel : ViewModelBase
         {
             basePath = gameDirectory;
         }
-        BNDPath = $"{basePath}\\{talkPath}";
+        BNDPath = $"{basePath}\\{Project.Current.Game.TalkPath}\\{Name}.talkesdbnd.dcx";
         if (File.Exists(BNDPath))
         {
             if (BND4.IsRead(BNDPath, out BND4 bnd))
@@ -317,7 +316,7 @@ public class BNDViewModel : ViewModelBase
 
         BND4 newBND = new BND4
         {
-            Compression = DCX.Type.DCX_DFLT_10000_44_9
+            Compression = Project.Current.Game.Compression
         };
         return newBND;
     }

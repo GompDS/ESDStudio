@@ -291,7 +291,7 @@ public class ESDViewModel : ViewModelBase
         string tempPyFile = $"{cwd}" + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd.py";
         File.WriteAllText(tempPyFile, codeCopy);
         bool success = RunESDTool($"-{game} " +
-                                  $"-basedir \"{gameDirectory}\" " +
+                                  $"-basedir \"{gameDirectory}\" -esddir \"{gameDirectory}\\{Project.Current.Game.TalkPath}\" " +
                                   $"-i \"{tempPyFile}\" -writeloose \"{cwd}esdtool\\{Name}.esd\"");
         if (Directory.Exists($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}") == false)
         {

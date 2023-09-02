@@ -165,8 +165,8 @@ public class MainWindowNewProjectViewModel : ViewModelBase
     {
         OpenFileDialog fileDialog = new()
         {
-            Title = "Select Game Executable",
-            Filter = "Executable files (*.exe)|*.exe",
+            Title = "Select Game Executable or Binary",
+            Filter = "Executable or Binary (*.exe)(*.bin)|*.exe;*.bin",
             InitialDirectory = Path.GetDirectoryName(GameExecutableEntry)
         };
         if (fileDialog.ShowDialog() == true)

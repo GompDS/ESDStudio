@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using SoulsFormats;
 using Tomlyn;
 using Tomlyn.Model;
 
@@ -13,6 +14,7 @@ public class GameInfo
 {
     public enum Game
     {
+        Bloodborne,
         DarkSoulsIII,
         Sekiro,
         EldenRing
@@ -21,6 +23,8 @@ public class GameInfo
     public Game Type;
     public string Name = "Unknown";
     public string FilePathStart = "";
+    public string TalkPath = "";
+    public DCX.Type Compression = DCX.Type.None;
     public int IdLength = 0;
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
@@ -31,12 +35,24 @@ public class GameInfo
     public GameInfo(string text)
     {
         bool validGame = true;
-        if (text.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
+        if (text.EndsWith("eboot.bin", StringComparison.OrdinalIgnoreCase) ||
+            text.Equals("bb", StringComparison.OrdinalIgnoreCase))
+        {
+            Type = Game.Bloodborne;
+            Name = "bb";
+            FilePathStart = @"N:\SPRJ\data\INTERROOT_ps4";
+            TalkPath = @"script\talk";
+            Compression = DCX.Type.DCX_DFLT_10000_44_9;
+            IdLength = 6;
+        }
+        else if (text.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
             text.Equals("ds3", StringComparison.OrdinalIgnoreCase))
         {
             Type = Game.DarkSoulsIII;
             Name = "ds3";
             FilePathStart = @"N:\FDP\data\INTERROOT_win64";
+            TalkPath = @"script\talk";
+            Compression = DCX.Type.DCX_DFLT_10000_44_9;
             IdLength = 6;
         }
         else if (text.EndsWith("sekiro.exe", StringComparison.OrdinalIgnoreCase) ||
@@ -45,6 +61,8 @@ public class GameInfo
             Type = Game.Sekiro;
             Name = "sdt";
             FilePathStart = @"N:\NTC\data\Target\INTERROOT_win64";
+            TalkPath = @"script\talk";
+            Compression = DCX.Type.DCX_KRAK;
             IdLength = 6;
         }
         else if (text.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase) ||
@@ -53,6 +71,8 @@ public class GameInfo
             Type = Game.EldenRing;
             Name = "er";
             FilePathStart = @"N:\GR\data\INTERROOT_win64";
+            TalkPath = @"script\talk";
+            Compression = DCX.Type.DCX_KRAK;
             IdLength = 9;
         }
         else
@@ -70,7 +90,8 @@ public class GameInfo
 
     public static bool IsValidExecutable(string exePath)
     {
-        return exePath.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
+        return exePath.EndsWith("eboot.bin", StringComparison.OrdinalIgnoreCase) ||
+               exePath.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
                exePath.EndsWith("sekiro.exe", StringComparison.OrdinalIgnoreCase) ||
                exePath.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase);
     }

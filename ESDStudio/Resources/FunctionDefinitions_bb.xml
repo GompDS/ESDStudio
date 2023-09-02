@@ -152,9 +152,6 @@
         <ReturnValue type="bool" name="playerHasSpEffect"/>
     </FunctionDef>
     <FunctionDef name="EndBonfireKindleAnimLoop"/>
-    <FunctionDef name="EquipNinjutsu">
-        <Parameter type="uint" name="ninjutsuGoodsId"/> 
-    </FunctionDef>
     <FunctionDef name="EstusAllocationUpdate">
         <Parameters>
             <Parameter type="uint" name="newFlaskCount"/>
@@ -355,9 +352,6 @@
         </Parameters>
     </FunctionDef>
     <FunctionDef name="OfferHumanity"/>
-    <FunctionDef name="OpenBonfireSubmenu">
-        <Parameter type="int" name="unk"/>
-    </FunctionDef>
     <FunctionDef name="OpenChooseQuantityDialog">
         <Parameters>
             <Parameter type="uint" name="goodsId"/>
@@ -419,7 +413,6 @@
             <Parameter type="uint" name="EndShopLineupParamRow" comment="always -1"/>
         </Parameters>
     </FunctionDef>
-    <FunctionDef name="OpenSkillMenu"/>
     <FunctionDef name="OpenSoul"/>
     <FunctionDef name="OpenTranspositionShop">
         <Parameters>
@@ -445,6 +438,16 @@
         </Parameters>
     </FunctionDef>
     <FunctionDef name="ReportConversationEndToHavokBehavior"/>
+    <FunctionDef name="SetDungeonIndexNumber">
+        <Parameters>
+            <Parameter type="uint" name="Index" comment="Use 0-6"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenBloodGemEquipMenu"/>
+    <FunctionDef name="OpenCaryllRuneEquipMenu"/>
+    <FunctionDef name="UnusedChaliceAltarPrompt"/>
+    <FunctionDef name="OpenIndexedDungeonMenu"/>
+    <FunctionDef name="OpenIndexedDungeonMenu2"/>
     <FunctionDef name="RequestSave">
         <Parameters>
             <Parameter type="int" name="unk" comment="use 0"/>
@@ -452,7 +455,7 @@
     </FunctionDef>
     <FunctionDef name="RequestUnlockTrophy">
         <Parameters>
-            <Parameter type="uint" name="achievementId"/>
+            <Parameter type="enum" name="achievement" enum="Trophy"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="SetAquittalCostMessageTag">
@@ -496,13 +499,6 @@
             <Parameter type="int" name="valueToStore"/>
         </Parameters>
     </FunctionDef>
-    <FunctionDef name="SetWorkValueIf">
-        <Parameters>
-            <Parameter type="bool" name="condition"/>
-            <Parameter type="uint" name="unk" comment="usually 0"/>
-            <Parameter type="int" name="valueToStore"/>
-        </Parameters>
-    </FunctionDef>
     <FunctionDef name="ShowShopMessage">
         <Parameters>
             <Parameter type="enum" name="optionsType" enum="TalkOptionsType"/>
@@ -520,6 +516,16 @@
             <Parameter type="uint" name="unk" comment="use 0"/>
         </Parameters>
     </FunctionDef>
+    <FunctionDef name="OpenCharaMakeMenu"/>
+    <FunctionDef name="OpenStartingGiftMenu1"/>
+    <FunctionDef name="OpenStartingGiftMenu2"/>
+    <FunctionDef name="OpenInsightShop">
+        <Parameters>
+            <Parameter type="uint" name="StartShopLineupParamRow" comment=""/>
+            <Parameter type="uint" name="EndShopLineupParamRow" comment=""/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="OpenArcaneHazeExtractorMenu"/>
     <FunctionDef name="StartBonfireAnimLoop"/>
     <FunctionDef name="StartWarpMenuInit">
         <Parameters>

@@ -43,7 +43,7 @@
             <Button Content="Browse" Command="{Binding BrowseBaseDirectoryCommand}" Grid.Column="2" Grid.Row="1"
                     Width="50"/>
             
-            <Label Content="Game Executable" Grid.Row="2"/>
+            <Label Content="Game Executable/Binary" Grid.Row="2"/>
             <TextBox Text="{Binding GameExecutableEntry, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
             <Button Content="Browse" Command="{Binding BrowseExeCommand}" Grid.Column="2" Grid.Row="2"
                     Width="50"/>

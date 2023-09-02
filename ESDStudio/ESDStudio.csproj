@@ -5,7 +5,7 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <Version>0.4.1</Version>
+        <Version>0.5.0</Version>
         <ApplicationIcon>Assets\icon-256.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -71,16 +71,32 @@
       <Content Include="esdtool_er\**">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Content\Images\bb.jpg" />
+      <Content Include="Content\Images\bb.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     
     <ItemGroup>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_bb.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_sdt.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_bb.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_sdt.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
+      <AdditionalFiles Include="Resources\EnumTemplates_bb.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
       <AdditionalFiles Include="Resources\EnumTemplates_sdt.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Resources\FunctionDefinitions_bb.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="Resources\FunctionDefinitions_sdt.xml">
@@ -136,6 +152,22 @@
       </AdditionalFiles>
       <None Remove="LICENSES\ESDLang_LICENSE.txt" />
       <AdditionalFiles Include="LICENSES\ESDLang_LICENSE.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="DefaultDescriptions\DefaultESDDescriptions_bb.toml" />
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_bb.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="DefaultDescriptions\DefaultMapDescriptions_bb.toml" />
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_bb.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Resources\EnumTemplates_bb.xml" />
+      <AdditionalFiles Include="Resources\EnumTemplates_bb.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Resources\FunctionDefinitions_bb.xml" />
+      <AdditionalFiles Include="Resources\FunctionDefinitions_bb.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
     </ItemGroup>

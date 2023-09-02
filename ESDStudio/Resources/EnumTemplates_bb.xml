@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EnumTemplates>
+    <Enum key="CompareType">
+        <Value index="0" name="Equal"/>
+        <Value index="1" name="NotEqual"/>
+        <Value index="2" name="Greater"/>
+        <Value index="3" name="Less"/>
+        <Value index="4" name="GreaterOrEqual"/>
+        <Value index="5" name="LessOrEqual"/>
+    </Enum>
+    <Enum key="ChangeType">
+        <Value index="0" name="Add"/>
+        <Value index="1" name="Subtract"/>
+        <Value index="5" name="Set"/>
+    </Enum>
+    <Enum key="ChrType">
+        <Value index="8" name="Hollow"/>
+    </Enum>
+    <Enum key="DialogBoxType">
+        <Value index="1" name="CenterMiddleDimScreen1"/>
+        <Value index="2" name="CenterMiddleDimScreen2"/>
+        <Value index="7" name="CenterBottom1"/>
+        <Value index="8" name="CenterBottom2"/>
+    </Enum>
+    <Enum key="DialogResult">
+        <Value index="0" name="Cancel"/>
+        <Value index="1" name="Left"/>
+        <Value index="2" name="Right"/>
+        <Value index="3" name="Leave"/>
+    </Enum>
+    <Enum key="DialogBoxStyle">
+        <Value index="0" name="OrnateNoOptions"/>
+        <Value index="1" name="DialogOptions"/>
+        <Value index="2" name="OrnateOptions"/>
+        <Value index="3" name="OrnateYesOption"/>
+        <Value index="4" name="Unk"/>
+    </Enum>
+    <Enum key="EnhanceType">
+        <Value index="0" name="Normal"/>
+        <Value index="10" name="Unk"/>
+    </Enum>
+    <Enum key="EstusType">
+        <Value index="0" name="HP"/>
+        <Value index="1" name="FP"/>
+    </Enum>
+    <Enum key="FlagState">
+        <Value index="0" name="Off"/>
+        <Value index="1" name="On"/>
+    </Enum>
+    <Enum key="ItemType">
+        <Value index="0" name="Weapon"/>
+        <Value index="1" name="Protector"/>
+        <Value index="2" name="Accessory"/>
+        <Value index="3" name="Goods"/>
+    </Enum>
+    <Enum key="MenuType">
+        <Value index="11" name="Talk"/>
+        <Value index="12" name="Repair"/>
+        <Value index="13" name="Reinforcement"/>
+        <Value index="23" name="LevelUp"/>
+        <Value index="25" name="Attunement"/>
+        <Value index="26" name="Storage"/>
+        <Value index="30" name="CharacterEdit"/>
+        <Value index="31" name="CovenantOffering"/>
+        <Value index="36" name="Warp"/>
+        <Value index="53" name="Unk"/>
+        <Value index="63" name="Bonfire"/>
+    </Enum>
+    <Enum key="PlayerStat">
+        <Value index="0" name="Vitality"/>
+        <Value index="2" name="Endurance"/>
+        <Value index="3" name="Strength"/>
+        <Value index="4" name="Skill"/>
+        <Value index="5" name="Bloodtinge"/>
+        <Value index="6" name="Arcane"/>
+        <Value index="8" name="EchoesCollected"/>
+        <Value index="9" name="TotalGetEchoes"/>
+        <Value index="10" name="Humanity"/>
+        <Value index="11" name="CovenantType"/>
+        <Value index="12" name="Gender"/>
+    </Enum>
+    <Enum key="TalkOptionsType">
+        <Value index="0" name="Old"/>
+        <Value index="1" name="Regular"/>
+    </Enum>
+    <Enum key="Trophy">
+        <Value index="0" name="AllTrophies"/>
+        <Value index="1" name="YharnamSunrise"/>
+        <Value index="2" name="HonoringWishes"/>
+        <Value index="3" name="ChildhoodsBeginning"/>
+        <Value index="4" name="YharnamQueen"/>
+        <Value index="5" name="HuntersEssence"/>
+        <Value index="6" name="HuntersCraft"/>
+        <Value index="7" name="WeaponMaster"/>
+        <Value index="8" name="BloodGemMaster"/>
+        <Value index="9" name="RuneMaster"/>
+        <Value index="10" name="Cainhurst"/>
+        <Value index="11" name="TheChoir"/>
+        <Value index="12" name="SourceoftheDream"/>
+        <Value index="13" name="LectureBuilding"/>
+        <Value index="14" name="FatherGascoigne"/>
+        <Value index="15" name="VicarAmelia"/>
+        <Value index="16" name="ShadowofYharnam"/>
+        <Value index="17" name="RomVacousSpider"/>
+        <Value index="18" name="OneReborn"/>
+        <Value index="19" name="Micolash"/>
+        <Value index="20" name="WetNurse"/>
+        <Value index="21" name="ClericBeast"/>
+        <Value index="22" name="BloodStarvedBeast"/>
+        <Value index="23" name="WitchofHemwick"/>
+        <Value index="24" name="Paarl"/>
+        <Value index="25" name="Amygdala"/>
+        <Value index="26" name="Logarius"/>
+        <Value index="27" name="Emissary"/>
+        <Value index="28" name="Ebrietas"/>
+        <Value index="29" name="BloodGemContact"/>
+        <Value index="30" name="RuneContract"/>
+        <Value index="31" name="PthumeruChalice"/>
+        <Value index="32" name="AilingLoranChalice"/>
+        <Value index="33" name="IszChalice"/>
+        <Value index="34" name="OldHuntersEssence"/>
+        <Value index="35" name="OrphanofKos"/>
+        <Value index="36" name="Ludwig"/>
+        <Value index="37" name="LadyMaria"/>
+        <Value index="38" name="LivingFailures"/>
+        <Value index="39" name="Laurence"/>
+    </Enum>
+</EnumTemplates>

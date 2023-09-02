@@ -239,6 +239,10 @@ public class MainWindowViewModel : ViewModelBase
         string baseDir = newProjectVM.ProjectBaseDirectoryEntry + $"\\{newProjectVM.ProjectNameEntry}";
         string? gameDir = Path.GetDirectoryName(newProjectVM.GameExecutableEntry);
         if (gameDir == null) return;
+        if (newProjectVM.GameExecutableEntry.EndsWith("eboot.bin"))
+        {
+            gameDir += @"\dvdroot_ps4";
+        }
         Project newProject = new(newProjectVM.ProjectNameEntry, baseDir, gameDir, 
             newProjectVM.ProjectModDirectoryEntry, newProjectVM.GameExecutableEntry);
 
@@ -268,10 +272,10 @@ public class MainWindowViewModel : ViewModelBase
     private void PopulateBNDViewModels(string modDirectory, string gameDirectory, GameInfo gameInfo)
     {
         List<string> modTalkBNDNames = new();
-        if (Directory.Exists(modDirectory + @"\script\talk"))
+        if (Directory.Exists(modDirectory + $"\\{Project.Current.Game.TalkPath}"))
         {
             IEnumerable<string> bndPaths = 
-                Directory.EnumerateFiles(modDirectory + @"\script\talk", "*.talkesdbnd.dcx");
+                Directory.EnumerateFiles(modDirectory + $"\\{Project.Current.Game.TalkPath}", "*.talkesdbnd.dcx");
             foreach (string bndPath in bndPaths)
             {
                 string bndName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(bndPath));
@@ -280,10 +284,10 @@ public class MainWindowViewModel : ViewModelBase
             }
         }
 
-        if (Directory.Exists(gameDirectory + @"\script\talk"))
+        if (Directory.Exists(gameDirectory + $"\\{Project.Current.Game.TalkPath}"))
         {
             IEnumerable<string> bndPaths =
-                Directory.EnumerateFiles(gameDirectory + @"\script\talk", "*.talkesdbnd.dcx");
+                Directory.EnumerateFiles(gameDirectory + $"\\{Project.Current.Game.TalkPath}", "*.talkesdbnd.dcx");
             foreach (string bndPath in bndPaths.Where(x => !modTalkBNDNames.Any(x.Contains)))
             {
                 BNDViewModels.Add(new BNDViewModel(bndPath, gameInfo));
