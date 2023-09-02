@@ -18,5 +18,6 @@ If you would like to contribute to this project then you can help me by pinging 
 - Tomlyn - xoofx
 - SoulsFormats - TKGP/JKAnderson
 ### Special Thanks
-- The12thAvenger
-- Vawser
+- The12thAvenger - wpf help
+- Vawser - esd documentation
+- foxyhooligans - Bloodborne support
