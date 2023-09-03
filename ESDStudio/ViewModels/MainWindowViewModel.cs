@@ -20,6 +20,7 @@ using ESDStudio.Views;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
+using SoulsFormats;
 using Tomlyn;
 using Tomlyn.Model;
 // ReSharper disable MemberCanBePrivate.Global
@@ -271,11 +272,17 @@ public class MainWindowViewModel : ViewModelBase
     
     private void PopulateBNDViewModels(string modDirectory, string gameDirectory, GameInfo gameInfo)
     {
+        string searchPattern = $"*.talkesdbnd";
+        if (Project.Current.Game.Compression != DCX.Type.None)
+        {
+            searchPattern += ".dcx";
+        }
+        
         List<string> modTalkBNDNames = new();
         if (Directory.Exists(modDirectory + $"\\{Project.Current.Game.TalkPath}"))
         {
             IEnumerable<string> bndPaths = 
-                Directory.EnumerateFiles(modDirectory + $"\\{Project.Current.Game.TalkPath}", "*.talkesdbnd.dcx");
+                Directory.EnumerateFiles(modDirectory + $"\\{Project.Current.Game.TalkPath}", searchPattern);
             foreach (string bndPath in bndPaths)
             {
                 string bndName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(bndPath));
@@ -287,7 +294,7 @@ public class MainWindowViewModel : ViewModelBase
         if (Directory.Exists(gameDirectory + $"\\{Project.Current.Game.TalkPath}"))
         {
             IEnumerable<string> bndPaths =
-                Directory.EnumerateFiles(gameDirectory + $"\\{Project.Current.Game.TalkPath}", "*.talkesdbnd.dcx");
+                Directory.EnumerateFiles(gameDirectory + $"\\{Project.Current.Game.TalkPath}", searchPattern);
             foreach (string bndPath in bndPaths.Where(x => !modTalkBNDNames.Any(x.Contains)))
             {
                 BNDViewModels.Add(new BNDViewModel(bndPath, gameInfo));

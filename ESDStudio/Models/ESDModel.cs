@@ -134,7 +134,7 @@ public class ESDModel
     public ESDModel(int id, string description, BNDModel parent)
     {
         ParentBNDModel = parent;
-        Code = new TextDocument($"# -*- coding: utf-8 -*-\r\ndef t{parent.MapId:D2}{parent.BlockId:D1}{id:D3}_1():\r\n" +
+        Code = new TextDocument($"# -*- coding: utf-8 -*-\r\ndef t{id.ToString(new string('0', Project.Current.Game.IdLength))}_1():\r\n" +
                                 "    \"\"\"State 0,1\"\"\"\r\n    Quit()\r\n\r\n");
         ESDEditCount++;
         IsDecompiled = true;

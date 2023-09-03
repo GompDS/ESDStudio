@@ -5,7 +5,7 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <Version>0.5.0</Version>
+        <Version>0.6.0</Version>
         <ApplicationIcon>Assets\icon-256.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -75,11 +75,25 @@
       <Content Include="Content\Images\bb.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="Content\Images\ds1r.jpg" />
+      <Content Include="Content\Images\ds1r.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Content\Images\ds1.jpg" />
+      <Content Include="Content\Images\ds1.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     
     <ItemGroup>
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_bb.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_ds1.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_ds1r.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_sdt.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -87,16 +101,34 @@
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_bb.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_ds1.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_ds1r.toml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_sdt.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="Resources\EnumTemplates_bb.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
+      <AdditionalFiles Include="Resources\EnumTemplates_ds1.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Resources\EnumTemplates_ds1r.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
       <AdditionalFiles Include="Resources\EnumTemplates_sdt.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="Resources\FunctionDefinitions_bb.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Resources\FunctionDefinitions_ds1.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="Resources\FunctionDefinitions_ds1r.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="Resources\FunctionDefinitions_sdt.xml">

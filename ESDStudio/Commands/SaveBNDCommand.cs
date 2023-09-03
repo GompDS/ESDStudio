@@ -38,14 +38,41 @@ public class SaveBNDCommand : CommandBase
             esd.SaveCommand.Execute(null);
         }
         
-        BND4 bnd = _bnd.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
+        IBinder bnd = _bnd.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
         if (!File.Exists(BNDPath + ".bak"))
         {
-            bnd.Write($"{BNDPath}" + ".bak");
+            string writeBakPath = $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{_bnd.Name}.talkesdbnd";
+            if (Project.Current.Game.Compression != DCX.Type.None)
+            {
+                writeBakPath += ".dcx";
+            }
+
+            writeBakPath += ".bak";
+            if (Project.Current.Game.BNDVersion == GameInfo.BNDType.BND3)
+            {
+                ((BND3)bnd).Write(writeBakPath);
+            }
+            else
+            {
+                ((BND4)bnd).Write(writeBakPath);
+            }
         }
         bnd.Files = bnd.Files.Where(x => 
             _bnd.ESDViewModels.Any(y => y.Name == Path.GetFileNameWithoutExtension(x.Name))).ToList();
-        bnd.Write($"{Project.Current.ModDirectory}\\script\\talk\\{_bnd.Name}.talkesdbnd.dcx");
+        
+        string writePath = $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{_bnd.Name}.talkesdbnd";
+        if (Project.Current.Game.Compression != DCX.Type.None)
+        {
+            writePath += ".dcx";
+        }
+        if (Project.Current.Game.BNDVersion == GameInfo.BNDType.BND3)
+        {
+            ((BND3)bnd).Write(writePath);
+        }
+        else
+        {
+            ((BND4)bnd).Write(writePath);
+        }
         _bnd.LastSavedESDCount = _bnd.ESDViewModels.Count;
         _bnd.UpdateIsBNDEdited();
     }

@@ -52,7 +52,15 @@ public class BNDModel
         
         ESDModels = new ObservableCollection<ESDModel>();
 
-        BND4 BND = BND4.Read(BNDPath);
+        IBinder BND;
+        if (Project.Current.Game.BNDVersion == GameInfo.BNDType.BND3)
+        {
+            BND = BND3.Read(BNDPath);
+        }
+        else
+        {
+            BND = BND4.Read(BNDPath);
+        }
         foreach (BinderFile BNDFile in BND.Files.OrderBy(x => x.Name))
         {
             string esdName = Path.GetFileNameWithoutExtension(BNDFile.Name);

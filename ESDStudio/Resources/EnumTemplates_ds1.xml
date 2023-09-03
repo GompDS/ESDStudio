@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EnumTemplates>
+    <Enum key="CompareType">
+        <Value index="0" name="Equal"/>
+        <Value index="1" name="NotEqual"/>
+        <Value index="2" name="Greater"/>
+        <Value index="3" name="Less"/>
+        <Value index="4" name="GreaterOrEqual"/>
+        <Value index="5" name="LessOrEqual"/>
+    </Enum>
+    <Enum key="ChangeType">
+        <Value index="0" name="Add"/>
+        <Value index="1" name="Subtract"/>
+        <Value index="5" name="Set"/>
+    </Enum>
+    <Enum key="ChrType">
+        <Value index="8" name="Hollow"/>
+    </Enum>
+    <Enum key="DialogBoxType">
+        <Value index="1" name="CenterMiddleDimScreen1"/>
+        <Value index="2" name="CenterMiddleDimScreen2"/>
+        <Value index="7" name="CenterBottom1"/>
+        <Value index="8" name="CenterBottom2"/>
+    </Enum>
+    <Enum key="DialogResult">
+        <Value index="0" name="Cancel"/>
+        <Value index="1" name="Left"/>
+        <Value index="2" name="Right"/>
+        <Value index="3" name="Leave"/>
+    </Enum>
+    <Enum key="DialogBoxStyle">
+        <Value index="0" name="OrnateNoOptions"/>
+        <Value index="1" name="DialogOptions"/>
+        <Value index="2" name="OrnateOptions"/>
+        <Value index="3" name="OrnateYesOption"/>
+        <Value index="4" name="Unk"/>
+    </Enum>
+    <Enum key="EnhanceType">
+        <Value index="0" name="Normal"/>
+        <Value index="10" name="Unk"/>
+    </Enum>
+    <Enum key="EstusType">
+        <Value index="0" name="HP"/>
+        <Value index="1" name="FP"/>
+    </Enum>
+    <Enum key="FlagState">
+        <Value index="0" name="Off"/>
+        <Value index="1" name="On"/>
+    </Enum>
+    <Enum key="ItemType">
+        <Value index="0" name="Weapon"/>
+        <Value index="1" name="Protector"/>
+        <Value index="2" name="Accessory"/>
+        <Value index="3" name="Goods"/>
+    </Enum>
+    <Enum key="MenuType">
+        <Value index="11" name="Talk"/>
+        <Value index="12" name="Repair"/>
+        <Value index="13" name="Reinforcement"/>
+        <Value index="23" name="LevelUp"/>
+        <Value index="25" name="Attunement"/>
+        <Value index="26" name="Storage"/>
+        <Value index="30" name="CharacterEdit"/>
+        <Value index="31" name="CovenantOffering"/>
+        <Value index="36" name="Warp"/>
+        <Value index="53" name="Unk"/>
+        <Value index="63" name="Bonfire"/>
+    </Enum>
+    <Enum key="PlayerStat">
+        <Value index="0" name="Vitality"/>
+        <Value index="1" name="Attunement"/>
+        <Value index="2" name="Endurance"/>
+        <Value index="3" name="Strength"/>
+        <Value index="4" name="Dexterity"/>
+        <Value index="5" name="Intelligence"/>
+        <Value index="6" name="Faith"/>
+        <Value index="8" name="SoulsCollected"/>
+        <Value index="9" name="TotalGetSouls"/>
+        <Value index="10" name="Humanity"/>
+        <Value index="11" name="CovenantType"/>
+        <Value index="12" name="Gender"/>
+        <Value index="13" name="SunlightAltarPlayersAssisted"/>
+        <Value index="14" name="ForestHuntersPlayersKilled"/>
+        <Value index="15" name="EquippedCovenantPoints"/>
+        <Value index="16" name="EquippedCovenantLevel"/>
+        <Value index="17" name="WarriorOfSunlightPoints"/>
+        <Value index="18" name="DarkwraithPoints"/>
+        <Value index="19" name="PathOfDragonPoints"/>
+        <Value index="20" name="GravelordServantPoints"/>
+        <Value index="21" name="ForestHunterPoints"/>
+        <Value index="22" name="BladeOfTheDarkmoonPoints"/>
+        <Value index="23" name="ChaosServantPoints"/>
+        <Value index="24" name="WarriorOfSunlightLevel"/>
+        <Value index="25" name="DarkwraithLevel"/>
+        <Value index="26" name="PathOfDragonLevel"/>
+        <Value index="27" name="GravelordServantLevel"/>
+        <Value index="28" name="ForestHunterLevel"/>
+        <Value index="29" name="BladeOfTheDarkmoonLevel"/>
+        <Value index="30" name="ChaosServantLevel"/>
+        <Value index="31" name="ReturnResultOfHardcodedEventFlag"/>
+    </Enum>
+    <Enum key="TalkOptionsType">
+        <Value index="0" name="Old"/>
+        <Value index="1" name="Regular"/>
+    </Enum>
+    <Enum key="Trophy">
+        <Value index="0" name="AllAchievements"/>
+        <Value index="1" name="ToLinkTheFire"/>
+        <Value index="2" name="DarkLord"/>
+        <Value index="3" name="KnightsHonor"/>
+        <Value index="4" name="WisdomOfASage"/>
+        <Value index="5" name="BondOfAPyromancer"/>
+        <Value index="6" name="PrayerOfAMaiden"/>
+        <Value index="7" name="WayOfWhite"/>
+        <Value index="8" name="PrincessGuard"/>
+        <Value index="9" name="BladeOfTheDarkmoon"/>
+        <Value index="10" name="WarriorOfSunlight"/>
+        <Value index="11" name="ForestHunter"/>
+        <Value index="12" name="Darkwraith"/>
+        <Value index="13" name="PathOfTheDragon"/>
+        <Value index="14" name="GravelordServant"/>
+        <Value index="15" name="ChaosServant"/>
+        <Value index="16" name="StrongestWeapon"/>
+        <Value index="17" name="CrystalWeapon"/>
+        <Value index="18" name="LightningWeapon"/>
+        <Value index="19" name="RawWeapon"/>
+        <Value index="20" name="MagicWeapon"/>
+        <Value index="21" name="EnchantedWeapon"/>
+        <Value index="22" name="DivineWeapon"/>
+        <Value index="23" name="OccultWeapon"/>
+        <Value index="24" name="FireWeapon"/>
+        <Value index="25" name="ChaosWeapon"/>
+        <Value index="26" name="Enkindle"/>
+        <Value index="27" name="EstusFlask"/>
+        <Value index="28" name="ReachLordran"/>
+        <Value index="29" name="RingTheBellUndeadChurch"/>
+        <Value index="30" name="RingTheBellQuelaagsDomain"/>
+        <Value index="31" name="RiteOfKindling"/>
+        <Value index="32" name="ArtOfAbysswalking"/>
+        <Value index="33" name="ReachAnorLondo"/>
+        <Value index="34" name="Lordvessel"/>
+        <Value index="35" name="GravelordNito"/>
+        <Value index="36" name="BedOfChaos"/>
+        <Value index="37" name="TheFourKings"/>
+        <Value index="38" name="SeathTheScaleless"/>
+        <Value index="39" name="DarksunGwyndolin"/>
+        <Value index="40" name="CrossbreedPriscilla"/>
+    </Enum>
+</EnumTemplates>

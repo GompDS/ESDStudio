@@ -229,6 +229,7 @@ public class BNDViewModel : ViewModelBase
         ESDViewModels.Add(ESDViewModel);
         ESDViewModels = new ObservableCollection<ESDViewModel>(
             ESDViewModels.OrderBy(x => x.Id));
+        UpdateIsBNDEdited();
     }
 
     private void PasteESD()
@@ -266,6 +267,18 @@ public class BNDViewModel : ViewModelBase
 
     private void Save()
     {
+        if (!Directory.Exists($"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}"))
+        {
+            ShowErrorMessageBox("Mod directory not found: " +
+                                $"\"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\"");
+            return;
+        }
+        if (!Directory.Exists($"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}"))
+        {
+            ShowErrorMessageBox("Game directory not found: " +
+                                $"\"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}\"");
+            return;
+        }
         SaveBNDCommand command = new(this);
         command.Redo();
         MainWindowViewModel.UndoStack.Push(command);
@@ -294,10 +307,15 @@ public class BNDViewModel : ViewModelBase
         return (IsBNDEdited || IsDescriptionEdited || LastSavedESDCount != ESDViewModels.Count);
     }
     
-    public BND4 GetTalkBND(string modDirectory, string gameDirectory, out string BNDPath)
+    public IBinder GetTalkBND(string modDirectory, string gameDirectory, out string BNDPath)
     {
         string basePath;
-        if (File.Exists($"{modDirectory}\\{Project.Current.Game.TalkPath}\\{Name}.talkesdbnd.dcx"))
+        string filePath = $"{Project.Current.Game.TalkPath}\\{Name}.talkesdbnd";
+        if (Project.Current.Game.Compression != DCX.Type.None)
+        {
+            filePath += ".dcx";
+        }
+        if (File.Exists($"{modDirectory}\\{filePath}"))
         {
             basePath = modDirectory;
         }
@@ -305,19 +323,43 @@ public class BNDViewModel : ViewModelBase
         {
             basePath = gameDirectory;
         }
-        BNDPath = $"{basePath}\\{Project.Current.Game.TalkPath}\\{Name}.talkesdbnd.dcx";
+        BNDPath = $"{basePath}\\{filePath}";
         if (File.Exists(BNDPath))
         {
-            if (BND4.IsRead(BNDPath, out BND4 bnd))
+            if (Project.Current.Game.BNDVersion == GameInfo.BNDType.BND3)
             {
-                return bnd;
+                if (BND3.IsRead(BNDPath, out BND3 bnd))
+                {
+                    return bnd;
+                }
             }
+            else
+            {
+                if (BND4.IsRead(BNDPath, out BND4 bnd))
+                {
+                    return bnd;
+                }
+            }
+            
         }
 
-        BND4 newBND = new BND4
+        IBinder newBND;
+        if (Project.Current.Game.BNDVersion == GameInfo.BNDType.BND3)
         {
-            Compression = Project.Current.Game.Compression
-        };
+            newBND = new BND3
+            {
+                Compression = Project.Current.Game.Compression,
+                Version = Project.Current.Game.Timestamp
+            };
+        }
+        else
+        {
+            newBND = new BND4
+            {
+                Compression = Project.Current.Game.Compression,
+                Version = Project.Current.Game.Timestamp
+            };
+        }
         return newBND;
     }
 }

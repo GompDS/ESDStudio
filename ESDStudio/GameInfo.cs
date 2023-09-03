@@ -14,10 +14,18 @@ public class GameInfo
 {
     public enum Game
     {
+        DarkSouls,
+        DarkSoulsRemastered,
         Bloodborne,
         DarkSoulsIII,
         Sekiro,
         EldenRing
+    }
+    
+    public enum BNDType
+    {
+        BND3,
+        BND4
     }
 
     public Game Type;
@@ -26,6 +34,8 @@ public class GameInfo
     public string TalkPath = "";
     public DCX.Type Compression = DCX.Type.None;
     public int IdLength = 0;
+    public BNDType BNDVersion;
+    public string Timestamp = "";
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
     public List<FunctionDefinition> FunctionDefinitions = new();
@@ -35,7 +45,31 @@ public class GameInfo
     public GameInfo(string text)
     {
         bool validGame = true;
-        if (text.EndsWith("eboot.bin", StringComparison.OrdinalIgnoreCase) ||
+        if (text.EndsWith("DARKSOULS.exe", StringComparison.OrdinalIgnoreCase) ||
+            text.Equals("ds1", StringComparison.OrdinalIgnoreCase))
+        {
+            Type = Game.DarkSouls;
+            Name = "ds1";
+            FilePathStart = @"N:\FRPG\data\INTERROOT_win32";
+            TalkPath = @"script\talk";
+            Compression = DCX.Type.None;
+            IdLength = 6;
+            BNDVersion = BNDType.BND3;
+            Timestamp = "07D7R6";
+        }
+        else if (text.EndsWith("DarkSoulsRemastered.exe", StringComparison.OrdinalIgnoreCase) ||
+                 text.Equals("ds1r", StringComparison.OrdinalIgnoreCase))
+        {
+            Type = Game.DarkSoulsRemastered;
+            Name = "ds1r";
+            FilePathStart = @"N:\FRPG\data\INTERROOT_x64";
+            TalkPath = @"script\talk";
+            Compression = DCX.Type.DCX_DFLT_10000_24_9;
+            IdLength = 6;
+            BNDVersion = BNDType.BND3;
+            Timestamp = "07D7R6";
+        }
+        else if (text.EndsWith("eboot.bin", StringComparison.OrdinalIgnoreCase) ||
             text.Equals("bb", StringComparison.OrdinalIgnoreCase))
         {
             Type = Game.Bloodborne;
@@ -44,6 +78,8 @@ public class GameInfo
             TalkPath = @"script\talk";
             Compression = DCX.Type.DCX_DFLT_10000_44_9;
             IdLength = 6;
+            BNDVersion = BNDType.BND4;
+            Timestamp = "07D7R6";
         }
         else if (text.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
             text.Equals("ds3", StringComparison.OrdinalIgnoreCase))
@@ -54,6 +90,8 @@ public class GameInfo
             TalkPath = @"script\talk";
             Compression = DCX.Type.DCX_DFLT_10000_44_9;
             IdLength = 6;
+            BNDVersion = BNDType.BND4;
+            Timestamp = "07D7R6";
         }
         else if (text.EndsWith("sekiro.exe", StringComparison.OrdinalIgnoreCase) ||
                  text.Equals("sdt", StringComparison.OrdinalIgnoreCase))
@@ -64,6 +102,8 @@ public class GameInfo
             TalkPath = @"script\talk";
             Compression = DCX.Type.DCX_KRAK;
             IdLength = 6;
+            BNDVersion = BNDType.BND4;
+            Timestamp = "07D7R6";
         }
         else if (text.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase) ||
                     text.Equals("er", StringComparison.OrdinalIgnoreCase))
@@ -74,6 +114,8 @@ public class GameInfo
             TalkPath = @"script\talk";
             Compression = DCX.Type.DCX_KRAK;
             IdLength = 9;
+            BNDVersion = BNDType.BND4;
+            Timestamp = "07D7R6";
         }
         else
         {
@@ -90,7 +132,9 @@ public class GameInfo
 
     public static bool IsValidExecutable(string exePath)
     {
-        return exePath.EndsWith("eboot.bin", StringComparison.OrdinalIgnoreCase) ||
+        return exePath.EndsWith("DARKSOULS.exe", StringComparison.OrdinalIgnoreCase) ||
+               exePath.EndsWith("DarkSoulsRemastered.exe", StringComparison.OrdinalIgnoreCase) ||
+               exePath.EndsWith("eboot.bin", StringComparison.OrdinalIgnoreCase) ||
                exePath.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
                exePath.EndsWith("sekiro.exe", StringComparison.OrdinalIgnoreCase) ||
                exePath.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase);

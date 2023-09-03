@@ -239,7 +239,20 @@ public class ESDViewModel : ViewModelBase
 
     public void Decompile(string modDirectory, string gameDirectory)
     {
-        BND4 parentBND;
+        if (!Directory.Exists($"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}"))
+        {
+            ShowErrorMessageBox("Mod directory not found: " +
+                                $"\"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\"");
+            return;
+        }
+        if (!Directory.Exists($"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}"))
+        {
+            ShowErrorMessageBox("Game directory not found: " +
+                                $"\"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}\"");
+            return;
+        }
+        
+        IBinder parentBND;
         string ESDSourceName;
         if (SourceESD != null)
         {
@@ -256,7 +269,7 @@ public class ESDViewModel : ViewModelBase
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
         string tempESDFile = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd";
         File.WriteAllBytes(tempESDFile, BNDFile.Bytes);
-        bool success = RunESDTool($"{(Editor.UseGameDataFlags ? $"-{Project.Current.Game.Name} " : "")}-i {Name}.esd -writepy %e.esd.py");
+        bool success = RunESDTool($"{(Editor.UseGameDataFlags ? $"-{Project.Current.Game.Name} -basedir \"{Project.Current.GameDirectory}\" " : "")}-i {Name}.esd -writepy %e.esd.py");
         File.Delete(tempESDFile);
         if (success == false) return;
         string tempPyFile = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd.py";
@@ -411,35 +424,77 @@ public class ESDViewModel : ViewModelBase
 
     private void SaveESD()
     {
+        if (!Directory.Exists($"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}"))
+        {
+            ShowErrorMessageBox("Mod directory not found: " +
+                                $"\"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\"");
+            return;
+        }
+        if (!Directory.Exists($"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}"))
+        {
+            ShowErrorMessageBox("Game directory not found: " +
+                                $"\"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}\"");
+            return;
+        }
+        
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
         if (Code.TextLength > 0)
         {
             bool success = Compile(Project.Current.Game, Project.Current.GameDirectory);
             if (success)
             {
-                BND4 bnd = ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
+                IBinder bnd = ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
                 if (!File.Exists(BNDPath + ".bak"))
                 {
-                    bnd.Write($"{BNDPath}" + ".bak");
+                    string writeBakPath = $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{ParentViewModel.Name}.talkesdbnd";
+                    if (Project.Current.Game.Compression != DCX.Type.None)
+                    {
+                        writeBakPath += ".dcx";
+                    }
+
+                    writeBakPath += ".bak";
+                    if (Project.Current.Game.BNDVersion == GameInfo.BNDType.BND3)
+                    {
+                        ((BND3)bnd).Write(writeBakPath);
+                    }
+                    else
+                    {
+                        ((BND4)bnd).Write(writeBakPath);
+                    }
                 }
                 BinderFile? file = bnd.Files.FirstOrDefault(x => x.Name.EndsWith($"{Name}.esd"));
                 string tempESDFile = $"{cwd}\\esdtool\\{Name}.esd";
                 if (file == null)
                 {
-                    file = new BinderFile(Binder.FileFlags.Flag1, 
-                        $"{Project.Current.Game.FilePathStart}\\script\\talk\\{ParentViewModel.Name}\\{Name}.esd",
-                        File.ReadAllBytes(tempESDFile));
-                    for (int i = 0; i < bnd.Files.Count; i++)
+                    string internalPath = $"{Project.Current.Game.FilePathStart}\\{Project.Current.Game.TalkPath}\\";
+                    if (Project.Current.Game.Type == GameInfo.Game.Bloodborne)
                     {
-                        if (string.Compare(bnd.Files[i].Name, file.Name, StringComparison.Ordinal) > 0)
+                        internalPath += $"{ParentViewModel.Name}\\";
+                    }
+
+                    internalPath += $"{Name}.esd";
+                    
+                    file = new BinderFile(Binder.FileFlags.Flag1, 
+                        internalPath,
+                        File.ReadAllBytes(tempESDFile));
+                    if (bnd.Files.Count == 0)
+                    {
+                        bnd.Files.Add(file);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < bnd.Files.Count; i++)
                         {
-                            bnd.Files.Insert(i, file);
-                            break;
-                        }
-                        if (i == bnd.Files.Count - 1)
-                        {
-                            bnd.Files.Add(file);
-                            break;
+                            if (string.Compare(bnd.Files[i].Name, file.Name, StringComparison.Ordinal) > 0)
+                            {
+                                bnd.Files.Insert(i, file);
+                                break;
+                            }
+                            if (i == bnd.Files.Count - 1)
+                            {
+                                bnd.Files.Add(file);
+                                break;
+                            }
                         }
                     }
 
@@ -453,7 +508,21 @@ public class ESDViewModel : ViewModelBase
                     file.Bytes = File.ReadAllBytes($"{cwd}\\esdtool\\{Name}.esd");
                 }
                 File.Delete(tempESDFile);
-                bnd.Write($"{Project.Current.ModDirectory}\\script\\talk\\{ParentViewModel.Name}.talkesdbnd.dcx");
+                string writePath =
+                    $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{ParentViewModel.Name}.talkesdbnd";
+                if (Project.Current.Game.Compression != DCX.Type.None)
+                {
+                    writePath += ".dcx";
+                }
+
+                if (Project.Current.Game.BNDVersion == GameInfo.BNDType.BND3)
+                {
+                    ((BND3)bnd).Write(writePath);
+                }
+                else
+                {
+                    ((BND4)bnd).Write(writePath);
+                }
                 ESDEditCount = 0;
             }
         }
