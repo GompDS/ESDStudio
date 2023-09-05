@@ -1,6 +1,6 @@
 ﻿using ESDStudio.ViewModels;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class EditESDDescriptionCommand : CommandBase
 {

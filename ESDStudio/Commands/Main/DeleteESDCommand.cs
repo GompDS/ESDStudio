@@ -1,12 +1,8 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
+﻿using System.Windows;
 using ESDStudio.ViewModels;
 using ESDStudio.Views;
-using SoulsFormats;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class DeleteESDCommand : CommandBase
 {

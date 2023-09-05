@@ -2,7 +2,7 @@
 using ESDStudio.ViewModels;
 using ESDStudio.Views;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class CloseESDCommand : CommandBase
 {

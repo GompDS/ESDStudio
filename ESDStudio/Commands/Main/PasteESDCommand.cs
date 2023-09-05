@@ -4,7 +4,7 @@ using System.Windows;
 using ESDStudio.ViewModels;
 using ESDStudio.Views;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class PasteESDCommand : CommandBase
 {
@@ -31,7 +31,7 @@ public class PasteESDCommand : CommandBase
         _esd.ESDEditCount ++;
         _bnd.ESDViewModels.Add(_esd);
         _bnd.BND.ESDModels.Add(_esd.ESD);
-        _esd.Decompile(Project.Current.ModDirectory, Project.Current.GameDirectory);
+        _esd.Decompile();
         _bnd.ESDViewModels = new ObservableCollection<ESDViewModel>(_bnd.ESDViewModels.OrderBy(x => x.Id));
         _bnd.UpdateIsBNDEdited();
     }

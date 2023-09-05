@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using ESDStudio.Commands;
+using ESDStudio.Commands.Main;
 using ESDStudio.Models;
 using ESDStudio.Views;
 using SoulsFormats;

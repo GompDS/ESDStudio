@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Data;
 using ESDStudio.ViewModels;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class NewBNDCommand : CommandBase
 {

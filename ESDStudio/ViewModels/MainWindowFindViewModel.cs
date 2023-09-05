@@ -111,9 +111,11 @@ public class MainWindowFindViewModel : ViewModelBase
             ShowErrorMessageBox($"Can't find the text: \"{FindEntry}\".");
             return;
         }
+        editor.Document.BeginUpdate();
         editor.CaretOffset = nextIndex;
         editor.TextArea.Caret.BringCaretToView();
         TextViewPosition pos = new(editor.TextArea.Caret.Line, editor.TextArea.Caret.Column + m.Value.Length);
         editor.TextArea.Selection = new RectangleSelection(editor.TextArea, editor.TextArea.Caret.Position, pos);
+        editor.Document.EndUpdate();
     }
 }

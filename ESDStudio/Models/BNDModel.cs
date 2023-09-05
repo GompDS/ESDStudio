@@ -64,16 +64,17 @@ public class BNDModel
         foreach (BinderFile BNDFile in BND.Files.OrderBy(x => x.Name))
         {
             string esdName = Path.GetFileNameWithoutExtension(BNDFile.Name);
-            string fileName = $"{Project.Current.BaseDirectory}\\{Name}\\{esdName}.py";
+            //string fileName = $"{Project.Current.BaseDirectory}\\{Name}\\{esdName}.py";
             ESDModel newESDModel;
-            if (File.Exists(fileName))
+            /*if (File.Exists(fileName))
             {
                 newESDModel = new(esdName, File.ReadAllText(fileName), this);
             }
             else
             {
                 newESDModel = new(esdName, this);
-            }
+            }*/
+            newESDModel = new(esdName, this);
             ESDModels.Add(newESDModel);
         }
 

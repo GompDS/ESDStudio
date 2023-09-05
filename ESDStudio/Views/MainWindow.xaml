@@ -153,8 +153,10 @@
                               Command="{Binding ShowEditorSettingsCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Edit" IsTabStop="False">
-                    <MenuItem Header="_Undo" InputGestureText="Ctrl+Z"/>
-                    <MenuItem Header="_Redo" InputGestureText="Ctrl+Y"/>
+                    <MenuItem Header="_Undo" InputGestureText="Ctrl+Z"
+                              Command="{Binding UndoCommand}"/>
+                    <MenuItem Header="_Redo" InputGestureText="Ctrl+Y"
+                              Command="{Binding RedoCommand}"/>
                     <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Cut" InputGestureText="Ctrl+X"/>
                     <MenuItem Header="_Copy" InputGestureText="Ctrl+C"/>

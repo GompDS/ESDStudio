@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using ESDStudio.ViewModels;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class EditBNDDescriptionCommand : CommandBase
 {

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Title="Editor Settings" Height="120" Width="300" Style="{StaticResource ThemedWindow}">
+        Title="Editor Settings" Height="180" Width="400" Style="{StaticResource ThemedWindow}">
     <Window.InputBindings>
         <KeyBinding Command="{Binding ConfirmCommand}" Key="Enter"/>
         <KeyBinding Command="{Binding CancelCommand}" Key="Escape"/>
@@ -29,9 +29,10 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-            <CheckBox Content="Use game data flags during decompilation"
+            <Label Content="ESD Decompilation Settings" FontWeight="SemiBold" FontSize="14"/>
+            <CheckBox Content="Annotate with game texts (Increases decompilation time)" Grid.Row="1"
                       IsChecked="{Binding GameDataFlagsCheck}"/>
         </Grid>
         

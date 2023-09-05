@@ -4,7 +4,7 @@ using System.Linq;
 using ESDStudio.ViewModels;
 using SoulsFormats;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class SaveBNDCommand : CommandBase
 {

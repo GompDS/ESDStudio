@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ESDStudio.ViewModels;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class EditESDIdCommand : CommandBase
 {
@@ -23,7 +23,7 @@ public class EditESDIdCommand : CommandBase
     {
         if (_esd.IsDecompiled == false)
         {
-            _esd.Decompile(Project.Current.ModDirectory, Project.Current.GameDirectory);
+            _esd.Decompile();
         }
         _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t)" + Regex.Escape(_esd.Id.ToString(new string('0', Project.Current.Game.IdLength))),
             _newId.ToString(new string('0', Project.Current.Game.IdLength)), true, false);

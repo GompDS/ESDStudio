@@ -2,7 +2,7 @@
 using ESDStudio.ViewModels;
 using ESDStudio.Views;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class OpenESDCommand : CommandBase
 {
@@ -29,7 +29,7 @@ public class OpenESDCommand : CommandBase
             if (mainViewModel.OpenTabs.Contains(_esd)) return;
             if (_esd.IsDecompiled == false)
             {
-                _esd.Decompile(Project.Current.ModDirectory, Project.Current.GameDirectory);
+                _esd.Decompile();
             }
             _esd.Code.UndoStack.ClearAll();
             mainViewModel.OpenTabs.Add(_esd);

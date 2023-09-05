@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Xml;
 using CommunityToolkit.Mvvm.Input;
 using ESDStudio.Commands;
+using ESDStudio.Commands.Main;
 using ESDStudio.Models;
 using ESDStudio.UserControls;
 using ESDStudio.Views;
@@ -418,6 +419,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             Owner = Application.Current.MainWindow,
             DataContext = replaceViewModel
+            
         };
         replaceView.Show();
     }

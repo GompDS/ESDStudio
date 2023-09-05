@@ -108,10 +108,12 @@ public class MainWindowReplaceViewModel : ViewModelBase
             ShowErrorMessageBox($"Can't find the text: \"{FindEntry}\".");
             return;
         }
+        editor.Document.BeginUpdate();
         editor.CaretOffset = nextIndex - _findEntry.Length;
         editor.TextArea.Caret.BringCaretToView();
         TextViewPosition pos = new(editor.TextArea.Caret.Line, editor.TextArea.Caret.Column + m.Value.Length);
         editor.TextArea.Selection = new RectangleSelection(editor.TextArea, editor.TextArea.Caret.Position, pos);
+        editor.Document.EndUpdate();
     }
 
     private void FindMatch(TextEditor editor, int startIndex, bool isWrapWround, out Match match, out int nextIndex)
@@ -183,28 +185,41 @@ public class MainWindowReplaceViewModel : ViewModelBase
             ShowErrorMessageBox($"Could not find '{FindEntry}'.");
             return;
         }
-        
+
         int matchOffset = match.Index + startOffset;
-        ReplaceCommand command = new(esd, FindEntry, matchOffset, ReplaceEntry);
-        command.Redo();
+        esd.CodeEditor.Document.BeginUpdate();
+        esd.CodeEditor.Document.Replace(matchOffset, FindEntry.Length, ReplaceEntry);
+        esd.CodeEditor.CaretOffset = matchOffset;
+        esd.CodeEditor.TextArea.Caret.BringCaretToView();
+        Caret caret = esd.CodeEditor.TextArea.Caret;
+        TextViewPosition startPos = new(caret.Line, caret.Column, caret.VisualColumn);
+        TextViewPosition endPos = new(caret.Line, caret.Column + ReplaceEntry.Length, caret.VisualColumn + ReplaceEntry.Length);
+        esd.CodeEditor.TextArea.Selection = new RectangleSelection(esd.CodeEditor.TextArea, startPos, endPos);
+        esd.CodeEditor.Document.EndUpdate();
     }
     
     private void ReplaceAll()
     {
         ESDView? esd = GetActiveESD();
         if (esd == null) return;
-        List<Match> matches = new();
-        FindMatch(esd.CodeEditor, 0, false, out Match m, out int nextIndex);
+        string pattern = FindEntry;
+        if (!IsRegex) pattern = Regex.Escape(pattern);
+        if (IsMatchWholeWord) pattern = $"\\b{pattern}\\b";
+        RegexOptions options = IsMatchCase ? RegexOptions.None : RegexOptions.IgnoreCase;
+
+        MatchCollection matches = Regex.Matches(esd.CodeEditor.Text, pattern, options);
+        //List<Match> matches = new();
+        //FindMatch(esd.CodeEditor, 0, false, out Match m, out int nextIndex);
         //int replaceCount = 0;
-        while (m.Success)
+        /*while (m.Success)
         {
             matches.Add(m);
             /*editor.Text = editor.Text.Remove(nextIndex, m.Value.Length);
             editor.Text = editor.Text.Insert(nextIndex, ReplaceEntry);
             editor.CaretOffset = nextIndex;
             replaceCount++;*/
-            FindMatch(esd.CodeEditor, nextIndex, false, out m, out nextIndex);
-        }
+            //FindMatch(esd.CodeEditor, nextIndex, false, out m, out nextIndex);
+        //}
         
         if (matches.Count == 0)
         {
@@ -212,8 +227,14 @@ public class MainWindowReplaceViewModel : ViewModelBase
             return;
         }
         
-        ReplaceAllCommand command = new(esd, FindEntry, ReplaceEntry, matches);
-        command.Redo();
+        esd.CodeEditor.Document.BeginUpdate();
+        for (int i = 0; i < matches.Count; i++)
+        {
+            esd.CodeEditor.Document.Replace(matches[i].Index + ((ReplaceEntry.Length - FindEntry.Length) * i),
+                FindEntry.Length, ReplaceEntry);
+        }
+        esd.CodeEditor.Document.EndUpdate();
+        
         MessageBox.Show($"Replaced {matches.Count} occurrences of '{FindEntry}' with '{ReplaceEntry}'.",
             "Replace All", MessageBoxButton.OK, MessageBoxImage.Information);
     }

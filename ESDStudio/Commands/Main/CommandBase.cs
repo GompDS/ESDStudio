@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Document;
 
-namespace ESDStudio.Commands;
+namespace ESDStudio.Commands.Main;
 
 public class CommandBase : IUndoableOperation
 {

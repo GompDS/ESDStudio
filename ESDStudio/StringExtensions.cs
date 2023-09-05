@@ -20,19 +20,40 @@ public static class StringExtensions
     
     public static string ReplaceMatches(this string input, string searchTerm, string replacement, bool useRegex, bool matchWholeWord)
     {
-        string pattern = useRegex ? searchTerm : Regex.Escape(searchTerm);
-        if (matchWholeWord)
+        if (!useRegex && !matchWholeWord)
         {
-            pattern = $"\\b{pattern}\\b";
+            input = input.Replace(searchTerm, replacement);
         }
-        Match match = Regex.Match(input, pattern);
-        int startIndex = 0;
-        while (match.Success)
+        else
         {
-            input = input.Remove(match.Index + startIndex, match.Length);
-            input = input.Insert(match.Index + startIndex, replacement);
-            startIndex += match.Index + replacement.Length;
-            match = Regex.Match(input[startIndex..], pattern);
+            string pattern = useRegex ? searchTerm : Regex.Escape(searchTerm);
+            if (matchWholeWord)
+            {
+                pattern = $"\\b{pattern}\\b";
+            }
+
+            Regex regex = new Regex(pattern);
+            input = regex.Replace(input, replacement);
+            //input = Regex.Replace(input, pattern);
+            
+            /*MatchCollection matches = Regex.Matches(input, pattern);
+            int startIndex = 0;
+            foreach (Match match in matches)
+            {
+                input = input.Remove(match.Index + startIndex, match.Length);
+                input = input.Insert(match.Index + startIndex, replacement);
+                startIndex += match.Index + replacement.Length;
+            }*/
+            
+            /*Match match = Regex.Match(input, pattern);
+            int startIndex = 0;
+            while (match.Success)
+            {
+                input = input.Remove(match.Index + startIndex, match.Length);
+                input = input.Insert(match.Index + startIndex, replacement);
+                startIndex += match.Index + replacement.Length;
+                match = Regex.Match(input[startIndex..], pattern);
+            }*/
         }
 
         return input;

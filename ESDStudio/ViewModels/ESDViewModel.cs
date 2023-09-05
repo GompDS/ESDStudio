@@ -15,12 +15,15 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using CommunityToolkit.Mvvm.Input;
 using ESDStudio.Commands;
+using ESDStudio.Commands.Main;
 using ESDStudio.Models;
 using ESDStudio.Views;
 using ICSharpCode.AvalonEdit.Document;
 using SoulsFormats;
+using SoulsFormats.Kuon;
 using Tomlyn;
 using Tomlyn.Model;
+using BND0 = SoulsFormats.ACE3.BND0;
 
 namespace ESDStudio.ViewModels;
 
@@ -237,32 +240,60 @@ public class ESDViewModel : ViewModelBase
         MainWindowViewModel.UndoStack.Push(command);
     }
 
-    public void Decompile(string modDirectory, string gameDirectory)
+    public void Decompile()
     {
-        if (!Directory.Exists($"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}"))
+        string decompiledCode = "";
+        string pyFile = $"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}\\{ESD.Name}.py";
+        if (File.Exists(pyFile))
         {
-            ShowErrorMessageBox("Mod directory not found: " +
-                                $"\"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\"");
-            return;
+            decompiledCode = File.ReadAllText(pyFile);
         }
-        if (!Directory.Exists($"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}"))
+        else
         {
-            ShowErrorMessageBox("Game directory not found: " +
-                                $"\"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}\"");
-            return;
+            if (!Directory.Exists($"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}"))
+            {
+                ShowErrorMessageBox("Mod directory not found: " +
+                                    $"\"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\"");
+                return;
+            }
+            if (!Directory.Exists($"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}"))
+            {
+                ShowErrorMessageBox("Game directory not found: " +
+                                    $"\"{Project.Current.GameDirectory}\\{Project.Current.Game.TalkPath}\"");
+                return;
+            }
+
+            decompiledCode = DecompileFromESD();
+            if (decompiledCode == "") return;
         }
-        
+
+        Code.Text = decompiledCode;
+        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
+                     Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
+                                x.ReturnValue is { Type: "enum" or "bool" }))
+        {
+            Code.Text = funcDef.MakeNumberValuesDescriptive(Code.Text);
+        }
+
+        Code.Text = Code.Text.Replace("    ", "\t");
+        //.Text = Code.Text.ReplaceMatches("    ", "\t", false, false);
+        //File.Delete(tempPyFile);
+        IsDecompiled = true;
+    }
+
+    public string DecompileFromESD()
+    {
         IBinder parentBND;
         string ESDSourceName;
         if (SourceESD != null)
         {
             ESDViewModel CopiedESD = GetCopiedESD();
-            parentBND = CopiedESD.ParentViewModel.GetTalkBND(modDirectory, gameDirectory, out string BNDPath);
+            parentBND = CopiedESD.ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
             ESDSourceName = CopiedESD.Name;
         }
         else
         {
-            parentBND = ParentViewModel.GetTalkBND(modDirectory, gameDirectory, out string BNDPath);
+            parentBND = ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
             ESDSourceName = Name;
         }
         BinderFile BNDFile = parentBND.Files.First(x => x.Name.EndsWith(ESDSourceName + ".esd", StringComparison.OrdinalIgnoreCase));
@@ -271,18 +302,11 @@ public class ESDViewModel : ViewModelBase
         File.WriteAllBytes(tempESDFile, BNDFile.Bytes);
         bool success = RunESDTool($"{(Editor.UseGameDataFlags ? $"-{Project.Current.Game.Name} -basedir \"{Project.Current.GameDirectory}\" " : "")}-i {Name}.esd -writepy %e.esd.py");
         File.Delete(tempESDFile);
-        if (success == false) return;
+        if (success == false) return "";
         string tempPyFile = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd.py";
-        Code.Text = File.ReadAllText(tempPyFile);
-        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
-                     Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
-                                x.ReturnValue is { Type: "enum" or "bool" }))
-        {
-            Code.Text = funcDef.MakeNumberValuesDescriptive(Code.Text);
-        }
-        Code.Text = Code.Text.ReplaceMatches("    ", "\t", false, false);
+        string fileText = File.ReadAllText(tempPyFile);
         File.Delete(tempPyFile);
-        IsDecompiled = true;
+        return fileText;
     }
 
     public bool Compile(GameInfo? game, string gameDirectory)
@@ -467,7 +491,7 @@ public class ESDViewModel : ViewModelBase
                 if (file == null)
                 {
                     string internalPath = $"{Project.Current.Game.FilePathStart}\\{Project.Current.Game.TalkPath}\\";
-                    if (Project.Current.Game.Type == GameInfo.Game.Bloodborne)
+                    if (Project.Current.Game.Type is not GameInfo.Game.DarkSouls or GameInfo.Game.DarkSoulsRemastered)
                     {
                         internalPath += $"{ParentViewModel.Name}\\";
                     }
