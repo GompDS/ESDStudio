@@ -116,7 +116,7 @@ public class MainWindowNewProjectViewModel : ViewModelBase
             if (result == MessageBoxResult.OK) return;
         }
 
-        if (Directory.Exists(ProjectBaseDirectoryEntry + $"\\{ProjectNameEntry}"))
+        if (File.Exists(ProjectBaseDirectoryEntry + $"\\{ProjectNameEntry}" + "ESDStudioProject.toml"))
         {
             MessageBoxResult result = ShowErrorMessageBox("A project with that name already exists.");
             if (result == MessageBoxResult.OK) return;

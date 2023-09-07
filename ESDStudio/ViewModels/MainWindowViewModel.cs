@@ -259,7 +259,10 @@ public class MainWindowViewModel : ViewModelBase
         };
         model.Add("project_info", projectInfo);
 
-        Directory.CreateDirectory(baseDir);
+        if (!Directory.Exists(baseDir))
+        {
+            Directory.CreateDirectory(baseDir);
+        }
         File.WriteAllText(newProject.BaseDirectory + @"\ESDStudioProject.toml", Toml.FromModel(model));
         LoadProject(newProject);
     }
