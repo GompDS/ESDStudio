@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using ESDStudio.ViewModels;
 using Tomlyn;
 using Tomlyn.Model;
 
@@ -17,7 +21,8 @@ public class Project
     public GameInfo Game { get; }
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
-    public static Project Current = new();
+    public static Project Current;
+
     public static bool IsProjectLoaded = false;
 
     public Project(string name, string baseDir, string gameDir, string modDir, string gameName)

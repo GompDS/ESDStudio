@@ -169,6 +169,17 @@
                     <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Select All" InputGestureText="Ctrl+A"/>
                 </MenuItem>
+                <MenuItem Header="Groups" IsTabStop="False">
+                    <MenuItem Header="_Edit Existing Group" ItemsSource="{Binding ESDGroups}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Command" Value="{Binding EditCommand}"/>
+                                <Setter Property="Header" Value="{Binding Name}"/>
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
+                    <MenuItem Header="_Create New Group"/>
+                </MenuItem>
                 <MenuItem Header="About" IsTabStop="False" BorderBrush="Transparent"
                           Command="{Binding ShowAboutCommand}"/>
             </Menu>

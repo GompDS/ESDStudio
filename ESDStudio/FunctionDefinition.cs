@@ -51,6 +51,7 @@ public class FunctionDefinition
             }
             if (ReturnValue is { Type: "bool" or "enum" })
             {
+
                 code = MakeReturnValueDescriptive(code, endIndex + 1);
             }
             nextFuncIndex = code.IndexOf(Name + "(", nextFuncIndex + Name.Length,  StringComparison.Ordinal);
@@ -128,6 +129,8 @@ public class FunctionDefinition
         int equalsIndex = code.IndexOf("==", startIndex, StringComparison.Ordinal);
         if (equalsIndex > -1)
         {
+            string equalsStr = code.Substring(equalsIndex);
+            string startStr = code.Substring(startIndex);
             for (int i = startIndex; i < equalsIndex; i++)
             {
                 if (code[i] is not (' ' or '\n' or '\r' or '\t')) return code;

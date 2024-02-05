@@ -485,7 +485,7 @@
     </FunctionDef>
     <FunctionDef name="SetWorkValue">
         <Parameters>
-            <Parameter type="uint" name="unk" comment="usually 0"/>
+            <Parameter type="uint" name="workValueIndex" comment="must be 0-3"/>
             <Parameter type="int" name="valueToStore"/>
         </Parameters>
     </FunctionDef>
@@ -498,7 +498,7 @@
     </FunctionDef>
     <FunctionDef name="ShuffleRNGSeed">
         <Parameters>
-            <Parameter type="uint" name="maxValue"/>
+            <Parameter type="uint" name="maxValue" comment="valid values from 0-100"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="StopEventAnimWithoutForcingConversationEnd">

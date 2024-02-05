@@ -177,6 +177,7 @@ public class ESDViewModel : ViewModelBase
     }
 
     public ESDViewModel? SourceESD = null;
+    public ESDGroupViewModel? ESDGroup = null;
 
     private void EditId()
     {
@@ -438,6 +439,7 @@ public class ESDViewModel : ViewModelBase
         if (IsESDEdited)
         {
             SaveESD();
+            ESDGroup?.SaveMembers(Code.Text, Name);
         }
         
         if (IsDescriptionEdited)
@@ -446,7 +448,7 @@ public class ESDViewModel : ViewModelBase
         }
     }
 
-    private void SaveESD()
+    public void SaveESD()
     {
         if (!Directory.Exists($"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}"))
         {

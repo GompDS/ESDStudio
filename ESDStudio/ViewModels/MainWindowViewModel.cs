@@ -22,6 +22,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
 using SoulsFormats;
+using SoulsFormats.Kuon;
 using Tomlyn;
 using Tomlyn.Model;
 // ReSharper disable MemberCanBePrivate.Global
@@ -36,6 +37,8 @@ public class MainWindowViewModel : ViewModelBase
         RecentProjects = new ObservableCollection<Project>();
         BNDViewModels = new ObservableCollection<BNDViewModel>();
         OpenTabs = new ObservableCollection<ESDViewModel>();
+        ESDGroups = new ObservableCollection<ESDGroupViewModel>();
+        //ESDGroups.Add(new ESDGroupViewModel("Bonfire"));
         UndoCommand = new RelayCommand(Undo);
         RedoCommand = new RelayCommand(Redo);
         OpenProjectCommand = new RelayCommand(OpenProject);
@@ -73,7 +76,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand SaveAllCommand { get; }
     public ICommand ShowAboutCommand { get; }
     public ICommand ShowEditorSettingsCommand { get; }
-
+    
     public ObservableCollection<Project> RecentProjects { get; }
 
     public string ProjectName
@@ -116,6 +119,8 @@ public class MainWindowViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+    
+    public ObservableCollection<ESDGroupViewModel> ESDGroups { get; }
 
     private void GetRecentProjects()
     {
@@ -221,9 +226,41 @@ public class MainWindowViewModel : ViewModelBase
         Project.IsProjectLoaded = true;
         BNDViewModels.Clear();
         OpenTabs.Clear();
+        ESDGroups.Clear();
         Project.Current = project;
         OnPropertyChanged("ProjectName");
         ShowBNDControl();
+        if (Directory.Exists(project.BaseDirectory + @"\Groups"))
+        {
+            foreach (string groupPath in Directory.EnumerateFiles(project.BaseDirectory + @"\Groups", "*.toml"))
+            {
+                TomlTable model = Toml.ToModel(File.ReadAllText(groupPath), groupPath);
+                model.TryGetValue("group_info", out object obj);
+                TomlTable groupInfo = (TomlTable)obj;
+                groupInfo.TryGetValue("name", out object nameObj);
+                ESDGroupViewModel esdGroup = new ESDGroupViewModel((string)nameObj);
+                groupInfo.TryGetValue("members", out object membersObj);
+                foreach (long? memberId in (TomlArray)membersObj)
+                {
+                    if (memberId == null) continue;
+                    //int id = int.Parse(memberId);
+                    foreach (ESDViewModel esdViewModel in 
+                             BNDViewModels.SelectMany(x => x.ESDViewModels.Where(y => y.Id == memberId)))
+                    {
+                        if (!esdGroup.Members.Contains(esdViewModel))
+                        {
+                            esdGroup.Members.Add(esdViewModel);
+                            if (esdViewModel.ESDGroup != null)
+                            {
+                                esdViewModel.ESDGroup.Members.Remove(esdViewModel);
+                            }
+                            esdViewModel.ESDGroup = esdGroup;
+                        }
+                    }
+                }
+                ESDGroups.Add(esdGroup);
+            }
+        }
         AddCurrentProjectToRecent();
     }
 

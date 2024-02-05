@@ -56,6 +56,13 @@ namespace ESDStudio.Views
             ((MainWindowViewModel)DataContext).SelectedRecentProject = item;
             ((MainWindowViewModel)DataContext).OpenRecentProjectCommand.Execute(null);
         }
+        
+        private void Click_SetESDGroup(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ESDGroupViewModel esdGroup = (ESDGroupViewModel)item.DataContext;
+            
+        }
 
         private void DoubleClick_ESDTreeItem(object sender, MouseButtonEventArgs e)
         {

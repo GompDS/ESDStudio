@@ -28,7 +28,7 @@
     <FunctionDef name="call.Done">
         <ReturnValue type="bool" name="hasCallReturned"/>
     </FunctionDef>
-    <FunctionDef name="ChangePlayerStats">
+    <FunctionDef name="ChangePlayerStat">
         <Parameters>
             <Parameter type="enum" name="stat" enum="PlayerStat"/>
             <Parameter type="enum" name="operation" enum="ChangeType"/>
@@ -100,7 +100,7 @@
         </Parameters>
         <ReturnValue type="bool" name="comparisonResult"/>
     </FunctionDef>
-    <FunctionDef name="ComparePlayerStatus">
+    <FunctionDef name="ComparePlayerStat">
         <Parameters>
             <Parameter type="enum" name="stat" enum="PlayerStat"/>
             <Parameter type="enum" name="comparison" enum="CompareType"/>
@@ -230,7 +230,7 @@
     <FunctionDef name="GetPlayerChrType">
         <ReturnValue type="enum" name="playerChrType" enum="ChrType"/>
     </FunctionDef>
-    <FunctionDef name="GetPlayerStatus">
+    <FunctionDef name="GetPlayerStat">
         <Parameters>
             <Parameter type="enum" name="stat" enum="PlayerStat"/>
         </Parameters>
@@ -493,6 +493,13 @@
         <Parameters>
             <Parameter type="uint" name="eventFlagId"/>
             <Parameter type="enum" name="newFlagState" enum="FlagState"/>
+        </Parameters>
+    </FunctionDef>
+    <FunctionDef name="SetEventFlagValue">
+        <Parameters>
+            <Parameter type="uint" name="baseEventFlagId"/>
+            <Parameter type="uint" name="numberOfUsedFlagBits"/>
+            <Parameter type="int" name="newValue"/>
         </Parameters>
     </FunctionDef>
     <FunctionDef name="SetMessageTagValue">

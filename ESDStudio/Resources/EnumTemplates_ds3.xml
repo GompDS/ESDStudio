@@ -11,6 +11,9 @@
     <Enum key="ChangeType">
         <Value index="0" name="Add"/>
         <Value index="1" name="Subtract"/>
+        <Value index="2" name="Multiply"/>
+        <Value index="3" name="Divide"/>
+        <Value index="4" name="Modulus"/>
         <Value index="5" name="Set"/>
     </Enum>
     <Enum key="ChrType">
