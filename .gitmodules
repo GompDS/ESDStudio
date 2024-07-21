@@ -1,4 +1,4 @@
 [submodule "SoulsFormats"]
 	path = SoulsFormats
-	url = https://github.com/JKAnderson/SoulsFormats/
-	branch = er
+	url = https://github.com/soulsmods/SoulsFormatsNEXT/
+	branch = master
