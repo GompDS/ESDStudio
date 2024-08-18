@@ -83,6 +83,10 @@
       <Content Include="Content\Images\ds1.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="esdtool_er\libzstd.dll" />
+      <Content Include="esdtool_er\libzstd.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     
     <ItemGroup>
