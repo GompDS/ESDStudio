@@ -1,4 +1,3 @@
-[submodule "SoulsFormats"]
-	path = SoulsFormats
-	url = https://github.com/JKAnderson/SoulsFormats/
-	branch = er
+[submodule "ESDLang"]
+	path = ESDLang
+	url = https://github.com/thefifthmatt/ESDLang.git
