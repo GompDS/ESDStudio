@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:ESDStudio.Views"
         mc:Ignorable="d"
-        Title="About" Height="460" Width="300">
+        Title="About" Height="500" Width="300">
     <Grid Style="{StaticResource ColoredGrid}">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
@@ -31,6 +31,8 @@
             <Label Content="Ookii.Dialogs.Wpf - Ookii Dialogs"/>
             <Label Content="Tomlyn - xoofx"/>
             <Label Content="SoulsFormats - TKGP/JKAnderson"/>
+            <Label Content="SoulsFormatsNEXT - the soulsmods team"/>
+            <Label Content="DSMapStudio - the soulsmods team"/>
             <Separator/>
             <Label>
                <TextBlock TextDecorations="Underline" Text="Special Thanks"/> 
