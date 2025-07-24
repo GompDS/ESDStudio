@@ -208,20 +208,6 @@ public class MainWindowViewModel : ViewModelBase
                     return;
                 }
             }
-            
-            string esdtool_er_OodlePath = AppDomain.CurrentDomain.BaseDirectory + @"esdtool_er\oo2core_6_win64.dll";
-            if (!File.Exists(esdtool_er_OodlePath))
-            {
-                try
-                {
-                    File.Copy(gameOodlePath, esdtool_er_OodlePath);
-                }
-                catch (Exception e)
-                {
-                    ShowErrorMessageBox(e.Message);
-                    return;
-                }
-            }
         }
         Project.IsProjectLoaded = true;
         BNDViewModels.Clear();
