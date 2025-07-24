@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using ESDLang.Doc;
+using ESDLang.EzSemble;
 using SoulsFormats;
 using Tomlyn;
 using Tomlyn.Model;
@@ -19,7 +21,9 @@ public class GameInfo
         Bloodborne,
         DarkSoulsIII,
         Sekiro,
-        EldenRing
+        EldenRing,
+        ArmoredCoreVI,
+        Nightreign
     }
     
     public enum BNDType
@@ -32,14 +36,16 @@ public class GameInfo
     public string Name = "Unknown";
     public string FilePathStart = "";
     public string TalkPath = "";
-    public DCX.Type Compression = DCX.Type.None;
+    public DCX.CompressionInfo Compression = new DCX.NoCompressionInfo();
     public int IdLength = 0;
     public BNDType BNDVersion;
     public string Timestamp = "";
     public Dictionary<string, string> MapDescriptions = new();
-    public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
-    public List<FunctionDefinition> FunctionDefinitions = new();
-    public Dictionary<string, List<Tuple<int, string>>> EnumTemplates = new();
+    public Dictionary<string, Dictionary<string, string>> ESDDescriptions = new();
+    public ESDDocumentation TalkDoc;
+    public List<ESDDocumentation.MethodDoc> TalkMethods = new();
+    //public List<FunctionDefinition> FunctionDefinitions = new();
+    //public Dictionary<string, List<Tuple<int, string>>> EnumTemplates = new();
     public string IconPath { get; }
 
     public GameInfo(string text)
@@ -52,7 +58,7 @@ public class GameInfo
             Name = "ds1";
             FilePathStart = @"N:\FRPG\data\INTERROOT_win32";
             TalkPath = @"script\talk";
-            Compression = DCX.Type.None;
+            Compression = new DCX.NoCompressionInfo();
             IdLength = 6;
             BNDVersion = BNDType.BND3;
             Timestamp = "07D7R6";
@@ -64,7 +70,7 @@ public class GameInfo
             Name = "ds1r";
             FilePathStart = @"N:\FRPG\data\INTERROOT_x64";
             TalkPath = @"script\talk";
-            Compression = DCX.Type.DCX_DFLT_10000_24_9;
+            Compression = new DCX.DcxDfltCompressionInfo(DCX.DfltCompressionPreset.DCX_DFLT_10000_24_9);
             IdLength = 6;
             BNDVersion = BNDType.BND3;
             Timestamp = "07D7R6";
@@ -76,7 +82,7 @@ public class GameInfo
             Name = "bb";
             FilePathStart = @"N:\SPRJ\data\INTERROOT_ps4";
             TalkPath = @"script\talk";
-            Compression = DCX.Type.DCX_DFLT_10000_44_9;
+            Compression = new DCX.DcxDfltCompressionInfo(DCX.DfltCompressionPreset.DCX_DFLT_10000_44_9);
             IdLength = 6;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
@@ -88,7 +94,7 @@ public class GameInfo
             Name = "ds3";
             FilePathStart = @"N:\FDP\data\INTERROOT_win64";
             TalkPath = @"script\talk";
-            Compression = DCX.Type.DCX_DFLT_10000_44_9;
+            Compression = new DCX.DcxDfltCompressionInfo(DCX.DfltCompressionPreset.DCX_DFLT_10000_44_9);
             IdLength = 6;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
@@ -100,7 +106,7 @@ public class GameInfo
             Name = "sdt";
             FilePathStart = @"N:\NTC\data\Target\INTERROOT_win64";
             TalkPath = @"script\talk";
-            Compression = DCX.Type.DCX_KRAK;
+            Compression = new DCX.DcxKrakCompressionInfo(6);
             IdLength = 6;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
@@ -112,7 +118,31 @@ public class GameInfo
             Name = "er";
             FilePathStart = @"N:\GR\data\INTERROOT_win64";
             TalkPath = @"script\talk";
-            Compression = DCX.Type.DCX_KRAK;
+            Compression = new DCX.DcxKrakCompressionInfo(6);
+            IdLength = 9;
+            BNDVersion = BNDType.BND4;
+            Timestamp = "07D7R6";
+        }
+        else if (text.EndsWith("armoredcore6.exe", StringComparison.OrdinalIgnoreCase) ||
+                 text.Equals("ac6", StringComparison.OrdinalIgnoreCase))
+        {
+            Type = Game.ArmoredCoreVI;
+            Name = "ac6";
+            FilePathStart = @"W:\FNR\data\Target\INTERROOT_win64";
+            TalkPath = @"script\talk";
+            Compression = new DCX.DcxKrakCompressionInfo(9);
+            IdLength = 9;
+            BNDVersion = BNDType.BND4;
+            Timestamp = "07D7R6";
+        }
+        else if (text.EndsWith("nightreign.exe", StringComparison.OrdinalIgnoreCase) ||
+                 text.Equals("nr", StringComparison.OrdinalIgnoreCase))
+        {
+            Type = Game.Nightreign;
+            Name = "nr";
+            FilePathStart = @"W:\CL\data\Target\INTERROOT_win64";
+            TalkPath = @"script\talk";
+            Compression = new DCX.DcxKrakCompressionInfo(6);
             IdLength = 9;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
@@ -124,7 +154,13 @@ public class GameInfo
         IconPath = $"{AppDomain.CurrentDomain.BaseDirectory}Content\\Images\\{Name}.jpg";
         if (validGame)
         {
-            ReadFunctionDefXml();
+            string cwd = AppDomain.CurrentDomain.BaseDirectory;
+            TalkDoc = ESDDocumentation.DeserializeFromFile($"{cwd}\\esdtool\\dist\\ESDScriptingDocumentation_Talk.json",
+                new ESDDocumentation.DocOptions() {Game = Name, AddConditionalCommands = true, Process = true});
+            TalkMethods = new List<ESDDocumentation.MethodDoc>();
+            TalkMethods.AddRange(TalkDoc.Commands.Select(x => x.Value));
+            TalkMethods.AddRange(TalkDoc.Functions.Select(x => x.Value));
+            //ReadFunctionDefXml();
             ReadDefaultMapDescriptions();
             ReadDefaultESDDescriptions();
         }
@@ -137,7 +173,9 @@ public class GameInfo
                exePath.EndsWith("eboot.bin", StringComparison.OrdinalIgnoreCase) ||
                exePath.EndsWith("DarkSoulsIII.exe", StringComparison.OrdinalIgnoreCase) ||
                exePath.EndsWith("sekiro.exe", StringComparison.OrdinalIgnoreCase) ||
-               exePath.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase);
+               exePath.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase) ||
+               exePath.EndsWith("armoredcore6.exe", StringComparison.OrdinalIgnoreCase) ||
+               exePath.EndsWith("nightreign.exe", StringComparison.OrdinalIgnoreCase);
     }
 
     private void ReadDefaultMapDescriptions()
@@ -157,7 +195,7 @@ public class GameInfo
         return Name;
     }
 
-    public bool ESDDescriptionsContainsId(int esdId, string mapName)
+    public bool ESDDescriptionsContainsId(string esdId, string mapName)
     {
         if (ESDDescriptions.Keys.Any(x => x == mapName))
         {
@@ -170,17 +208,17 @@ public class GameInfo
         return false;
     }
 
-    public void GetESDDescription(int esdId, string mapName, out string? description)
+    public void GetESDDescription(string esdId, string mapName, out string? description)
     {
         description = null;
-        ESDDescriptions.TryGetValue(mapName, out Dictionary<int, string>? esds);
+        ESDDescriptions.TryGetValue(mapName, out Dictionary<string, string>? esds);
         if (esds != null)
         {
             esds.TryGetValue(esdId, out description);
         }
     }
     
-    public void ReadEnumTemplatesXml()
+    /*public void ReadEnumTemplatesXml()
     {
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
         XElement document = XElement.Load($"{cwd}\\Resources\\EnumTemplates_{Name}.xml");
@@ -199,11 +237,11 @@ public class GameInfo
             EnumTemplates.Add(key.Value, enumValues);
         }
         Console.WriteLine();
-    }
+    }*/
 
     public void ReadFunctionDefXml()
     {
-        ReadEnumTemplatesXml();
+        /*ReadEnumTemplatesXml();
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
         XElement element = XElement.Load($"{cwd}\\Resources\\FunctionDefinitions_{Name}.xml");
         foreach (XElement e in element.Elements())
@@ -253,7 +291,6 @@ public class GameInfo
                 funcDef.SetReturnValue(type, name, enumType, comment);
             }
             FunctionDefinitions.Add(funcDef);
-        }
-        Console.WriteLine();
+        }*/
     }
 }

@@ -23,14 +23,14 @@ public class BNDNewESDViewModel : DialogViewModelBase
             {
                 _idEntry = value;
                 OnPropertyChanged();
-                Project.Current.GetESDDescription(int.Parse(value), _bnd.Name, out string? projectDescription);
+                Project.Current.GetESDDescription(value, _bnd.Name, out string? projectDescription);
                 if (projectDescription != null)
                 {
                     DescriptionEntry = projectDescription;
                 }
                 else
                 {
-                    Project.Current.Game.GetESDDescription(int.Parse(value), _bnd.Name, out string? defaultDescription);
+                    Project.Current.Game.GetESDDescription(value, _bnd.Name, out string? defaultDescription);
                     if (defaultDescription != null)
                     {
                         DescriptionEntry = defaultDescription;
@@ -70,7 +70,7 @@ public class BNDNewESDViewModel : DialogViewModelBase
             if (result == MessageBoxResult.OK) return;
         }
         
-        if (_bnd.ESDViewModels.Select(x => x.Id).Contains(int.Parse(IdEntry)))
+        if (_bnd.ESDViewModels.Select(x => x.Id).Contains(IdEntry))
         {
             MessageBoxResult result = ShowErrorMessageBox("Another ESD with the same ID already exists in this map.");
             if (result == MessageBoxResult.OK) return;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ESDLang.Doc;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 
 namespace ESDStudio;
@@ -15,20 +16,20 @@ public static class CodeEditorUtils
     public static List<CompletionData> MakeCompletionTermsList()
     {
         List<CompletionData> completionList = new();
-        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions)
+        foreach (ESDDocumentation.MethodDoc funcDef in Project.Current.Game.TalkMethods.Where(x => x.Name != null))
         {
             completionList.Add(new CompletionData(funcDef.Name));
         }
-        foreach (string enumType in Project.Current.Game.EnumTemplates.Keys)
+        foreach (ESDDocumentation.EnumDoc enumType in Project.Current.Game.TalkDoc.Enums.Values)
         {
-            foreach (Tuple<int, string> enumValuePair in Project.Current.Game.EnumTemplates[enumType])
+            foreach (ESDDocumentation.EnumEntryDoc enumValuePair in enumType.Entries)
             {
-                string enumValueName = $"{enumType}.{enumValuePair.Item2}";
+                string enumValueName = $"{enumType.Name}.{enumValuePair.Name}";
                 completionList.Add(new CompletionData(enumValueName));
             }
         }
-        completionList.Add(new CompletionData("true"));
-        completionList.Add(new CompletionData("false"));
+        completionList.Add(new CompletionData("True"));
+        completionList.Add(new CompletionData("False"));
         completionList.Add(new CompletionData("if"));
         completionList.Add(new CompletionData("elif"));
         completionList.Add(new CompletionData("else"));

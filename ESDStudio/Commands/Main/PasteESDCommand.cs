@@ -8,7 +8,7 @@ namespace ESDStudio.Commands.Main;
 
 public class PasteESDCommand : CommandBase
 {
-    public PasteESDCommand(BNDViewModel bnd, ESDViewModel esd, int newId)
+    public PasteESDCommand(BNDViewModel bnd, ESDViewModel esd, string newId)
     {
         _bnd = bnd;
         _esd = esd;
@@ -18,8 +18,8 @@ public class PasteESDCommand : CommandBase
     
     private BNDViewModel _bnd;
     private ESDViewModel _esd;
-    private int _oldId;
-    private int _newId;
+    private string _oldId;
+    private string _newId;
 
     public override void Redo()
     {

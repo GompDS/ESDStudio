@@ -42,7 +42,7 @@ public class SaveBNDCommand : CommandBase
         if (!File.Exists(BNDPath + ".bak"))
         {
             string writeBakPath = $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{_bnd.Name}.talkesdbnd";
-            if (Project.Current.Game.Compression != DCX.Type.None)
+            if (Project.Current.Game.Compression is not DCX.NoCompressionInfo)
             {
                 writeBakPath += ".dcx";
             }
@@ -58,10 +58,10 @@ public class SaveBNDCommand : CommandBase
             }
         }
         bnd.Files = bnd.Files.Where(x => 
-            _bnd.ESDViewModels.Any(y => y.Name == Path.GetFileNameWithoutExtension(x.Name))).ToList();
+            _bnd.ESDViewModels.Any(y => y.Id == Path.GetFileNameWithoutExtension(x.Name))).ToList();
         
         string writePath = $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{_bnd.Name}.talkesdbnd";
-        if (Project.Current.Game.Compression != DCX.Type.None)
+        if (Project.Current.Game.Compression is not DCX.NoCompressionInfo)
         {
             writePath += ".dcx";
         }

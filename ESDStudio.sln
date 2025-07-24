@@ -2,7 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESDStudio", "ESDStudio\ESDStudio.csproj", "{CEC85460-1779-4D01-80EC-83BF8A088EE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoulsFormats", "SoulsFormats\SoulsFormats\SoulsFormats.csproj", "{2C75EF18-8E4D-4C17-B17C-E41B9376B4E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESDLang", "ESDLang\ESDLang\ESDLang.csproj", "{2A2E988A-A808-40EF-A1CD-4615FAEC9305}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoulsFormats", "SoulsFormats\SoulsFormats\SoulsFormats.csproj", "{EF5517BB-969A-4A77-9FE0-0B34719B166C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +20,13 @@ Global
 		{2C75EF18-8E4D-4C17-B17C-E41B9376B4E1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C75EF18-8E4D-4C17-B17C-E41B9376B4E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C75EF18-8E4D-4C17-B17C-E41B9376B4E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A2E988A-A808-40EF-A1CD-4615FAEC9305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A2E988A-A808-40EF-A1CD-4615FAEC9305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A2E988A-A808-40EF-A1CD-4615FAEC9305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A2E988A-A808-40EF-A1CD-4615FAEC9305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF5517BB-969A-4A77-9FE0-0B34719B166C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF5517BB-969A-4A77-9FE0-0B34719B166C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF5517BB-969A-4A77-9FE0-0B34719B166C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5517BB-969A-4A77-9FE0-0B34719B166C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

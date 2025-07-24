@@ -22,7 +22,6 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
 using SoulsFormats;
-using SoulsFormats.Kuon;
 using Tomlyn;
 using Tomlyn.Model;
 // ReSharper disable MemberCanBePrivate.Global
@@ -53,6 +52,7 @@ public class MainWindowViewModel : ViewModelBase
         ShowAboutCommand = new RelayCommand(ShowAbout);
         ShowEditorSettingsCommand = new RelayCommand(ShowEditorSettings);
         LoadEditorSettings();
+        Project.ReadESDDocs();
         GetRecentProjects();
         if (RecentProjects.Count > 0)
         {
@@ -240,7 +240,7 @@ public class MainWindowViewModel : ViewModelBase
                 groupInfo.TryGetValue("name", out object nameObj);
                 ESDGroupViewModel esdGroup = new ESDGroupViewModel((string)nameObj);
                 groupInfo.TryGetValue("members", out object membersObj);
-                foreach (long? memberId in (TomlArray)membersObj)
+                foreach (string? memberId in (TomlArray)membersObj)
                 {
                     if (memberId == null) continue;
                     //int id = int.Parse(memberId);
@@ -314,7 +314,7 @@ public class MainWindowViewModel : ViewModelBase
     private void PopulateBNDViewModels(string modDirectory, string gameDirectory, GameInfo gameInfo)
     {
         string searchPattern = $"*.talkesdbnd";
-        if (Project.Current.Game.Compression != DCX.Type.None)
+        if (Project.Current.Game.Compression is not DCX.NoCompressionInfo)
         {
             searchPattern += ".dcx";
         }

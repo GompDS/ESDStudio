@@ -20,7 +20,7 @@ public class ESDGroupViewModel : ViewModelBase
     {
         Model = new ESDGroupModel(name);
         EditCommand = new RelayCommand(Edit);
-        AddESDCommand = new RelayCommand<int>(AddESD);
+        AddESDCommand = new RelayCommand<string>(AddESD);
         SaveCommand = new RelayCommand(Save);
     }
     
@@ -69,7 +69,7 @@ public class ESDGroupViewModel : ViewModelBase
         if (esdGroupEditView.DialogResult != true) return;
     }
 
-    private void AddESD(int id)
+    private void AddESD(string id)
     {
         object? mainWindow = Application.Current.MainWindow;
         if (mainWindow == null) return;
@@ -109,8 +109,7 @@ public class ESDGroupViewModel : ViewModelBase
     {
         foreach (ESDViewModel esdViewModel in Members)
         {
-            string correctedCode = codeTemplate.Replace(templateName,
-                "t" + esdViewModel.Id.ToString($"D{Project.Current.Game.IdLength}"));
+            string correctedCode = codeTemplate.Replace(templateName, esdViewModel.Id);
             esdViewModel.Code.Text = correctedCode;
             esdViewModel.SaveESD();
         }

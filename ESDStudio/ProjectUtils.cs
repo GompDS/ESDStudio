@@ -24,9 +24,9 @@ public static class ProjectUtils
         return mapDescriptions;
     }
     
-    public static Dictionary<string, Dictionary<int, string>> ReadESDDescriptions(string path)
+    public static Dictionary<string, Dictionary<string, string>> ReadESDDescriptions(string path)
     {
-        Dictionary<string, Dictionary<int, string>> esdDescriptions = new();
+        Dictionary<string, Dictionary<string, string>> esdDescriptions = new();
         string tomlPath = path;
         TomlTable tomlModel = Toml.ToModel(File.ReadAllText(tomlPath), tomlPath);
         tomlModel.TryGetValue("maps", out object obj);
@@ -34,10 +34,10 @@ public static class ProjectUtils
         foreach (string mapName in maps.Keys)
         {
             TomlTable map = (TomlTable) maps[mapName];
-            Dictionary<int, string> esdDictionary = new();
-            foreach (int id in map.Keys.Select(int.Parse))
+            Dictionary<string, string> esdDictionary = new();
+            foreach (string id in map.Keys)
             {
-                esdDictionary.Add(id, (string) map[id.ToString()]);
+                esdDictionary.Add(id, (string) map[id]);
             }
             esdDescriptions.Add(mapName, esdDictionary);
         }
@@ -57,16 +57,16 @@ public static class ProjectUtils
         File.WriteAllText(path, Toml.FromModel(tomlModel));
     }
     
-    public static void WriteESDDescriptions(Dictionary<string, Dictionary<int, string>> esdDescriptions, string title, string path)
+    public static void WriteESDDescriptions(Dictionary<string, Dictionary<string, string>> esdDescriptions, string title, string path)
     {
         TomlTable tomlModel = new() { { "title", title } };
         TomlTable maps = new();
         foreach (string mapName in esdDescriptions.Keys)
         {
             TomlTable map = new();
-            foreach (int esdId in esdDescriptions[mapName].Keys)
+            foreach (string esdId in esdDescriptions[mapName].Keys)
             {
-                map.Add(esdId.ToString(), esdDescriptions[mapName][esdId]);
+                map.Add(esdId, esdDescriptions[mapName][esdId]);
             }
 
             maps.Add(mapName, map);

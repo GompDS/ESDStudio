@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 
@@ -9,11 +10,11 @@ public partial class BNDNewESDView : Window
     public BNDNewESDView()
     {
         InitializeComponent();
-        EntryBox.MaxLength = Project.Current.Game.IdLength;
+        //EntryBox.MaxLength = Project.Current.Game.IdLength;
     }
     
     private void NewIdEntry_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
     {
-        e.Handled = Regex.IsMatch( e.Text,"^[^0-9]*$");
+        e.Handled = string.IsNullOrEmpty(e.Text) || !e.Text.Any(x => char.IsLetter(x) || char.IsDigit(x) || x == '_');
     }
 }

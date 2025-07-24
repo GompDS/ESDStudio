@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.DirectoryServices.ActiveDirectory;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using ESDLang.Doc;
 using ESDStudio.ViewModels;
 using Tomlyn;
 using Tomlyn.Model;
@@ -20,7 +22,7 @@ public class Project
     public string ModDirectory { get; }
     public GameInfo Game { get; }
     public Dictionary<string, string> MapDescriptions = new();
-    public Dictionary<string, Dictionary<int, string>> ESDDescriptions = new();
+    public Dictionary<string, Dictionary<string, string>> ESDDescriptions = new();
     public static Project Current;
 
     public static bool IsProjectLoaded = false;
@@ -51,7 +53,7 @@ public class Project
         Game = new GameInfo("");
     }
 
-    public bool ESDDescriptionsContainsId(int esdId, string mapName)
+    public bool ESDDescriptionsContainsId(string esdId, string mapName)
     {
         if (ESDDescriptions.Keys.Any(x => x == mapName))
         {
@@ -64,10 +66,10 @@ public class Project
         return false;
     }
     
-    public void GetESDDescription(int esdId, string mapName, out string? description)
+    public void GetESDDescription(string esdId, string mapName, out string? description)
     {
         description = null;
-        ESDDescriptions.TryGetValue(mapName, out Dictionary<int, string>? esds);
+        ESDDescriptions.TryGetValue(mapName, out Dictionary<string, string>? esds);
         if (esds != null)
         {
             esds.TryGetValue(esdId, out description);
@@ -87,5 +89,15 @@ public class Project
         Project newProject = new((string)nameObj, (string)baseDirObj, (string)gameDirObj,
             (string)modDirObj, (string)gameObj);
         return newProject;
+    }
+
+    public static void ReadESDDocs()
+    {
+        string cwd = AppDomain.CurrentDomain.BaseDirectory;
+        //AIDoc = ESDDocumentation.DeserializeFromFile($"{cwd}\\esdtool\\dist\\ESDScriptingDocumentation_AI.json", new ESDDocumentation.DocOptions());
+        //ChrDoc = ESDDocumentation.DeserializeFromFile($"{cwd}\\esdtool\\dist\\ESDScriptingDocumentation_Chr.json", new ESDDocumentation.DocOptions());
+        //EventDoc = ESDDocumentation.DeserializeFromFile($"{cwd}\\esdtool\\dist\\ESDScriptingDocumentation_Event.json", new ESDDocumentation.DocOptions());
+        //NoneDoc = ESDDocumentation.DeserializeFromFile($"{cwd}\\esdtool\\dist\\ESDScriptingDocumentation_None.json", new ESDDocumentation.DocOptions());
+        //TalkDoc = ESDDocumentation.DeserializeFromFile($"{cwd}\\esdtool\\dist\\ESDScriptingDocumentation_Talk.json", new ESDDocumentation.DocOptions().);
     }
 }

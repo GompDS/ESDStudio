@@ -1,3 +1,6 @@
 [submodule "ESDLang"]
 	path = ESDLang
 	url = https://github.com/thefifthmatt/ESDLang.git
+[submodule "SoulsFormats"]
+	path = SoulsFormats
+	url = https://github.com/GompDS/SoulsFormats

@@ -7,7 +7,7 @@ namespace ESDStudio.Commands.Main;
 
 public class EditESDIdCommand : CommandBase
 {
-    public EditESDIdCommand(ESDViewModel esd, int newId)
+    public EditESDIdCommand(ESDViewModel esd, string newId)
     {
         _esd = esd;
         _oldId = esd.Id;
@@ -16,8 +16,8 @@ public class EditESDIdCommand : CommandBase
     }
     
     private ESDViewModel _esd;
-    private int _oldId;
-    private int _newId;
+    private string _oldId;
+    private string _newId;
     private bool _wasDecompiled;
     public override void Redo()
     {
@@ -25,8 +25,7 @@ public class EditESDIdCommand : CommandBase
         {
             _esd.Decompile();
         }
-        _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t)" + Regex.Escape(_esd.Id.ToString(new string('0', Project.Current.Game.IdLength))),
-            _newId.ToString(new string('0', Project.Current.Game.IdLength)), true, false);
+        _esd.Code.Text = _esd.Code.Text.ReplaceMatches(_esd.Id, _newId, false, false);
         _esd.Id = _newId;
         _esd.ParentViewModel.ESDViewModels = new ObservableCollection<ESDViewModel>(
             _esd.ParentViewModel.ESDViewModels.OrderBy(x => x.Id));
@@ -36,8 +35,7 @@ public class EditESDIdCommand : CommandBase
     {
         if (_wasDecompiled)
         {
-            _esd.Code.Text = _esd.Code.Text.ReplaceMatches(@"(?<=t)" + Regex.Escape(_esd.Id.ToString(new string('0', Project.Current.Game.IdLength))),
-                _oldId.ToString(new string('0', Project.Current.Game.IdLength)), true, false);
+            _esd.Code.Text = _esd.Code.Text.ReplaceMatches(_esd.Id, _oldId, false, false);
         }
         else
         {

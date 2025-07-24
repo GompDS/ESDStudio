@@ -224,8 +224,7 @@ public class BNDViewModel : ViewModelBase
         };
         newESDView.ShowDialog();
         if (newESDView.DialogResult != true) return;
-        int id = int.Parse(newESDViewModel.IdEntry);
-        ESDModel ESD = new ESDModel(id, newESDViewModel.DescriptionEntry, BND);
+        ESDModel ESD = ESDModel.CreateBlank(newESDViewModel.IdEntry, newESDViewModel.DescriptionEntry, BND);
         ESDViewModel ESDViewModel = new ESDViewModel(ESD, this);
         ESDViewModels.Add(ESDViewModel);
         ESDViewModels = new ObservableCollection<ESDViewModel>(
@@ -245,7 +244,7 @@ public class BNDViewModel : ViewModelBase
         {
             SourceESD = copiedESD
         };
-        int newId = newESDViewModel.Id;
+        string newId = newESDViewModel.Id;
         if (ESDViewModels.Any(x => x.Id == copiedESD.Id))
         {
             MessageBoxResult result = ShowErrorMessageBox("Another ESD with the same ID already exists in this map. Please specify a new ID.");
@@ -259,7 +258,7 @@ public class BNDViewModel : ViewModelBase
             };
             editIdView.ShowDialog();
             if (editIdView.DialogResult != true) return;
-            newId = int.Parse(editIdViewModel.NewIdEntry);
+            newId = editIdViewModel.NewIdEntry;
         }
         PasteESDCommand command = new(this, newESDViewModel, newId);
         command.Redo();
@@ -312,7 +311,7 @@ public class BNDViewModel : ViewModelBase
     {
         string basePath;
         string filePath = $"{Project.Current.Game.TalkPath}\\{Name}.talkesdbnd";
-        if (Project.Current.Game.Compression != DCX.Type.None)
+        if (Project.Current.Game.Compression is not DCX.NoCompressionInfo)
         {
             filePath += ".dcx";
         }

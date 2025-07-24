@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using ESDLang.Doc;
 using ICSharpCode.AvalonEdit;
 
 namespace ESDStudio.UserControls;
@@ -12,7 +13,7 @@ public partial class CompletionDataContent : UserControl
         InitializeComponent();
 
         CompletionName.Text = completionName;
-        FunctionDefinition? funcDef = Project.Current.Game.FunctionDefinitions.FirstOrDefault(x => x.Name == completionName);
+        ESDDocumentation.MethodDoc? funcDef = Project.Current.Game.TalkMethods.FirstOrDefault(x => x.Name == completionName);
         if (funcDef != null)
         {
             CompletionName.Text += "()";

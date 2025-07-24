@@ -12,13 +12,13 @@ namespace ESDStudio.Models;
 
 public class ESDModel
 {
-    public string Name
+    /*public string Name
     {
         get
         {
             return "t" + Id.ToString(new string('0', Project.Current.Game.IdLength));
         }
-    }
+    }*/
 
     
 
@@ -57,7 +57,7 @@ public class ESDModel
                     {
                         if (Project.Current.ESDDescriptions.Keys.Contains(ParentBNDModel.Name) == false)
                         {
-                            Project.Current.ESDDescriptions.Add(ParentBNDModel.Name, new Dictionary<int, string>());
+                            Project.Current.ESDDescriptions.Add(ParentBNDModel.Name, new Dictionary<string, string>());
                         }
                         Project.Current.ESDDescriptions[ParentBNDModel.Name].Add(Id, _description);
                         //IsDescriptionEdited = true;
@@ -66,14 +66,22 @@ public class ESDModel
             }
         }
     }
-
-    private int _id = -1;
-    public int Id
+    
+    public enum ESDNamespaceType
     {
-        get
-        {
-            return _id;
-        }
+        AI,
+        Chr,
+        Event,
+        None,
+        Talk
+    }
+
+    public ESDNamespaceType Namespace { get; set; }
+    
+    private string _id = string.Empty;
+    public string Id
+    {
+        get => _id;
         set
         {
             if (_id != value)
@@ -111,7 +119,7 @@ public class ESDModel
     public ESDModel(string esdName, BNDModel parent)
     {
         ParentBNDModel = parent;
-        Id = int.Parse(esdName.Substring(1, Project.Current.Game.IdLength));
+        Id = esdName;
         Code = new TextDocument();
         IsDecompiled = false;
     }
@@ -119,27 +127,27 @@ public class ESDModel
     public ESDModel(string esdName, string codeText, BNDModel parent)
     {
         ParentBNDModel = parent;
-        Id = int.Parse(esdName.Substring(1, Project.Current.Game.IdLength));
+        Id = esdName;
         Code = new TextDocument(codeText);
-        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
+        /*foreach (FunctionDefinition funcDef in Project.Current.Game.TalkMethods.
                      Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
                                 x.ReturnValue is { Type: "enum" or "bool" }))
         {
             Code.Text = funcDef.MakeNumberValuesDescriptive(Code.Text);
-        }
-        Code.Text = Code.Text.ReplaceMatches("    ", "\t", false, false);
+        }*/
+        //Code.Text = Code.Text.ReplaceMatches("    ", "\t", false, false);
         IsDecompiled = true;
     }
-    
-    public ESDModel(int id, string description, BNDModel parent)
+
+    public static ESDModel CreateBlank(string id, string description, BNDModel parent)
     {
-        ParentBNDModel = parent;
-        Code = new TextDocument($"# -*- coding: utf-8 -*-\r\ndef t{id.ToString(new string('0', Project.Current.Game.IdLength))}_1():\r\n" +
-                                "    \"\"\"State 0,1\"\"\"\r\n    Quit()\r\n\r\n");
-        ESDEditCount++;
-        IsDecompiled = true;
-        Id = id;
-        Description = description;
+        string blankESDCodeString = $"# -*- coding: utf-8 -*-\r\ndef {id}_1():\r\n" +
+                                    "    \"\"\"State 0,1\"\"\"\r\n    Quit()\r\n\r\n";
+        ESDModel newESDModel = new ESDModel(id, blankESDCodeString, parent);
+        newESDModel.ESDEditCount++;
+        newESDModel.Description = description;
+        
+        return newESDModel;
     }
     
     public ESDModel(ESDModel CopiedESD, BNDModel parent)

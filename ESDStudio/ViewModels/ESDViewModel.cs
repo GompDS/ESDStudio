@@ -20,10 +20,8 @@ using ESDStudio.Models;
 using ESDStudio.Views;
 using ICSharpCode.AvalonEdit.Document;
 using SoulsFormats;
-using SoulsFormats.Kuon;
 using Tomlyn;
 using Tomlyn.Model;
-using BND0 = SoulsFormats.ACE3.BND0;
 
 namespace ESDStudio.ViewModels;
 
@@ -49,21 +47,10 @@ public class ESDViewModel : ViewModelBase
     public ICommand PasteCommand { get; }
     public ICommand DeleteCommand { get; }
     public ICommand SaveCommand { get; }
-
-    public string Name
-    {
-        get
-        {
-            return ESD.Name;
-        }
-    }
     
-    public int Id
+    public string Id
     {
-        get
-        {
-            return ESD.Id;
-        }
+        get => ESD.Id;
         set
         {
             if (ESD.Id != value)
@@ -191,7 +178,7 @@ public class ESDViewModel : ViewModelBase
         editIdViewModel.LocalESDIds.Remove(Id);
         editIdView.ShowDialog();
         if (editIdView.DialogResult != true) return;
-        EditESDIdCommand command = new(this, int.Parse(editIdViewModel.NewIdEntry));
+        EditESDIdCommand command = new(this, editIdViewModel.NewIdEntry);
         command.Redo();
         MainWindowViewModel.UndoStack.Push(command);
     }
@@ -230,7 +217,7 @@ public class ESDViewModel : ViewModelBase
     private void Delete()
     {
         MessageBoxResult messageBoxResult =
-            ShowConfirmationMessageBox($"Are you sure you want to delete {Name}?");
+            ShowConfirmationMessageBox($"Are you sure you want to delete {Id}?");
         if (messageBoxResult == MessageBoxResult.No) return;
         object? mainWindow = Application.Current.MainWindow;
         if (mainWindow == null) return;
@@ -244,7 +231,7 @@ public class ESDViewModel : ViewModelBase
     public void Decompile()
     {
         string decompiledCode = "";
-        string pyFile = $"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}\\{ESD.Name}.py";
+        string pyFile = $"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}\\{ESD.Id}.py";
         if (File.Exists(pyFile))
         {
             decompiledCode = File.ReadAllText(pyFile);
@@ -269,14 +256,14 @@ public class ESDViewModel : ViewModelBase
         }
 
         Code.Text = decompiledCode;
-        foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
+        /*foreach (FunctionDefinition funcDef in Project.Current.Game.FunctionDefinitions.
                      Where(x => x.Parameters.Any(y => y.IsEnum || y.Type == "bool") ||
                                 x.ReturnValue is { Type: "enum" or "bool" }))
         {
             Code.Text = funcDef.MakeNumberValuesDescriptive(Code.Text);
-        }
+        }*/
 
-        Code.Text = Code.Text.Replace("    ", "\t");
+        //Code.Text = Code.Text.Replace("    ", "\t");
         //.Text = Code.Text.ReplaceMatches("    ", "\t", false, false);
         //File.Delete(tempPyFile);
         IsDecompiled = true;
@@ -290,21 +277,21 @@ public class ESDViewModel : ViewModelBase
         {
             ESDViewModel CopiedESD = GetCopiedESD();
             parentBND = CopiedESD.ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
-            ESDSourceName = CopiedESD.Name;
+            ESDSourceName = CopiedESD.Id;
         }
         else
         {
             parentBND = ParentViewModel.GetTalkBND(Project.Current.ModDirectory, Project.Current.GameDirectory, out string BNDPath);
-            ESDSourceName = Name;
+            ESDSourceName = Id;
         }
         BinderFile BNDFile = parentBND.Files.First(x => x.Name.EndsWith(ESDSourceName + ".esd", StringComparison.OrdinalIgnoreCase));
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
-        string tempESDFile = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd";
+        string tempESDFile = cwd + $"esdtool\\{Id}.esd";
         File.WriteAllBytes(tempESDFile, BNDFile.Bytes);
-        bool success = RunESDTool($"{(Editor.UseGameDataFlags ? $"-{Project.Current.Game.Name} -basedir \"{Project.Current.GameDirectory}\" " : "")}-i {Name}.esd -writepy %e.esd.py");
+        bool success = RunESDTool($"-{Project.Current.Game.Name} -basedir \"{Project.Current.GameDirectory}\" {(!Editor.UseGameDataFlags ? "-noannotate " : "")} -i {Id}.esd -writepy %e.esd.py");
         File.Delete(tempESDFile);
         if (success == false) return "";
-        string tempPyFile = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd.py";
+        string tempPyFile = cwd + $"esdtool\\{Id}.esd.py";
         string fileText = File.ReadAllText(tempPyFile);
         File.Delete(tempPyFile);
         return fileText;
@@ -314,7 +301,7 @@ public class ESDViewModel : ViewModelBase
     {
         if (game == null) return false;
         string codeCopy = Code.Text;
-        codeCopy = codeCopy.ReplaceMatches("true", "1", false, true);
+        /*codeCopy = codeCopy.ReplaceMatches("true", "1", false, true);
         codeCopy = codeCopy.ReplaceMatches("false", "0", false, true);
         codeCopy = codeCopy.ReplaceMatches("\t", "    ", false, false);
         foreach (string enumType in Project.Current.Game.EnumTemplates.Keys)
@@ -324,13 +311,13 @@ public class ESDViewModel : ViewModelBase
                 codeCopy = codeCopy.ReplaceMatches($"{enumType}.{enumValuePair.Item2}",
                     enumValuePair.Item1.ToString(), false, true);
             }
-        }
+        }*/
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
-        string tempPyFile = $"{cwd}" + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool") + $"\\{Name}.esd.py";
+        string tempPyFile = $"{cwd}" + $"esdtool\\{Id}.esd.py";
         File.WriteAllText(tempPyFile, codeCopy);
         bool success = RunESDTool($"-{game} " +
                                   $"-basedir \"{gameDirectory}\" -esddir \"{gameDirectory}\\{Project.Current.Game.TalkPath}\" " +
-                                  $"-i \"{tempPyFile}\" -writeloose \"{cwd}esdtool\\{Name}.esd\"");
+                                  $"-i \"{tempPyFile}\" -writeloose \"{cwd}esdtool\\{Id}.esd\"");
         if (Directory.Exists($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}") == false)
         {
             Directory.CreateDirectory($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}");
@@ -338,7 +325,7 @@ public class ESDViewModel : ViewModelBase
 
         if (success)
         {
-            File.WriteAllText($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}\\{Name}.py", codeCopy);
+            File.WriteAllText($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}\\{Id}.py", codeCopy);
         }
         File.Delete(tempPyFile);
         return success;
@@ -351,12 +338,13 @@ public class ESDViewModel : ViewModelBase
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? @"esdtool_er\esdtool.exe" : @"esdtool\esdtool.exe"),
+                FileName = cwd + @"esdtool\esdtool.exe",
                 Arguments = arguments,
-                WorkingDirectory = cwd + (Project.Current.Game.Type == GameInfo.Game.EldenRing ? "esdtool_er" : "esdtool"),
+                WorkingDirectory = cwd + "esdtool",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                CreateNoWindow = true
             }
         };
         esdtool.OutputDataReceived += EsdtoolOnOutputDataReceived;
@@ -386,7 +374,7 @@ public class ESDViewModel : ViewModelBase
                 int startIndex = match.Index + errorEnd + match.Length;
                 int lineEndIndex = stdout.IndexOf('\r', startIndex);
                 string lineContents = stdout.Substring(startIndex, lineEndIndex - startIndex);
-                errors.Add($"{errorDescription}\n{Name} ({lineColumn}) \"{lineContents}\"\n");
+                errors.Add($"{errorDescription}\n{Id} ({lineColumn}) \"{lineContents}\"\n");
                 nextError = stdout.IndexOf("ERROR", lineEndIndex, StringComparison.Ordinal);
             }
             else
@@ -397,7 +385,7 @@ public class ESDViewModel : ViewModelBase
         string stderr = errorString;
         if (stderr.Length > 0)
         {
-            string message = $"Errors were encountered when attempting to compile {Name}";
+            string message = $"Errors were encountered when attempting to compile {Id}";
             if (Description.Length > 0)
             {
                 message += $" \"{Description}\"";
@@ -439,7 +427,7 @@ public class ESDViewModel : ViewModelBase
         if (IsESDEdited)
         {
             SaveESD();
-            ESDGroup?.SaveMembers(Code.Text, Name);
+            ESDGroup?.SaveMembers(Code.Text, Id);
         }
         
         if (IsDescriptionEdited)
@@ -473,7 +461,7 @@ public class ESDViewModel : ViewModelBase
                 if (!File.Exists(BNDPath + ".bak"))
                 {
                     string writeBakPath = $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{ParentViewModel.Name}.talkesdbnd";
-                    if (Project.Current.Game.Compression != DCX.Type.None)
+                    if (Project.Current.Game.Compression is not DCX.NoCompressionInfo)
                     {
                         writeBakPath += ".dcx";
                     }
@@ -488,8 +476,8 @@ public class ESDViewModel : ViewModelBase
                         ((BND4)bnd).Write(writeBakPath);
                     }
                 }
-                BinderFile? file = bnd.Files.FirstOrDefault(x => x.Name.EndsWith($"{Name}.esd"));
-                string tempESDFile = $"{cwd}\\esdtool\\{Name}.esd";
+                BinderFile? file = bnd.Files.FirstOrDefault(x => x.Name.EndsWith($"{Id}.esd"));
+                string tempESDFile = $"{cwd}\\esdtool\\{Id}.esd";
                 if (file == null)
                 {
                     string internalPath = $"{Project.Current.Game.FilePathStart}\\{Project.Current.Game.TalkPath}\\";
@@ -498,7 +486,7 @@ public class ESDViewModel : ViewModelBase
                         internalPath += $"{ParentViewModel.Name}\\";
                     }
 
-                    internalPath += $"{Name}.esd";
+                    internalPath += $"{Id}.esd";
                     
                     file = new BinderFile(Binder.FileFlags.Flag1, 
                         internalPath,
@@ -531,12 +519,12 @@ public class ESDViewModel : ViewModelBase
                 }
                 else
                 {
-                    file.Bytes = File.ReadAllBytes($"{cwd}\\esdtool\\{Name}.esd");
+                    file.Bytes = File.ReadAllBytes($"{cwd}\\esdtool\\{Id}.esd");
                 }
                 File.Delete(tempESDFile);
                 string writePath =
                     $"{Project.Current.ModDirectory}\\{Project.Current.Game.TalkPath}\\{ParentViewModel.Name}.talkesdbnd";
-                if (Project.Current.Game.Compression != DCX.Type.None)
+                if (Project.Current.Game.Compression is not DCX.NoCompressionInfo)
                 {
                     writePath += ".dcx";
                 }

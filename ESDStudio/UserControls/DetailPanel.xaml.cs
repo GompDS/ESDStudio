@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
+using ESDLang.Doc;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -24,14 +25,14 @@ public partial class DetailPanel : UserControl
         InitializeComponent();
     }
 
-    public void SetFunctionToDisplay(FunctionDefinition funcDef, int parameterIndex)
+    public void SetFunctionToDisplay(ESDDocumentation.MethodDoc funcDef, int argIndex)
     {
         textEditor.Text = $"{funcDef.Name}()\n";
-        foreach (FunctionParameter parameter in funcDef.Parameters)
+        foreach (ESDDocumentation.ArgDoc arg in funcDef.Args)
         {
-            if (funcDef.Parameters.Count > parameterIndex && parameterIndex > -1)
+            if (funcDef.Args.Count > argIndex && argIndex > -1)
             {
-                if (funcDef.Parameters[parameterIndex] == parameter)
+                if (funcDef.Args[argIndex] == arg)
                 {
                     textEditor.Text += "\u2B9A";
                 }
@@ -45,7 +46,7 @@ public partial class DetailPanel : UserControl
                 textEditor.Text += " ";
             }
 
-            if (parameter.IsOptional)
+            if (arg.Optional)
             {
                 textEditor.Text += "*";
             }
@@ -53,18 +54,18 @@ public partial class DetailPanel : UserControl
             {
                 textEditor.Text += " ";
             }
-            textEditor.Text += $"{parameter.Type} {parameter.Name}";
-            if (parameter.IsEnum)
+            textEditor.Text += $"{arg.Type} {arg.Name}";
+            if (arg.Enum != null)
             {
-                foreach (Tuple<int, string> enumValue in Project.Current.Game.EnumTemplates[parameter.EnumType])
+                foreach (KeyValuePair<int, string> enumValue in arg.Enum.Names)
                 {
-                    textEditor.Text += $"\n      {enumValue.Item1}: {parameter.EnumType}.{enumValue.Item2}";
+                    textEditor.Text += $"\n      {enumValue.Key}: {arg.EnumName}.{enumValue.Value}";
                 }
             }
 
-            if (parameter.Comment.Length > 0)
+            if (arg.Comment != null)
             {
-                textEditor.Text += $" # {parameter.Comment}";
+                textEditor.Text += $" # {arg.Comment}";
             }
 
             textEditor.Text += "\n";
@@ -74,12 +75,12 @@ public partial class DetailPanel : UserControl
         {
             textEditor.Text += "\nreturns ";
             textEditor.Text += $"{funcDef.ReturnValue.Type}";
-            if (funcDef.ReturnValue.IsEnum)
+            if (funcDef.ReturnValue.Enum != null)
             {
                 textEditor.Text += $" {funcDef.ReturnValue.Name}\n";
-                foreach (Tuple<int, string> enumValue in Project.Current.Game.EnumTemplates[funcDef.ReturnValue.EnumType])
+                foreach (ESDDocumentation.EnumEntryDoc enumValue in funcDef.ReturnValue.Enum.Entries)
                 {
-                    textEditor.Text += $"            {enumValue.Item1}: {funcDef.ReturnValue.EnumType}.{enumValue.Item2}\n";
+                    textEditor.Text += $"            {enumValue.Value}: {funcDef.ReturnValue.EnumName}.{enumValue.Name}\n";
                 }
             }
             else

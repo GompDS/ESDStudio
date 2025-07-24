@@ -22,8 +22,7 @@
             <Label>
                 <TextBlock TextDecorations="Underline" Text="Credits"/> 
             </Label>
-            <Label Content="Game Icons - Souv"/>
-            <Label Content="esdtool - thefifthmatt"/>
+            <Label Content="ESDLang / esdtool - thefifthmatt"/>
             <Separator/>
             <Label>
                 <TextBlock TextDecorations="Underline" Text="Libraries Used"/> 

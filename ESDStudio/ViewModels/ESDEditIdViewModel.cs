@@ -7,7 +7,7 @@ namespace ESDStudio.ViewModels;
 
 public class EditESDIdViewModel : DialogViewModelBase
 {
-    public EditESDIdViewModel(int currentId, List<int> localESDIds)
+    public EditESDIdViewModel(string currentId, List<string> localESDIds)
     {
         _newIdEntry = currentId.ToString();
         LocalESDIds = localESDIds;
@@ -27,12 +27,17 @@ public class EditESDIdViewModel : DialogViewModelBase
         }
     }
 
-    public List<int> LocalESDIds;
+    public List<string> LocalESDIds;
 
     protected override void Confirm()
     {
         NewIdEntry = NewIdEntry.Replace(" ", "");
-        if (LocalESDIds.Contains(int.Parse(NewIdEntry)))
+        if (string.IsNullOrEmpty(NewIdEntry) || NewIdEntry.Length < 7)
+        {
+            MessageBoxResult result = ShowErrorMessageBox("ESD Name must be at least 7 characters long.");
+            if (result == MessageBoxResult.OK) return;
+        }
+        if (LocalESDIds.Contains(NewIdEntry))
         {
             MessageBoxResult result = ShowErrorMessageBox("Another ESD with the same ID already exists in this map.");
             if (result == MessageBoxResult.OK) return;

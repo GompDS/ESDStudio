@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using ESDLang.EzSemble;
 using ICSharpCode.AvalonEdit.Document;
 using SoulsFormats;
 
@@ -63,6 +64,9 @@ public class BNDModel
         }
         foreach (BinderFile BNDFile in BND.Files.OrderBy(x => x.Name))
         {
+            ESD esd = ESD.Read(BNDFile.Bytes);
+            //EzSembleContext context = EzSembleContext.LoadFromXml();
+            //EzSembleContext.EzSembleMethodInfo info = GetCommandInfo()//GetCommandInfo(6, 2147483643);
             string esdName = Path.GetFileNameWithoutExtension(BNDFile.Name);
             //string fileName = $"{Project.Current.BaseDirectory}\\{Name}\\{esdName}.py";
             ESDModel newESDModel;

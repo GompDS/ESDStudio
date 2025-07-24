@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using ESDLang.Doc;
 using ESDStudio.UserControls;
 using ESDStudio.ViewModels;
 using ICSharpCode.AvalonEdit;
@@ -148,8 +149,8 @@ public partial class ESDView : UserControl
         TextViewPosition? position = CodeEditor.GetPositionFromPoint(Mouse.GetPosition(CodeEditor));
         if (position == null) return;
         GetOverlappedTerm(position.Value, out string selectedTerm, out int termStartIndex);
-        FunctionDefinition? selectedFunc = Project.Current.Game.FunctionDefinitions
-            .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
+        ESDDocumentation.MethodDoc? selectedFunc = Project.Current.Game.TalkMethods
+            .FirstOrDefault(x => x.Name != null && x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
         ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
         
         if (selectedFunc != null && _lastFocusedTermStartIndex != termStartIndex)
@@ -169,8 +170,8 @@ public partial class ESDView : UserControl
         TextViewPosition? position = CodeEditor.GetPositionFromPoint(Mouse.GetPosition(CodeEditor));
         if (position == null) return;
         GetOverlappedTerm(position.Value, out string selectedTerm, out int termStartIndex);
-        FunctionDefinition? selectedFunc = Project.Current.Game.FunctionDefinitions
-            .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
+        ESDDocumentation.MethodDoc? selectedFunc = Project.Current.Game.TalkMethods
+            .FirstOrDefault(x => x.Name != null && x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
         ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
 
         if (selectedFunc != null && termStartIndex != _lastFocusedTermStartIndex)
@@ -183,8 +184,8 @@ public partial class ESDView : UserControl
             if (termStartIndex + 1 >= CodeEditor.Text.Length) return;
             string searchRange = CodeEditor.Text[..(termStartIndex + 1)];
             CodeEditorUtils.GetParentFunctionInfo(termStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
-            FunctionDefinition? parentFunc = Project.Current.Game.FunctionDefinitions
-                .FirstOrDefault(x => x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
+            ESDDocumentation.MethodDoc? parentFunc = Project.Current.Game.TalkMethods
+                .FirstOrDefault(x => x.Name != null && x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
             if (parentFunc == null || _toolTipMode == ToolTipMode.Function)
             {
                 funcToolTip.IsOpen = false;
@@ -199,8 +200,8 @@ public partial class ESDView : UserControl
         Caret caret = (Caret)sender;
         GetOverlappedTerm(caret.Position, out string selectedTerm, out int termStartIndex);
 
-        FunctionDefinition? selectedFunc = Project.Current.Game.FunctionDefinitions
-            .FirstOrDefault(x => x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
+        ESDDocumentation.MethodDoc? selectedFunc = Project.Current.Game.TalkMethods
+            .FirstOrDefault(x => x.Name != null && x.Name.Equals(selectedTerm, StringComparison.OrdinalIgnoreCase));
 
         ToolTip funcToolTip = (ToolTip)CodeEditor.ToolTip;
         if (selectedFunc != null)
@@ -216,9 +217,9 @@ public partial class ESDView : UserControl
         {
             string searchRange = CodeEditor.Text[..(termStartIndex + 1)];
             CodeEditorUtils.GetParentFunctionInfo(termStartIndex, searchRange, out string parentFunctionName, out int parameterIndex);
-            FunctionDefinition? parentFunc = Project.Current.Game.FunctionDefinitions
-                .FirstOrDefault(x => x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
-            if (parentFunc is { Parameters.Count: > 0 })
+            ESDDocumentation.MethodDoc? parentFunc = Project.Current.Game.TalkMethods
+                .FirstOrDefault(x => x.Name != null && x.Name.Equals(parentFunctionName, StringComparison.OrdinalIgnoreCase));
+            if (parentFunc is { Args.Count: > 0 })
             {
                 _detailedFunctionView.SetFunctionToDisplay(parentFunc, parameterIndex);
                 funcToolTip.Content = new FunctionToolTip(parentFunc, parameterIndex);

@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SoulsFormats\SoulsFormats\SoulsFormats.csproj" />
+      <ProjectReference Include="..\ESDLang\ESDLang\ESDLang.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -83,55 +83,63 @@
       <Content Include="Content\Images\ds1.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="Content\Images\ac6.jpg" />
+      <Content Include="Content\Images\ac6.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Content\Images\des.jpg" />
+      <Content Include="Content\Images\des.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Content\Images\ds2s.jpg" />
+      <Content Include="Content\Images\ds2s.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Content\Images\ds2.jpg" />
+      <Content Include="Content\Images\ds2.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Content\Images\nr.jpg" />
+      <Content Include="Content\Images\nr.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     
     <ItemGroup>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_ac6.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_bb.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_ds1.toml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_ds1r.toml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_nr.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_sdt.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_ac6.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_bb.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_ds1.toml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_ds1r.toml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_nr.toml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_sdt.toml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\EnumTemplates_bb.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\EnumTemplates_ds1.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\EnumTemplates_ds1r.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\EnumTemplates_sdt.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\FunctionDefinitions_bb.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\FunctionDefinitions_ds1.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\FunctionDefinitions_ds1r.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <AdditionalFiles Include="Resources\FunctionDefinitions_sdt.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <None Remove="LICENSES\AvalonEdit_LICENSE.txt" />
@@ -139,7 +147,7 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_er.toml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <AdditionalFiles Include="LICENSES\AvalonEdit_LICENSE.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -154,30 +162,18 @@
       </AdditionalFiles>
       <None Remove="DefaultDescriptions\DefaultESDDescriptions_ds3.toml" />
       <AdditionalFiles Include="DefaultDescriptions\DefaultESDDescriptions_ds3.toml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <None Remove="DefaultDescriptions\DefaultMapDescriptions_ds3.toml" />
       <AdditionalFiles Include="DefaultDescriptions\DefaultMapDescriptions_ds3.toml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <None Remove="Resources\EnumTemplates.xml" />
       <None Remove="Resources\FunctionDefinitions.xml" />
       <None Remove="Resources\EnumTemplates_ds3.xml" />
-      <AdditionalFiles Include="Resources\EnumTemplates_ds3.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
       <None Remove="Resources\EnumTemplates_er.xml" />
-      <AdditionalFiles Include="Resources\EnumTemplates_er.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
       <None Remove="Resources\FunctionDefinitions_ds3.xml" />
-      <AdditionalFiles Include="Resources\FunctionDefinitions_ds3.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
       <None Remove="Resources\FunctionDefinitions_er.xml" />
-      <AdditionalFiles Include="Resources\FunctionDefinitions_er.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
       <None Remove="EditorSettings.toml" />
       <AdditionalFiles Include="EditorSettings.toml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -195,12 +191,10 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </AdditionalFiles>
       <None Remove="Resources\EnumTemplates_bb.xml" />
-      <AdditionalFiles Include="Resources\EnumTemplates_bb.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
       <None Remove="Resources\FunctionDefinitions_bb.xml" />
-      <AdditionalFiles Include="Resources\FunctionDefinitions_bb.xml">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="esdtool\**" />
     </ItemGroup>
 </Project>

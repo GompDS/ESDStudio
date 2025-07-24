@@ -169,7 +169,7 @@
                     <Separator Style="{StaticResource ThemedSeparator}"/>
                     <MenuItem Header="_Select All" InputGestureText="Ctrl+A"/>
                 </MenuItem>
-                <MenuItem Header="Groups" IsTabStop="False">
+                <!--<MenuItem Header="Groups" IsTabStop="False">
                     <MenuItem Header="_Edit Existing Group" ItemsSource="{Binding ESDGroups}">
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
@@ -179,7 +179,7 @@
                         </MenuItem.ItemContainerStyle>
                     </MenuItem>
                     <MenuItem Header="_Create New Group"/>
-                </MenuItem>
+                </MenuItem>-->
                 <MenuItem Header="About" IsTabStop="False" BorderBrush="Transparent"
                           Command="{Binding ShowAboutCommand}"/>
             </Menu>
@@ -225,7 +225,7 @@
                             <HierarchicalDataTemplate.ItemTemplate>
                                 <DataTemplate DataType="{x:Type vm:ESDViewModel}">
                                     <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource ESDContextMenu}">
-                                        <TextBlock Text="{Binding Name}" Style="{StaticResource ESDNameTextBlock}" />
+                                        <TextBlock Text="{Binding Id}" Style="{StaticResource ESDNameTextBlock}" />
                                         <TextBlock Text="*" 
                                                    Style="{StaticResource ESDNameTextBlock}" 
                                                    Visibility="{Binding IsESDEdited, 
@@ -276,7 +276,7 @@
                 <TabControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:ESDViewModel}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Name}" Style="{StaticResource ESDNameTextBlock}" />
+                            <TextBlock Text="{Binding Id}" Style="{StaticResource ESDNameTextBlock}" />
                             <TextBlock Text="*" 
                                        Style="{StaticResource ESDNameTextBlock}" 
                                        Visibility="{Binding IsESDEdited, 

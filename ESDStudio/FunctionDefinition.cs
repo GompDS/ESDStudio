@@ -80,7 +80,7 @@ public class FunctionDefinition
 
                     if (Parameters[i].IsEnum)
                     {
-                        Project.Current.Game.EnumTemplates.TryGetValue(Parameters[i].EnumType,
+                        /*Project.Current.Game.EnumTemplates.TryGetValue(Parameters[i].EnumType,
                             out List<Tuple<int, string>>? enumValues);
                         Tuple<int, string>? valueStringPair =
                             enumValues?.FirstOrDefault(x => x.Item1 == intValue);
@@ -90,7 +90,7 @@ public class FunctionDefinition
                             code = code.Remove(startIndex, nextCommaIndex);
                             endIndex -= nextCommaIndex;
                             valueToInsert = $"{Parameters[i].EnumType}.{valueName}";
-                        }
+                        }*/
                     }
                     else if (intValue is 0 or 1)
                     {
@@ -149,14 +149,14 @@ public class FunctionDefinition
             string valueToInsert = "";
             if (ReturnValue.IsEnum)
             {
-                Project.Current.Game.EnumTemplates.TryGetValue(ReturnValue.EnumType,
+                /*Project.Current.Game.EnumTemplates.TryGetValue(ReturnValue.EnumType,
                     out List<Tuple<int, string>>? enumValues);
                 Tuple<int, string>? valueStringPair =
                     enumValues?.FirstOrDefault(x => x.Item1 == intValue);
                 if (valueStringPair != null)
                 {
                     valueToInsert = $"{ReturnValue.EnumType}.{valueStringPair.Item2}";
-                }
+                }*/
             }
             else
             {

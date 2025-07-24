@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
+using ESDLang.Doc;
 using ESDStudio.UserControls;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -31,7 +32,7 @@ public class CompletionData : ICompletionData
         //ParameterIndex = parameterIndex;
     }
 
-    public FunctionDefinition? parentFunction { get; set; }
+    public ESDDocumentation.MethodDoc? parentFunction { get; set; }
     public int ParameterIndex { get; set; }
     public int InsertionOffset { get; set; }
     public int LengthToRemove { get; set; }
@@ -55,7 +56,8 @@ public class CompletionData : ICompletionData
     {
         get
         {
-            FunctionDefinition? funcDef = Project.Current.Game.FunctionDefinitions.FirstOrDefault(x => x.Name == Text);
+            ESDDocumentation.MethodDoc? funcDef = Project.Current.Game.TalkMethods
+                .FirstOrDefault(x => x.Name != null && x.Name == Text);
             if (funcDef != null)
             {
                 TextEditor funcDescription = new()
@@ -63,29 +65,29 @@ public class CompletionData : ICompletionData
                     Style = Application.Current.FindResource("ReadOnlyEditor") as Style
                 };
                 funcDescription.Text += "(";
-                int parameterCount = 0;
-                foreach (FunctionParameter parameter in funcDef.Parameters)
+                int argCount = 0;
+                foreach (ESDDocumentation.ArgDoc argDef in funcDef.Args)
                 {
-                    if (parameter.IsOptional)
+                    if (argDef.Optional)
                     {
                         funcDescription.Text += "*";
                     }
 
-                    if (parameter.IsEnum)
+                    if (argDef.Enum != null)
                     {
-                        funcDescription.Text += $"{parameter.Type}<{parameter.EnumType}> {parameter.Name}";
+                        funcDescription.Text += $"{argDef.Type}<{argDef.EnumName}> {argDef.Name}";
                     }
                     else
                     {
-                        funcDescription.Text += $"{parameter.Type} {parameter.Name}";
+                        funcDescription.Text += $"{argDef.Type} {argDef.Name}";
                     }
 
-                    if (parameterCount < funcDef.Parameters.Count - 1)
+                    if (argCount < funcDef.Args.Count - 1)
                     {
                         funcDescription.Text += ", ";
                     }
 
-                    parameterCount++;
+                    argCount++;
                 }
                 funcDescription.Text += "):";
                 if (funcDef.ReturnValue != null)
@@ -113,14 +115,14 @@ public class CompletionData : ICompletionData
         seg.StartOffset = InsertionOffset;
         seg.EndOffset = seg.StartOffset;
         textArea.Document.Remove(InsertionOffset, LengthToRemove);
-        FunctionDefinition? funcDef = Project.Current.Game.FunctionDefinitions.FirstOrDefault(x => x.Name == Text);
+        ESDDocumentation.MethodDoc? funcDef = Project.Current.Game.TalkMethods.FirstOrDefault(x => x.Name != null && x.Name == Text);
         if (funcDef != null)
         {
             Text += "()";
         }
         textArea.Document.Replace(seg, Text);
         if (funcDef == null) return;
-        if (funcDef.Parameters.Count > 0)
+        if (funcDef.Args.Count > 0)
         {
             textArea.Caret.Offset -= 1;
         }
