@@ -83,7 +83,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         get
         {
-            return Project.Current.Name;
+            return Project.Current == null ? "" : Project.Current.Name;
         }
     }
     
@@ -356,8 +356,10 @@ public class MainWindowViewModel : ViewModelBase
         newBNDView.ShowDialog();
         if (newBNDView.DialogResult != true) return;
         int mapId = int.Parse(newBndViewModel.MapIdEntry);
-        int blockId = int.Parse(newBndViewModel.BlockIdEntry);
-        BNDViewModel newBND = new BNDViewModel(mapId, blockId, newBndViewModel.DescriptionEntry, Project.Current.Game);
+        int blockA = int.Parse(newBndViewModel.BlockAEntry);
+        int blockB = int.Parse(newBndViewModel.BlockBEntry);
+        int blockC = int.Parse(newBndViewModel.BlockCEntry);
+        BNDViewModel newBND = new BNDViewModel(mapId, blockA, blockB, blockC, newBndViewModel.DescriptionEntry, Project.Current.Game);
         NewBNDCommand command = new(newBND, BNDViewModels);
         command.Redo();
         UndoStack.Push(command);

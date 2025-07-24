@@ -1,2 +1,24 @@
 title = "DefaultESDDescriptions_nr"
 [maps]
+[maps.m00_00_00_00]
+t000001000 = "Site of Grace"
+[maps.m10_00_00_00]
+t600001000 = "Roundtable"
+[maps.m12_00_00_00]
+t602001200 = "Smithing Table"
+t800001200 = "Spirit Shelter Merchant"
+[maps.m19_00_00_00]
+t703001900 = "Libra"
+[maps.m30_00_00_00]
+t800003000 = "Wandering Merchant"
+[maps.m32_00_00_00]
+t602003200 = "Smithing Table"
+t800003200 = "Wandering Merchant"
+[maps.m37_90_00_00]
+t903003790 = "Special Merchant"
+[maps.m45_55_00_00]
+t703004555 = "Libra"
+[maps.m60_00_00_00]
+t703006000 = "Libra"
+t800006000 = "Wandering Merchant"
+t903006000 = "Special Merchant"

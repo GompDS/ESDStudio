@@ -34,9 +34,9 @@ public class BNDViewModel : ViewModelBase
         SaveCommand = new RelayCommand(Save, CanSave);
     }
     
-    public BNDViewModel(int mapId, int blockId, string description, GameInfo gameInfo)
+    public BNDViewModel(int mapId, int blockA, int blockB, int blockC, string description, GameInfo gameInfo)
     {
-        BND = new BNDModel(mapId, blockId, description, gameInfo);
+        BND = new BNDModel(mapId, blockA, blockB, blockC, description, gameInfo);
         ESDViewModels = new ObservableCollection<ESDViewModel>();
         EditDescriptionCommand = new RelayCommand(EditDescription);
         NewESDCommand = new RelayCommand(NewESD);

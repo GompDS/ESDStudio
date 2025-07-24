@@ -13,7 +13,9 @@ public class BNDModel
     public string Name { get; set; }
     public string Description { get; set; }
     public int MapId { get; }
-    public int BlockId { get; }
+    public int BlockA { get; }
+    public int BlockB { get; }
+    public int BlockC { get; }
     public ObservableCollection<ESDModel> ESDModels { get; }
     public bool IsDescriptionEdited => DescriptionEditCount > 0;
     public int DescriptionEditCount { get; set; }
@@ -49,7 +51,9 @@ public class BNDModel
         }
 
         MapId = int.Parse(Name[1..3]);
-        BlockId = int.Parse(Name[4..6]);
+        BlockA = int.Parse(Name[4..6]);
+        BlockB = int.Parse(Name[7..9]);
+        BlockC = int.Parse(Name[10..12]);
         
         ESDModels = new ObservableCollection<ESDModel>();
 
@@ -85,11 +89,13 @@ public class BNDModel
         LastSavedESDCount = ESDModels.Count;
     }
     
-    public BNDModel(int mapId, int blockId, string description, GameInfo gameInfo)
+    public BNDModel(int mapId, int blockA, int blockB, int blockC, string description, GameInfo gameInfo)
     {
         MapId = mapId;
-        BlockId = blockId;
-        Name = $"m{MapId:D2}_{BlockId:D2}_00_00";
+        BlockA = blockA;
+        BlockB = blockB;
+        BlockC = blockC;
+        Name = $"m{MapId:D2}_{BlockA:D2}_{BlockB:D2}_{BlockC:D2}";
         Description = description;
         ESDModels = new ObservableCollection<ESDModel>();
         LastSavedESDCount = 0;
