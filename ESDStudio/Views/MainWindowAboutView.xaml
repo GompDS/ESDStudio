@@ -41,6 +41,8 @@
             <Label Content="Vawser - esd documentation"/>
             <Label Content="foxyhooligans - Bloodborne support"/>
             <Label Content="kingbore - PTDE and DSR support"/>
+            <Label Content="PC - Nightreign esd names"/>
+            <Label Content="thefifthmatt - map names from Darkscript3"/>
         </StackPanel>
     </Grid>
 </Window>

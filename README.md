@@ -29,4 +29,6 @@ If you would like to contribute to this project then you can help me by pinging 
 - Vawser - esd documentation
 - foxyhooligans - Bloodborne support
 - kingbore - PTDE and DSR support
+- PC - Nightreign esd names 
+- thefifthmatt - map names from Darkscript3
 
