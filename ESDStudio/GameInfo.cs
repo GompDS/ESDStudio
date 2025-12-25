@@ -34,16 +34,18 @@ public class GameInfo
 
     public Game Type;
     public string Name = "Unknown";
-    public string FilePathStart = "";
-    public string TalkPath = "";
+    public string FilePathStart = string.Empty;
+    public string TalkPath = string.Empty;
     public DCX.CompressionInfo Compression = new DCX.NoCompressionInfo();
     public int IdLength = 0;
     public BNDType BNDVersion;
-    public string Timestamp = "";
+    public string Timestamp = string.Empty;
     public Dictionary<string, string> MapDescriptions = new();
     public Dictionary<string, Dictionary<string, string>> ESDDescriptions = new();
     public ESDDocumentation TalkDoc;
     public List<ESDDocumentation.MethodDoc> TalkMethods = new();
+    public bool RequiresOodle;
+    public string OodleDllPath = string.Empty;
     //public List<FunctionDefinition> FunctionDefinitions = new();
     //public Dictionary<string, List<Tuple<int, string>>> EnumTemplates = new();
     public string IconPath { get; }
@@ -110,6 +112,8 @@ public class GameInfo
             IdLength = 6;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
+            RequiresOodle = true;
+            OodleDllPath = "oo2core_6_win64.dll";
         }
         else if (text.EndsWith("eldenring.exe", StringComparison.OrdinalIgnoreCase) ||
                     text.Equals("er", StringComparison.OrdinalIgnoreCase))
@@ -122,6 +126,8 @@ public class GameInfo
             IdLength = 9;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
+            RequiresOodle = true;
+            OodleDllPath = "oo2core_6_win64.dll";
         }
         else if (text.EndsWith("armoredcore6.exe", StringComparison.OrdinalIgnoreCase) ||
                  text.Equals("ac6", StringComparison.OrdinalIgnoreCase))
@@ -134,6 +140,8 @@ public class GameInfo
             IdLength = 9;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
+            RequiresOodle = true;
+            OodleDllPath = "oo2core_8_win64.dll";
         }
         else if (text.EndsWith("nightreign.exe", StringComparison.OrdinalIgnoreCase) ||
                  text.Equals("nr", StringComparison.OrdinalIgnoreCase))
@@ -146,6 +154,8 @@ public class GameInfo
             IdLength = 9;
             BNDVersion = BNDType.BND4;
             Timestamp = "07D7R6";
+            RequiresOodle = true;
+            OodleDllPath = "oo2core_9_win64.dll";
         }
         else
         {

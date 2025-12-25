@@ -146,6 +146,10 @@ public class ESDModel
         ESDModel newESDModel = new ESDModel(id, blankESDCodeString, parent);
         newESDModel.ESDEditCount++;
         newESDModel.Description = description;
+        if (description != string.Empty)
+        {
+            newESDModel.DescriptionEditCount++;
+        }
         
         return newESDModel;
     }

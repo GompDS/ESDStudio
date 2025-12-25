@@ -179,10 +179,10 @@ public class MainWindowViewModel : ViewModelBase
     private void LoadProject(Project project)
     {
         // Copy Oodle
-        if (project.Game.Type is GameInfo.Game.EldenRing or GameInfo.Game.Sekiro)
+        if (project.Game.RequiresOodle)
         {
-            string gameOodlePath = project.GameDirectory + @"\oo2core_6_win64.dll";
-            string localOodlePath = AppDomain.CurrentDomain.BaseDirectory + "oo2core_6_win64.dll";
+            string gameOodlePath = project.GameDirectory + "\\" + project.Game.OodleDllPath;
+            string localOodlePath = AppDomain.CurrentDomain.BaseDirectory + project.Game.OodleDllPath;
             if (!File.Exists(localOodlePath))
             {
                 try
@@ -195,7 +195,7 @@ public class MainWindowViewModel : ViewModelBase
                     return;
                 }
             }
-            string esdtoolOodlePath = AppDomain.CurrentDomain.BaseDirectory + @"esdtool\oo2core_6_win64.dll";
+            string esdtoolOodlePath = AppDomain.CurrentDomain.BaseDirectory + @"esdtool\" + project.Game.OodleDllPath;
             if (!File.Exists(esdtoolOodlePath))
             {
                 try

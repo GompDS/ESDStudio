@@ -288,7 +288,9 @@ public class ESDViewModel : ViewModelBase
         string cwd = AppDomain.CurrentDomain.BaseDirectory;
         string tempESDFile = cwd + $"esdtool\\{Id}.esd";
         File.WriteAllBytes(tempESDFile, BNDFile.Bytes);
-        bool success = RunESDTool($"-{Project.Current.Game.Name} -basedir \"{Project.Current.GameDirectory}\" {(!Editor.UseGameDataFlags ? "-noannotate " : "")} -i {Id}.esd -writepy %e.esd.py");
+        string generalSettings =
+            $"-{Project.Current.Game.Name} -basedir \"{Project.Current.GameDirectory}\" -moddir \"{Project.Current.ModDirectory}\"";
+        bool success = RunESDTool($"{generalSettings} {(!Editor.UseGameDataFlags ? "-noannotate " : "")} -i {Id}.esd -writepy %e.esd.py");
         File.Delete(tempESDFile);
         if (success == false) return "";
         string tempPyFile = cwd + $"esdtool\\{Id}.esd.py";
@@ -316,7 +318,7 @@ public class ESDViewModel : ViewModelBase
         string tempPyFile = $"{cwd}" + $"esdtool\\{Id}.esd.py";
         File.WriteAllText(tempPyFile, codeCopy);
         bool success = RunESDTool($"-{game} " +
-                                  $"-basedir \"{gameDirectory}\" -esddir \"{gameDirectory}\\{Project.Current.Game.TalkPath}\" " +
+                                  $"-basedir \"{gameDirectory}\" -moddir \"{Project.Current.ModDirectory}\" -esddir \"{gameDirectory}\\{Project.Current.Game.TalkPath}\" " +
                                   $"-i \"{tempPyFile}\" -writeloose \"{cwd}esdtool\\{Id}.esd\"");
         if (Directory.Exists($"{Project.Current.BaseDirectory}\\{ParentViewModel.Name}") == false)
         {

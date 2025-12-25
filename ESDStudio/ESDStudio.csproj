@@ -5,12 +5,13 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <ApplicationIcon>Assets\icon-256.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\ESDLang\ESDLang\ESDLang.csproj" />
+      <ProjectReference Include="..\SoulsFormats\SoulsFormats\SoulsFormats.csproj" />
     </ItemGroup>
 
     <ItemGroup>
